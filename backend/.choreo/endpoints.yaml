@@ -1,9 +1,0 @@
-version: 1
-
-endpoints:
-  - name: rest-api-be2
-    displayName: REST API
-    type: REST
-    port: 8000
-    context: /
-    networkVisibility: Public
