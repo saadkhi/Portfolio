@@ -1,0 +1,126 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saad | Portfolio</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'showcase/css/style.css' %}">
+</head>
+<body>
+    <div class="background-globes">
+        <div class="globe globe-1"></div>
+        <div class="globe globe-2"></div>
+        <div class="globe globe-3"></div>
+    </div>
+
+    <nav class="glass-nav">
+        <div class="logo">Saad.</div>
+        <ul class="nav-links">
+            <li><a href="#home" class="active">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <main class="glass-container">
+        <!-- Hero Section -->
+        <section id="home" class="section hero">
+            <div class="hero-content">
+                <h1>Hello, I'm <span class="highlight">Saad</span></h1>
+                <p class="subtitle">Python Django Developer</p>
+                <div class="cta-buttons">
+                    <a href="#projects" class="ios-btn primary">View Work</a>
+                    <a href="#contact" class="ios-btn secondary">Contact Me</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="section">
+            <h2 class="section-title">About Me</h2>
+            <div class="glass-card">
+                <p>I am a passionate Python Django developer with a knack for building scalable, responsive, and interactive web applications. I love turning complex problems into elegant solutions.</p>
+            </div>
+        </section>
+
+        <!-- Skills Section -->
+        <section id="skills" class="section">
+            <h2 class="section-title">Skills</h2>
+            <div class="skills-grid">
+                <div class="glass-card skill-card">
+                    <i class="fab fa-python"></i>
+                    <h3>Python</h3>
+                </div>
+                <div class="glass-card skill-card">
+                    <i class="fab fa-js"></i>
+                    <h3>Django</h3>
+                </div>
+                <div class="glass-card skill-card">
+                    <i class="fab fa-html5"></i>
+                    <h3>HTML5/CSS3</h3>
+                </div>
+                <div class="glass-card skill-card">
+                    <i class="fas fa-database"></i>
+                    <h3>PostgreSQL</h3>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="section">
+            <h2 class="section-title">Featured Projects</h2>
+            <div class="projects-grid">
+                <!-- Project 1 -->
+                <div class="glass-card project-card">
+                    <div class="project-image"></div>
+                    <div class="project-info">
+                        <h3>E-Commerce Platform</h3>
+                        <p>A full-featured e-commerce site built with Django and Stripe.</p>
+                        <a href="#" class="ios-btn sm">View Details</a>
+                    </div>
+                </div>
+                <!-- Project 2 -->
+                <div class="glass-card project-card">
+                    <div class="project-image"></div>
+                    <div class="project-info">
+                        <h3>Task Manager</h3>
+                        <p>Real-time task management app using Django Channels.</p>
+                        <a href="#" class="ios-btn sm">View Details</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="section">
+            <h2 class="section-title">Get In Touch</h2>
+            <form class="glass-form">
+                <div class="form-group">
+                    <input type="text" placeholder="Name" class="glass-input">
+                </div>
+                <div class="form-group">
+                    <input type="email" placeholder="Email" class="glass-input">
+                </div>
+                <div class="form-group">
+                    <textarea placeholder="Message" rows="5" class="glass-input"></textarea>
+                </div>
+                <button type="submit" class="ios-btn primary submit-btn">Send Message</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Saad. All rights reserved.</p>
+    </footer>
+
+    <script src="{% static 'showcase/js/main.js' %}"></script>
+</body>
+</html>

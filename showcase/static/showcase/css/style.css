@@ -1,0 +1,312 @@
+:root {
+    --primary-color: #007aff;
+    --text-color: #ffffff;
+    --bg-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Outfit', sans-serif;
+    scroll-behavior: smooth;
+}
+
+body {
+    background: var(--bg-gradient);
+    color: var(--text-color);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Background Animation */
+.background-globes {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.globe {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.6;
+    animation: float 10s infinite ease-in-out;
+}
+
+.globe-1 {
+    width: 300px;
+    height: 300px;
+    background: #ff00cc;
+    top: -50px;
+    left: -50px;
+    animation-delay: 0s;
+}
+
+.globe-2 {
+    width: 400px;
+    height: 400px;
+    background: #3333ff;
+    bottom: -100px;
+    right: -100px;
+    animation-delay: 3s;
+}
+
+.globe-3 {
+    width: 250px;
+    height: 250px;
+    background: #00ffcc;
+    top: 40%;
+    left: 40%;
+    animation-delay: 6s;
+}
+
+@keyframes float {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(30px, 30px); }
+}
+
+/* Glassmorphism Utilities */
+.glass-nav {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 1200px;
+    padding: 1rem 2rem;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+    box-shadow: var(--glass-shadow);
+}
+
+.glass-container {
+    max-width: 1000px;
+    margin: 120px auto 40px;
+    padding: 40px;
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(10px);
+    border-radius: 30px;
+    border: 1px solid clearfix(var(--glass-border));
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 20px;
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.glass-card:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.glass-input {
+    width: 100%;
+    padding: 12px 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    color: white;
+    font-size: 1rem;
+    outline: none;
+    transition: 0.3s;
+}
+
+.glass-input:focus {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Navigation */
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 30px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--text-color);
+    font-weight: 500;
+    transition: opacity 0.3s;
+}
+
+.nav-links a:hover, .nav-links a.active {
+    opacity: 0.7;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+/* Sections */
+.section {
+    padding: 60px 0;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.section.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.section-title {
+    font-size: 2.5rem;
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+/* Hero */
+.hero {
+    text-align: center;
+    padding: 100px 0;
+}
+
+.hero h1 {
+    font-size: 4rem;
+    margin-bottom: 10px;
+}
+
+.highlight {
+    color: #00d2ff;
+    /* Gradient text */
+    background: linear-gradient(to right, #00d2ff, #3a7bd5);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+    font-size: 1.5rem;
+    opacity: 0.8;
+    margin-bottom: 40px;
+}
+
+/* iOS Buttons */
+.ios-btn {
+    display: inline-block;
+    padding: 12px 28px;
+    border-radius: 999px; /* Pill shape */
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.ios-btn.primary {
+    background: rgba(0, 122, 255, 0.8);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.ios-btn.primary:hover {
+    background: rgba(0, 122, 255, 1);
+    box-shadow: 0 0 15px rgba(0, 122, 255, 0.5);
+}
+
+.ios-btn.secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    margin-left: 15px;
+}
+
+.ios-btn.secondary:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.ios-btn.sm {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    margin-top: 10px;
+}
+
+/* Skills Grid */
+.skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+}
+
+.skill-card {
+    text-align: center;
+}
+
+.skill-card i {
+    font-size: 3rem;
+    margin-bottom: 10px;
+    color: #00d2ff;
+}
+
+/* Projects Grid */
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.project-card {
+    overflow: hidden;
+}
+
+.project-image {
+    height: 180px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+/* Contact Form */
+.glass-form {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.submit-btn {
+    width: 100%;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .glass-nav {
+        width: 95%;
+        padding: 1rem;
+    }
+    .nav-links {
+        display: none; /* Mobile menu implementation not strictly requested but good practice to hide or hamburger */
+    }
+    .hero h1 {
+        font-size: 2.5rem;
+    }
+    .glass-container {
+        padding: 20px;
+        margin-top: 100px;
+    }
+}
