@@ -1,13 +1,45 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vite + React</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'bg-dark': '#050505',
+            'bg-card': 'rgba(20, 20, 20, 0.6)',
+            'primary-accent': '#b9ff00',
+            'secondary-accent': '#7000ff',
+            'text-primary': '#ffffff',
+            'text-secondary': '#a1a1aa',
+            'glass-border': 'rgba(255, 255, 255, 0.08)',
+            'glass-highlight': 'rgba(255, 255, 255, 0.15)',
+          },
+          fontFamily: {
+            heading: ['Space Grotesk', 'sans-serif'],
+            body: ['Inter', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body
+  class="bg-bg-dark font-body text-text-primary overflow-x-hidden min-h-screen bg-[image:radial-gradient(circle_at_15%_50%,rgba(112,0,255,0.08),transparent_25%),radial-gradient(circle_at_85%_30%,rgba(185,255,0,0.05),transparent_25%)]">
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+
 </html>
