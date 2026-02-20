@@ -1,0 +1,17 @@
+
+> frontend@0.0.0 dev
+> vite
+
+failed to load config from /home/saad/Desktop/Github Repos/Portfolio/frontend/vite.config.js
+error when starting dev server:
+Error: Cannot find native binding. npm has a bug related to optional dependencies (https://github.com/npm/cli/issues/4828). Please try `npm i` again after removing both package-lock.json and node_modules directory.
+    at Object.<anonymous> (/home/saad/Desktop/Github Repos/Portfolio/frontend/node_modules/@tailwindcss/oxide/index.js:559:11)
+    at Module._compile (node:internal/modules/cjs/loader:1364:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1422:10)
+    at Module.load (node:internal/modules/cjs/loader:1203:32)
+    at Module._load (node:internal/modules/cjs/loader:1019:12)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:203:29)
+    at ModuleJob.run (node:internal/modules/esm/module_job:195:25)
+    at async ModuleLoader.import (node:internal/modules/esm/loader:337:24)
+    at async loadConfigFromBundledFile (file:///home/saad/Desktop/Github%20Repos/Portfolio/frontend/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:66975:15)
+    at async loadConfigFromFile (file:///home/saad/Desktop/Github%20Repos/Portfolio/frontend/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:66816:24)

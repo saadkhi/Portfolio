@@ -8,7 +8,6 @@ router = DefaultRouter()
 router.register(r'projects', api.ProjectViewSet)
 
 urlpatterns = [
-    path('', views.index, name='index'),
     path('api/portfolio/', api.get_portfolio_data, name='api_portfolio'),
     path('api/', include(router.urls)),
 ]

@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg-dark: #050505;
+  --color-bg-card: rgba(20, 20, 20, 0.6);
+  --color-primary-accent: #b9ff00;
+  --color-secondary-accent: #7000ff;
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #a1a1aa;
+  --color-glass-border: rgba(255, 255, 255, 0.08);
+  --color-glass-highlight: rgba(255, 255, 255, 0.15);
+
+  --font-heading: "Space Grotesk", sans-serif;
+  --font-body: "Inter", sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-bg-dark font-body text-text-primary overflow-x-hidden min-h-screen;
+    background-image: radial-gradient(circle at 15% 50%, rgba(112, 0, 255, 0.08), transparent 25%),
+      radial-gradient(circle at 85% 30%, rgba(185, 255, 0, 0.05), transparent 25%);
+  }
+}

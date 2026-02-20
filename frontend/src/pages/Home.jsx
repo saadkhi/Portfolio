@@ -21,7 +21,7 @@ const Home = ({ data }) => {
             </section>
 
             {/* Bento Grid Section (Work & Skills) */}
-            <section id="work" className="py-32 max-w-[1400px] mx-auto px-8">
+            <section id="work" className="py-16 min-h-[90vh] max-w-[1400px] mx-auto px-8">
                 <h2 className="font-heading font-bold text-[2.5rem] mb-8 animate-enter">Selected Work</h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
