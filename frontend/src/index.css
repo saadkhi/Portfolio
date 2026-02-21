@@ -1,14 +1,14 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg-dark: #050505;
-  --color-bg-card: rgba(20, 20, 20, 0.6);
-  --color-primary-accent: #b9ff00;
-  --color-secondary-accent: #7000ff;
+  --color-bg-dark: #000000;
+  --color-bg-card: rgba(10, 10, 10, 0.8);
+  --color-primary-accent: #ff8a00; /* Warm orange glow */
+  --color-secondary-accent: #7a3e00;
   --color-text-primary: #ffffff;
   --color-text-secondary: #a1a1aa;
-  --color-glass-border: rgba(255, 255, 255, 0.08);
-  --color-glass-highlight: rgba(255, 255, 255, 0.15);
+  --color-glass-border: rgba(255, 255, 255, 0.05);
+  --color-glass-highlight: rgba(255, 255, 255, 0.1);
 
   --font-heading: "Space Grotesk", sans-serif;
   --font-body: "Inter", sans-serif;
@@ -16,8 +16,40 @@
 
 @layer base {
   body {
-    @apply bg-bg-dark font-body text-text-primary overflow-x-hidden min-h-screen;
-    background-image: radial-gradient(circle at 15% 50%, rgba(112, 0, 255, 0.08), transparent 25%),
-      radial-gradient(circle at 85% 30%, rgba(185, 255, 0, 0.05), transparent 25%);
+    @apply bg-bg-dark font-body text-text-primary overflow-x-hidden min-h-screen selection:bg-primary-accent selection:text-black;
+    background-image: 
+      radial-gradient(circle at 15% 50%, rgba(255, 138, 0, 0.05), transparent 30%),
+      radial-gradient(circle at 85% 30%, rgba(255, 138, 0, 0.03), transparent 30%);
   }
+
+  h1, h2, h3, h4, .font-heading {
+    @apply font-heading tracking-tight;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-bg-card border border-glass-border backdrop-blur-md rounded-3xl transition-all duration-300 hover:border-glass-highlight;
+  }
+
+  .glow-text {
+    text-shadow: 0 0 20px rgba(255, 138, 0, 0.3);
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-8 py-4 rounded-full font-semibold text-base transition-all duration-300 cursor-pointer bg-white text-black hover:bg-primary-accent hover:shadow-[0_0_30px_rgba(255,138,0,0.4)] active:scale-95;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center px-8 py-4 rounded-full font-semibold text-base transition-all duration-300 cursor-pointer bg-black/20 text-white border border-glass-border hover:bg-white/10 active:scale-95;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.8s ease-out forwards;
 }

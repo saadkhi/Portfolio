@@ -12,29 +12,37 @@ class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = ProjectSerializer
 
 def get_portfolio_data(request):
-    projects = Project.objects.all().order_by('-created_at')[:3] # Get latest 3 for home
-    project_data = ProjectSerializer(projects, many=True).data
+    featured_projects = Project.objects.filter(is_featured=True).order_by('-created_at')[:3]
+    latest_projects = Project.objects.filter(is_featured=False).order_by('-created_at')[:6]
+    
+    featured_serializer = ProjectSerializer(featured_projects, many=True)
+    latest_serializer = ProjectSerializer(latest_projects, many=True)
 
     data = {
         "hero": {
-            "title": "Hello, I'm Saad",
-            "subtitle": "Python Django Developer",
-            "cta_primary": "View Work",
-            "cta_secondary": "Contact Me"
+            "name": "Saad",
+            "title": "I design and build high-performance software solutions.",
+            "subtitle": "Python & Django Specialist",
+            "cta_primary": "See My Work",
+            "cta_secondary": "Get in Touch"
         },
         "about": {
             "title": "About Me",
-            "description": "I am a passionate Python Django developer with a knack for building scalable, responsive, and interactive web applications."
+            "description": "I'm a software engineer focused on building clean, scalable backends and modern, intuitive interfaces. I specialize in the Python ecosystem, particularly Django and FastAPI, while crafting premium frontend experiences with React and Tailwind CSS."
         },
         "skills": [
             {"name": "Python", "icon": "fab fa-python"},
-            {"name": "Django", "icon": "fab fa-js"},
-            {"name": "HTML5/CSS3", "icon": "fab fa-html5"},
+            {"name": "Django", "icon": "fas fa-code"},
+            {"name": "React", "icon": "fab fa-react"},
+            {"name": "Tailwind CSS", "icon": "fab fa-css3-alt"},
             {"name": "PostgreSQL", "icon": "fas fa-database"}
         ],
-        "projects": project_data,
+        "featured_projects": featured_serializer.data,
+        "latest_projects": latest_serializer.data,
         "contact": {
-            "email": "saad@example.com"
+            "email": "saad@example.com",
+            "linkedin": "https://linkedin.com/in/saad",
+            "github": "https://github.com/saad"
         }
     }
     return JsonResponse(data)

@@ -18,40 +18,51 @@ const Projects = () => {
     }, []);
 
     if (loading) {
-        return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: 'white' }}>Loading Projects...</div>;
+        return <div className="flex justify-center items-center h-screen text-white uppercase tracking-[0.2em] animate-pulse">Loading Collection...</div>;
     }
 
     return (
-        <div className="py-32 max-w-[1400px] mx-auto px-8">
-            <h1 className="bg-clip-text text-transparent bg-gradient-to-r from-white to-text-secondary font-heading font-bold tracking-tight text-4xl md:text-5xl lg:text-6xl text-center mb-16">All Projects</h1>
+        <main className="pt-32 pb-32 px-8 max-w-[1400px] mx-auto min-h-screen">
+            <header className="mb-20">
+                <span className="text-primary-accent uppercase tracking-widest text-xs font-bold mb-4 block animate-fade-in">Archive</span>
+                <h1 className="text-5xl md:text-8xl font-bold tracking-tighter animate-fade-in">All Projects.</h1>
+            </header>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pb-16">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {projects.map((project) => (
-                    <div key={project.id} className="bg-bg-card border border-glass-border rounded-3xl overflow-hidden transition-all duration-300 flex flex-col hover:border-glass-highlight hover:-translate-y-1 hover:shadow-2xl">
-                        <div className="w-full h-[300px] bg-[#111] overflow-hidden">
+                    <div key={project.id} className="glass-card group flex flex-col overflow-hidden animate-fade-in">
+                        <div className="w-full aspect-video overflow-hidden">
                             {project.video ? (
                                 <video
                                     src={project.video}
-                                    controls
-                                    className="w-full h-full object-cover"
-                                    poster={project.image}
+                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                    muted loop playsInline onMouseOver={e => e.target.play()} onMouseOut={e => e.target.pause()}
                                 />
                             ) : (
-                                <img src={project.image} alt={project.title} className="w-full h-full object-cover" />
+                                <img src={project.image} alt={project.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                             )}
                         </div>
-                        <div className="p-8 flex-grow flex flex-col">
-                            <div className="flex justify-between items-start mb-4">
-                                <h2 className="font-heading font-bold text-[1.8rem] m-0">{project.title}</h2>
-                                <a href={project.live_link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center px-4 py-2 rounded-full font-semibold text-xs transition-all duration-200 cursor-pointer font-heading bg-transparent text-text-primary border border-glass-border hover:border-text-primary hover:bg-white/5">View Live</a>
+                        <div className="p-8 flex-grow flex flex-col justify-between">
+                            <div>
+                                <span className="text-[10px] font-bold uppercase tracking-widest text-primary-accent mb-2 block">{project.category}</span>
+                                <h2 className="text-2xl font-bold mb-4 tracking-tight">{project.title}</h2>
+                                <p className="text-text-secondary text-sm mb-6 line-clamp-3">{project.description}</p>
                             </div>
-                            <p className="text-text-secondary text-sm mb-4 font-heading"><span className="text-primary-accent">Tech Stack:</span> {project.tech_stack}</p>
-                            <p className="text-text-secondary leading-relaxed">{project.description}</p>
+                            <div className="flex justify-between items-center mt-auto">
+                                <div className="flex flex-wrap gap-1">
+                                    {project.tech_stack.split(',').slice(0, 3).map((tech, i) => (
+                                        <span key={i} className="px-2 py-0.5 bg-white/5 border border-white/10 rounded text-[9px] font-bold uppercase tracking-wider">{tech.trim()}</span>
+                                    ))}
+                                </div>
+                                <a href={project.live_link} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full border border-glass-border flex items-center justify-center hover:bg-white hover:text-black transition-all">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 ))}
             </div>
-        </div>
+        </main>
     );
 };
 
