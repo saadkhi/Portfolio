@@ -104,29 +104,55 @@ const Home = ({ data }) => {
                 </div>
             </section>
 
-            {/* Contact Section */}
-            <section id="contact" className="py-32 px-8 bg-[#050505]">
-                <div className="max-w-[800px] mx-auto text-center">
-                    <span className="text-primary-accent uppercase tracking-widest text-xs font-bold mb-4 block">Get In Touch</span>
-                    <h2 className="text-5xl md:text-7xl font-bold mb-16">Let's get results.</h2>
+            {/* Contact / Booking Section */}
+            <section id="contact" className="py-32 px-8">
+                <div className="max-w-[1400px] mx-auto glass-card overflow-hidden">
+                    <div className="grid grid-cols-1 md:grid-cols-2">
+                        {/* Left Side: Info */}
+                        <div className="p-8 md:p-16 md:py-24 border-b md:border-b-0 md:border-r border-glass-border flex flex-col justify-center">
+                            <div className="flex items-center gap-4 mb-8">
+                                <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-primary-accent shadow-[0_0_15px_rgba(255,138,0,0.3)] bg-gray-800">
+                                    <img src={`https://ui-avatars.com/api/?name=${data.hero.name}&background=111&color=fff`} alt="Saad" className="w-full h-full object-cover" />
+                                </div>
+                                <div>
+                                    <h4 className="font-bold text-lg leading-tight">{data.hero.name}</h4>
+                                    <span className="text-text-secondary text-xs uppercase tracking-widest font-bold">Available for Projects</span>
+                                </div>
+                            </div>
 
-                    <form className="text-left space-y-8" onSubmit={(e) => e.preventDefault()}>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-bold uppercase tracking-widest opacity-50 ml-4">Full Name</label>
-                                <input type="text" placeholder="John Doe" className="w-full bg-white/5 border border-white/10 rounded-3xl p-6 focus:outline-none focus:border-primary-accent transition-colors" />
+                            <h2 className="text-4xl md:text-6xl font-bold mb-8 tracking-tighter leading-tight">
+                                Let's Chat About <br /> Your Next Big Idea.
+                            </h2>
+
+                            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-full mb-8 w-fit">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary-accent"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                <span className="text-xs font-bold uppercase tracking-widest">60 Minute Session</span>
                             </div>
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-bold uppercase tracking-widest opacity-50 ml-4">Email Address</label>
-                                <input type="email" placeholder="john@example.com" className="w-full bg-white/5 border border-white/10 rounded-3xl p-6 focus:outline-none focus:border-primary-accent transition-colors" />
+
+                            <p className="text-text-secondary text-lg mb-12 leading-relaxed">
+                                Whether you have a fully-fledged design or just a rough idea, I'm here to help you bring it to life. Let's discuss your business goals, tech stack, and how we can build something exceptional.
+                            </p>
+
+                            <div className="p-6 bg-red-500/5 border border-red-500/10 rounded-2xl mt-auto">
+                                <p className="text-sm text-red-200/60 leading-relaxed italic">
+                                    ⚠️ Please note: These sessions are for serious business inquiries only. Incomplete or vague bookings will be automatically canceled.
+                                </p>
                             </div>
                         </div>
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-bold uppercase tracking-widest opacity-50 ml-4">Project Details</label>
-                            <textarea placeholder="Tell me what you're looking for..." rows="6" className="w-full bg-white/5 border border-white/10 rounded-3xl p-6 focus:outline-none focus:border-primary-accent transition-colors"></textarea>
+
+                        {/* Right Side: TidyCal Embed */}
+                        <div className="bg-white/5 min-h-[950px] relative">
+                            {/* We use an iframe for TidyCal to ensure it loads correctly in React */}
+                            <iframe
+                                src="https://tidycal.com/saadalioffic/initial-discovery-session?embed=1"
+                                width="100%"
+                                height="100%"
+                                frameBorder="0"
+                                title="Schedule a meeting"
+                                className="absolute inset-0"
+                            ></iframe>
                         </div>
-                        <button type="submit" className="btn-primary w-full md:w-auto px-12">Submit Request</button>
-                    </form>
+                    </div>
                 </div>
             </section>
 
