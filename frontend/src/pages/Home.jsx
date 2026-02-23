@@ -1,4 +1,5 @@
 import React from 'react';
+import myPic from '../assets/my_pic.png';
 
 const Home = ({ data }) => {
     if (!data) return null;
@@ -6,35 +7,68 @@ const Home = ({ data }) => {
     return (
         <main className="pt-20">
             {/* Hero Section */}
-            <section id="home" className="min-h-[90vh] flex flex-col justify-center items-center text-center relative px-8 overflow-hidden">
-                {/* Background "Glow" name like reem.dev */}
+            <section
+                id="home"
+                className="min-h-[90vh] flex items-center relative px-8 overflow-hidden"
+            >
+                {/* Background Glow Name */}
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -z-10 select-none opacity-[0.03]">
                     <h1 className="text-[20vw] font-bold leading-none uppercase tracking-tighter">
                         {data.hero.name}
                     </h1>
                 </div>
 
-                <div className="max-w-[1000px] animate-fade-in">
-                    <h2 className="text-5xl md:text-8xl font-bold leading-[1.1] mb-8 tracking-tighter">
-                        {data.hero.title}
-                    </h2>
-                    <p className="text-xl md:text-2xl text-text-secondary font-medium mb-12 max-w-[700px] mx-auto">
-                        {data.about.description}
-                    </p>
-                    <div className="flex flex-wrap justify-center gap-6">
-                        <a href="#work" className="btn-primary">{data.hero.cta_primary}</a>
-                        <a href="#contact" className="btn-secondary"> Book a Session </a>
-                        <a href="#contact-form" className="btn-secondary">{data.hero.cta_secondary}</a>
+                <div className="max-w-[1400px] mx-auto w-full grid md:grid-cols-2 gap-16 items-center">
+
+                    {/* LEFT SIDE — TEXT */}
+                    <div className="animate-fade-in text-center md:text-left">
+                        <h2 className="text-5xl md:text-7xl font-bold leading-[1.1] mb-8 tracking-tighter">
+                            Saad Ather Ali
+                        </h2>
+
+                        <p className="text-lg md:text-xl text-text-secondary font-medium mb-12 max-w-[1000px]">
+                            Making AI products with the help of AI to make life easier since 2024. <br></br>
+                            AI Engineer @ <a className="hover:underline" href="https://www.linkedin.com/company/convex-consulting-llc/">Convex Consulting LLC.</a> <br></br>
+                            Open to new opportunities, let's connect!
+                        </p>
+
+                        <div className="flex flex-wrap justify-center md:justify-start gap-6">
+                            <a href="#work" className="btn-primary">
+                                {data.hero.cta_primary}
+                            </a>
+                            <a href="#contact" className="btn-secondary">
+                                Book a Session
+                            </a>
+                            <a href="#contact-form" className="btn-secondary">
+                                {data.hero.cta_secondary}
+                            </a>
+                        </div>
                     </div>
+
+                    {/* RIGHT SIDE — IMAGE */}
+                    <div className="flex justify-center md:justify-end">
+                        <div className="relative w-[280px] md:w-[400px] aspect-square rounded-2xl overflow-hidden">
+                            <img
+                                src={myPic}
+                                alt="Saad Ather Ali"
+                                className="w-full h-full object-cover"
+                            />
+                        </div>
+                    </div>
+
                 </div>
             </section>
 
             {/* Featured Projects Section */}
-            <section id="work" className="py-32 px-8 max-w-[1400px] mx-auto">
+            <section id="work" className=" px-8 max-w-[1400px] mx-auto">
                 <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
                     <div className="max-w-[600px]">
-                        <span className="text-primary-accent uppercase tracking-widest text-xs font-bold mb-4 block">Selected Projects</span>
-                        <h2 className="text-4xl md:text-6xl font-bold">Bringing ideas to life through code.</h2>
+                        {/* <span className="text-primary-accent uppercase tracking-widest text-xs font-bold mb-4 block">Selected Projects</span> */}
+                        <h2 className="text-4xl md:text-6xl font-bold">Who is Saad?</h2>
+                        <p className="text-lg md:text-xl text-text-secondary font-medium mb-12 max-w-[1000px]">
+                            I am a full-stack developer with experience in building web applications which contain Artifical Intelligence.
+                            I am passionate about creating user-friendly and efficient software.
+                        </p>
                     </div>
                 </div>
 

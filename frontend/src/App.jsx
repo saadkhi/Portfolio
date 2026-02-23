@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Home from './pages/Home'
 import Projects from './pages/Projects'
+import About from './pages/About'
 
 function App() {
   const [data, setData] = useState(null)
@@ -34,6 +35,7 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home data={data} />} />
+        <Route path="/about" element={<About data={data} />} />
         <Route path="/projects" element={<Projects />} />
       </Routes>
     </>
