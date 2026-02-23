@@ -23,7 +23,8 @@ const Home = ({ data }) => {
                     </p>
                     <div className="flex flex-wrap justify-center gap-6">
                         <a href="#work" className="btn-primary">{data.hero.cta_primary}</a>
-                        <a href="#contact" className="btn-secondary">{data.hero.cta_secondary}</a>
+                        <a href="#contact" className="btn-secondary"> Book a Session </a>
+                        <a href="#contact-form" className="btn-secondary">{data.hero.cta_secondary}</a>
                     </div>
                 </div>
             </section>
@@ -34,10 +35,6 @@ const Home = ({ data }) => {
                     <div className="max-w-[600px]">
                         <span className="text-primary-accent uppercase tracking-widest text-xs font-bold mb-4 block">Selected Projects</span>
                         <h2 className="text-4xl md:text-6xl font-bold">Bringing ideas to life through code.</h2>
-                    </div>
-                    <div className="flex gap-4">
-                        <div className="w-12 h-12 rounded-full border border-glass-border flex items-center justify-center text-text-secondary hover:text-white hover:border-white transition-all cursor-pointer">&larr;</div>
-                        <div className="w-12 h-12 rounded-full border border-glass-border flex items-center justify-center text-text-secondary hover:text-white hover:border-white transition-all cursor-pointer">&rarr;</div>
                     </div>
                 </div>
 
@@ -81,7 +78,7 @@ const Home = ({ data }) => {
             </section>
 
             {/* Bento Grid / Tech Stack */}
-            <section className="py-32 px-8 max-w-[1400px] mx-auto">
+            <section className=" px-8 max-w-[1400px] mx-auto">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <div className="glass-card p-12 col-span-1 md:col-span-2 flex flex-col justify-center">
                         <h3 className="text-4xl font-bold mb-8">My Expertise</h3>
@@ -156,15 +153,125 @@ const Home = ({ data }) => {
                 </div>
             </section>
 
-            <footer className="py-20 px-8 border-t border-glass-border">
-                <div className="max-w-[1400px] mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
-                    <div className="text-2xl font-bold">Saad.</div>
-                    <div className="flex gap-8">
-                        <a href={data.contact.github} className="text-text-secondary hover:text-white transition-colors uppercase tracking-widest text-xs font-bold">Github</a>
-                        <a href={data.contact.linkedin} className="text-text-secondary hover:text-white transition-colors uppercase tracking-widest text-xs font-bold">LinkedIn</a>
-                        <a href={`mailto:${data.contact.email}`} className="text-text-secondary hover:text-white transition-colors uppercase tracking-widest text-xs font-bold">Email</a>
+            {/* Contact Form Section */}
+            <section id="contact-form" className="py-24 px-8 max-w-[800px] mx-auto">
+                <div className="glass-card p-8 md:p-12">
+                    <div className="text-center mb-12">
+                        <span className="text-primary-accent uppercase tracking-widest text-xs font-bold mb-4 block">Quick Connect</span>
+                        <h2 className="text-3xl md:text-5xl font-bold mb-4">Let's stay in touch.</h2>
+                        <p className="text-text-secondary">Drop your details below and I'll get back to you as soon as possible.</p>
                     </div>
-                    <p className="text-text-secondary text-xs uppercase tracking-widest font-bold opacity-30">© 2024 All Rights Reserved</p>
+
+                    <form className="space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="space-y-2">
+                                <label htmlFor="email" className="text-xs font-bold uppercase tracking-widest text-text-secondary ml-1">Email Address</label>
+                                <input
+                                    type="email"
+                                    id="email"
+                                    placeholder="your@email.com"
+                                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-primary-accent transition-colors"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label htmlFor="purpose" className="text-xs font-bold uppercase tracking-widest text-text-secondary ml-1">Purpose</label>
+                                <select
+                                    id="purpose"
+                                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-primary-accent transition-colors appearance-none"
+                                >
+                                    <option value="" className="bg-bg-dark">Select a purpose</option>
+                                    <option value="project" className="bg-bg-dark">New Project</option>
+                                    <option value="collaboration" className="bg-bg-dark">Collaboration</option>
+                                    <option value="inquiry" className="bg-bg-dark">General Inquiry</option>
+                                    <option value="other" className="bg-bg-dark">Something Else</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="submit" className="btn-primary w-full shadow-[0_0_20px_rgba(255,255,255,0.1)]">
+                            Connect Now
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+            {/* Social Media Section */}
+            <section className=" px-8 mb-20">
+                <h1 className="py-10 text-3xl md:text-5xl font-bold mb-4 text-center">Let's Connect.</h1>
+                <div className="max-w-[1400px] mx-auto">
+                    <div className="flex flex-wrap justify-center gap-4 md:gap-8">
+                        <a href="https://github.com/saadkhi" target="_blank" rel="noopener noreferrer" className="group flex flex-col items-center gap-3">
+                            <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-2xl group-hover:bg-primary-accent group-hover:text-black group-hover:scale-110 transition-all duration-300">
+                                <i className="fa-brands fa-github"></i>
+                            </div>
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-text-secondary group-hover:text-primary-accent transition-colors">GitHub</span>
+                        </a>
+                        <a href="https://www.linkedin.com/in/saadkhi/" target="_blank" rel="noopener noreferrer" className="group flex flex-col items-center gap-3">
+                            <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-2xl group-hover:bg-[#0077b5] group-hover:text-white group-hover:scale-110 transition-all duration-300">
+                                <i className="fa-brands fa-linkedin-in"></i>
+                            </div>
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-text-secondary group-hover:text-white transition-colors">LinkedIn</span>
+                        </a>
+                        <a href={`mailto:saadalioffic@gmail.com`} className="group flex flex-col items-center gap-3">
+                            <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-2xl group-hover:bg-primary-accent group-hover:text-black group-hover:scale-110 transition-all duration-300">
+                                <i className="fa-solid fa-envelope"></i>
+                            </div>
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-text-secondary group-hover:text-primary-accent transition-colors">Email</span>
+                        </a>
+                        <a href="https://x.com/saadkhi_?s=21" className="group flex flex-col items-center gap-3">
+                            <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-2xl group-hover:bg-[#1DA1F2] group-hover:text-white group-hover:scale-110 transition-all duration-300">
+                                <i className="fa-brands fa-x-twitter"></i>
+                            </div>
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-text-secondary group-hover:text-[#1DA1F2] transition-colors">Twitter</span>
+                        </a>
+                        <a href="#" className="group flex flex-col items-center gap-3">
+                            <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-2xl group-hover:bg-[#E4405F] group-hover:text-white group-hover:scale-110 transition-all duration-300">
+                                <i className="fa-brands fa-instagram"></i>
+                            </div>
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-text-secondary group-hover:text-[#E4405F] transition-colors">Instagram</span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <footer className="py-20 px-8 border-t border-glass-border">
+                <div className="max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-3 items-center text-center md:text-left gap-10">
+
+                    {/* Column 1 */}
+                    <div className="flex justify-center md:justify-start">
+                        <div className="text-2xl font-bold">
+                            Saad.
+                        </div>
+                    </div>
+
+                    {/* Column 2 */}
+                    <div className="flex justify-center gap-8">
+                        <a
+                            href="https://github.com/saadkhi"
+                            className="text-text-secondary hover:text-white transition-colors uppercase tracking-widest text-xs font-bold"
+                        >
+                            Github
+                        </a>
+                        <a
+                            href="https://www.linkedin.com/in/saadkhi/"
+                            className="text-text-secondary hover:text-white transition-colors uppercase tracking-widest text-xs font-bold"
+                        >
+                            LinkedIn
+                        </a>
+                        <a
+                            href="mailto:saadalioffic@gmail.com"
+                            className="text-text-secondary hover:text-white transition-colors uppercase tracking-widest text-xs font-bold"
+                        >
+                            Email
+                        </a>
+                    </div>
+
+                    {/* Column 3 */}
+                    <div className="flex justify-center md:justify-end">
+                        <p className="text-text-secondary text-xs uppercase tracking-widest font-bold opacity-30">
+                            © 2024 All Rights Reserved
+                        </p>
+                    </div>
+
                 </div>
             </footer>
         </main>
