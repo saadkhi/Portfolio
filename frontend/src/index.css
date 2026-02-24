@@ -37,11 +37,11 @@
   }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center px-8 py-4 rounded-full font-semibold text-base transition-all duration-300 cursor-pointer bg-white text-black hover:bg-primary-accent hover:shadow-[0_0_30px_rgba(255,138,0,0.4)] active:scale-95;
+    @apply inline-flex items-center justify-center px-8 py-3 rounded-full font-semibold text-base transition-all duration-300 cursor-pointer bg-white/10 backdrop-blur-xl border border-primary-accent/40 text-white hover:bg-primary-accent/20 hover:border-primary-accent hover:shadow-[0_0_20px_rgba(255,138,0,0.3)] active:scale-95;
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center px-8 py-4 rounded-full font-semibold text-base transition-all duration-300 cursor-pointer bg-black/20 text-white border border-glass-border hover:bg-white/10 active:scale-95;
+    @apply inline-flex items-center justify-center px-8 py-3 rounded-full font-semibold text-base transition-all duration-300 cursor-pointer bg-white/10 backdrop-blur-xl border border-white/20 text-white hover:bg-white/20 hover:border-white/40 active:scale-95;
   }
 }
 

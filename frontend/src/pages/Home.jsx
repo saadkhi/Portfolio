@@ -1,8 +1,74 @@
-import React from 'react';
+import React, { useState } from 'react';
 import myPic from '../assets/my_pic.png';
 
 const Home = ({ data }) => {
+    const [formData, setFormData] = useState({
+        email: '',
+        purpose: '',
+        message: ''
+    });
+    const [status, setStatus] = useState({
+        type: '', // 'success', 'error'
+        message: ''
+    });
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
     if (!data) return null;
+
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.id]: e.target.id === 'purpose' ? e.target.value : e.target.value
+        });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        // Validation (Keep as requested previously)
+        if (!formData.email || !formData.purpose || !formData.message) {
+            setStatus({
+                type: 'error',
+                message: 'Please fill all the fields'
+            });
+            return;
+        }
+
+        setIsSubmitting(true);
+        setStatus({ type: '', message: '' });
+
+        try {
+            const systemDate = new Date().toLocaleString();
+
+            // 👇👇👇 ACTION REQUIRED: REPLACE THE URL BELOW WITH YOUR GOOGLE APPS SCRIPT WEB APP URL 👇👇👇
+            const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw33baOTO0BHqHbQcX6sJkeXUJDVR4eJmmXEmOjmoWMn222Czk4UWSAs4biVoT9v6Y/exec';
+
+            const response = await fetch(SCRIPT_URL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                mode: "no-cors", // Required for Google Apps Script redirects
+                body: JSON.stringify({
+                    date: systemDate,
+                    email: formData.email,
+                    purpose: formData.purpose,
+                    message: formData.message,
+                }),
+            });
+
+            // Note: with no-cors, we can't reliably parse response.json()
+            // but we can assume success if the fetch doesn't throw.
+            setStatus({ type: "success", message: "Message sent successfully!" });
+            setFormData({ email: "", purpose: "", message: "" });
+
+        } catch (error) {
+            console.error('Submission error:', error);
+            setStatus({ type: "error", message: "Something went wrong!" });
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
     return (
         <main className="pt-20">
@@ -18,7 +84,7 @@ const Home = ({ data }) => {
                     </h1>
                 </div>
 
-                <div className="max-w-[1200px] mx-auto w-full grid md:grid-cols-2 items-center">
+                <div className="max-w-[1200px] mx-auto w-full grid md:grid-cols-2 items-center gap-6">
 
                     {/* LEFT SIDE — TEXT */}
                     <div className="animate-fade-in text-center md:text-left">
@@ -34,7 +100,7 @@ const Home = ({ data }) => {
                         </p>
 
                         <div className="flex flex-wrap justify-center md:justify-start gap-6">
-                            <a href="#work" className="btn-primary">
+                            <a href="/projects" className="btn-primary">
                                 {data.hero.cta_primary}
                             </a>
                             <a href="#contact" className="btn-secondary">
@@ -99,7 +165,7 @@ const Home = ({ data }) => {
                                 <span className="text-xs font-bold uppercase tracking-widest text-primary-accent mb-4 block">{project.category}</span>
                                 <div className="flex justify-between items-start gap-4">
                                     <h3 className="text-3xl md:text-4xl font-bold mb-4">{project.title}</h3>
-                                    <a href={project.live_link} className="w-12 h-12 rounded-full bg-white text-black flex items-center justify-center hover:bg-primary-accent transition-colors">
+                                    <a href={project.live_link} className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 flex items-center justify-center hover:bg-white/20 hover:border-white/40 transition-all">
                                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
                                     </a>
                                 </div>
@@ -215,13 +281,15 @@ const Home = ({ data }) => {
                         <p className="text-text-secondary">Drop your details below and I'll get back to you as soon as possible.</p>
                     </div>
 
-                    <form className="space-y-6">
+                    <form className="space-y-6" onSubmit={handleSubmit}>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-2">
                                 <label htmlFor="email" className="text-xs font-bold uppercase tracking-widest text-text-secondary ml-1">Email Address</label>
                                 <input
                                     type="email"
                                     id="email"
+                                    value={formData.email}
+                                    onChange={handleChange}
                                     placeholder="your@email.com"
                                     className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-primary-accent transition-colors"
                                 />
@@ -230,6 +298,8 @@ const Home = ({ data }) => {
                                 <label htmlFor="purpose" className="text-xs font-bold uppercase tracking-widest text-text-secondary ml-1">Purpose</label>
                                 <select
                                     id="purpose"
+                                    value={formData.purpose}
+                                    onChange={handleChange}
                                     className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-primary-accent transition-colors appearance-none"
                                 >
                                     <option value="" className="bg-bg-dark">Select a purpose</option>
@@ -240,8 +310,29 @@ const Home = ({ data }) => {
                                 </select>
                             </div>
                         </div>
-                        <button type="submit" className="btn-primary w-full shadow-[0_0_20px_rgba(255,255,255,0.1)]">
-                            Connect Now
+                        <div className="space-y-2">
+                            <label htmlFor="message" className="text-xs font-bold uppercase tracking-widest text-text-secondary ml-1">Message</label>
+                            <textarea
+                                id="message"
+                                value={formData.message}
+                                onChange={handleChange}
+                                placeholder="Your message"
+                                className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-primary-accent transition-colors"
+                            ></textarea>
+                        </div>
+
+                        {status.message && (
+                            <div className={`p-4 rounded-xl text-sm font-bold text-center ${status.type === 'success' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
+                                {status.message}
+                            </div>
+                        )}
+
+                        <button
+                            type="submit"
+                            disabled={isSubmitting}
+                            className={`btn-primary w-full shadow-[0_0_20px_rgba(255,255,255,0.1)] ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        >
+                            {isSubmitting ? 'Sending...' : 'Send Message'}
                         </button>
                     </form>
                 </div>

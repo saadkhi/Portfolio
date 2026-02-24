@@ -54,7 +54,7 @@ const Projects = () => {
                                         <span key={i} className="px-2 py-0.5 bg-white/5 border border-white/10 rounded text-[9px] font-bold uppercase tracking-wider">{tech.trim()}</span>
                                     ))}
                                 </div>
-                                <a href={project.live_link} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full border border-glass-border flex items-center justify-center hover:bg-white hover:text-black transition-all">
+                                <a href={project.live_link} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 flex items-center justify-center hover:bg-white/20 hover:border-white/40 transition-all">
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
                                 </a>
                             </div>

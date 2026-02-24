@@ -9,9 +9,10 @@ const About = ({ data }) => {
                 {/* Hero Section */}
                 <section className="mb-24 animate-fade-in text-center">
                     <span className="text-primary-accent uppercase tracking-[0.3em] text-xs font-bold mb-6 block">The Story Behind The Code</span>
-                    <h1 className="text-5xl md:text-8xl font-bold leading-tight mb-8 tracking-tighter">
+                    {/* <h1 className="text-5xl md:text-8xl font-bold leading-tight mb-8 tracking-tighter">
                         Crafting Digital <br /> Excellence.
-                    </h1>
+                    </h1> */}
+                    <h1 className='text-5xl md:text-8xl font-bold leading-tight mb-8 tracking-tighter'>About Me</h1>
                     <p className="text-xl md:text-2xl text-text-secondary font-medium max-w-[800px] mx-auto leading-relaxed">
                         I'm a software engineer dedicated to building high-performance solutions that bridge the gap between complex backend logic and intuitive user experiences.
                     </p>
