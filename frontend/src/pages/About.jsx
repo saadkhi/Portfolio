@@ -63,17 +63,21 @@ const About = ({ data }) => {
                     </div>
                 </div>
 
-                {/* Tech Stack section reused from Home but slightly different presentation */}
+                {/* Toolkit/Expertise section */}
                 <section className="mb-32">
                     <div className="text-center mb-16">
                         <h2 className="text-4xl md:text-6xl font-bold mb-4">My Toolkit</h2>
                         <p className="text-text-secondary">The technologies I use to bring ideas to life.</p>
                     </div>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
                         {data.skills.map((skill, index) => (
                             <div key={index} className="glass-card p-8 flex flex-col items-center gap-4 group hover:bg-white/5 transition-all">
-                                <div className="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center text-3xl group-hover:bg-primary-accent group-hover:text-black transition-all duration-300">
-                                    <i className={skill.icon}></i>
+                                <div className="hidden md:flex w-16 h-16 rounded-2xl bg-white/5 items-center justify-center text-3xl group-hover:bg-primary-accent group-hover:text-black transition-all duration-300">
+                                    {skill.icon && (skill.icon.startsWith('http') || skill.icon.startsWith('/media/')) ? (
+                                        <img src={skill.icon} alt={skill.name} className="w-10 h-10 object-contain" />
+                                    ) : (
+                                        <i className={skill.icon}></i>
+                                    )}
                                 </div>
                                 <span className="font-bold text-xs tracking-[0.2em] uppercase text-text-secondary group-hover:text-white">{skill.name}</span>
                             </div>

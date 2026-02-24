@@ -13,3 +13,26 @@ class Project(models.Model):
 
     def __str__(self):
         return self.title
+
+class Profile(models.Model):
+    name = models.CharField(max_length=200, default='Saad')
+    title = models.CharField(max_length=200, default='Software Engineer')
+    bio = models.TextField(blank=True)
+    resume_file = models.FileField(upload_to='resumes/', blank=True, null=True)
+
+    class Meta:
+        verbose_name_plural = "Profile"
+
+    def __str__(self):
+        return self.name
+
+class Skill(models.Model):
+    name = models.CharField(max_length=100)
+    icon = models.FileField(upload_to='skills/icons/', help_text="Upload a PNG/SVG icon")
+    order = models.IntegerField(default=0, help_text="Order of appearance")
+
+    class Meta:
+        ordering = ['order', 'name']
+
+    def __str__(self):
+        return self.name

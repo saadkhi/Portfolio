@@ -30,7 +30,7 @@ const Home = ({ data }) => {
                             Making AI products to make life easier since 2024. <br></br>
                             {/* AI Engineer @ Convex Consulting LLC. <br></br> */}
                             Open to new opportunities and freelance projects, <br></br>
-                            <a href="#contact" className="text-primary-accent hover:underline">let's connect!</a>
+                            <a href="#contact" className="text-primary-accent font-bold">let's connect!</a>
                         </p>
 
                         <div className="flex flex-wrap justify-center md:justify-start gap-6">
@@ -71,7 +71,7 @@ const Home = ({ data }) => {
                             <h3 className='text-2xl md:text-4xl font-semibold py-4 mt-6'> What I bring to the company</h3>
                             <p className='text-lg md:text-xl text-text-secondary font-medium mb-6'>If you hire me, I bring a strong problem-solving mindset, hands-on experience with AI/ML and backend systems, and the ability to turn an idea into working, production-ready solutions. Beyond technical skills, I bring ownership, continuous learning, and a focus on building scalable, reliable systems that create real business impact.</p>
                             <h3 className='text-2xl md:text-4xl font-semibold py-4'> Why I am a good fit for this role</h3>
-                            <p className='text-lg md:text-xl text-text-secondary font-medium mb-6'>I am a quick learner, adaptable, and passionate about AI. I am confident that I can quickly get up to speed with your team and contribute meaningfully to your projects.</p>
+                            <p className='text-lg md:text-xl text-text-secondary font-medium'>I am a quick learner, adaptable, and passionate about AI. I am confident that I can quickly get up to speed with your team and contribute meaningfully to your projects. With AI tools like VibeCode, I can build projects faster and more efficiently than ever before.</p>
                         </p>
                     </div>
                 </div>
@@ -120,11 +120,15 @@ const Home = ({ data }) => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <div className="glass-card p-12 col-span-1 md:col-span-2 flex flex-col justify-center">
                         <h3 className="text-4xl font-bold mb-8">My Expertise</h3>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-2 sm:grid-cols-5 gap-6">
                             {data.skills.map((skill, index) => (
                                 <div key={index} className="flex items-center gap-4 group">
-                                    <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center group-hover:bg-primary-accent group-hover:text-black transition-all">
-                                        <i className={skill.icon}></i>
+                                    <div className="hidden md:flex w-10 h-10 rounded-xl bg-white/5 items-center justify-center group-hover:bg-primary-accent group-hover:text-black transition-all">
+                                        {skill.icon && (skill.icon.startsWith('http') || skill.icon.startsWith('/media/')) ? (
+                                            <img src={skill.icon} alt={skill.name} className="w-6 h-6 object-contain" />
+                                        ) : (
+                                            <i className={skill.icon}></i>
+                                        )}
                                     </div>
                                     <span className="font-bold text-sm tracking-widest uppercase">{skill.name}</span>
                                 </div>
@@ -132,9 +136,20 @@ const Home = ({ data }) => {
                         </div>
                     </div>
                     <div className="glass-card p-12 bg-gradient-to-br from-primary-accent/20 to-transparent flex flex-col justify-between">
-                        <h3 className="text-3xl font-bold">Have a project in mind?</h3>
+                        <h3 className="text-3xl font-bold">Looking for an AI Engineer?</h3>
                         <p className="text-text-secondary my-8">Let's build something extraordinary together.</p>
-                        <a href="#contact" className="btn-primary w-full">Start a Conversation</a>
+                        {/* <a href="#contact" className="btn-primary w-full">Start a Conversation</a> */}
+                        {data.hero.resume_url && (
+                            <a
+                                href={data.hero.resume_url}
+                                target="_blank"
+                                // download={data.hero.resume_url}
+                                rel="noopener noreferrer"
+                                className="btn-secondary flex items-center gap-2"
+                            >
+                                <i className="fa-solid fa-file-pdf"></i> Resume
+                            </a>
+                        )}
                     </div>
                 </div>
             </section>
