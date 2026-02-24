@@ -40,15 +40,13 @@ const Home = ({ data }) => {
         try {
             const systemDate = new Date().toLocaleString();
 
-            // 👇👇👇 ACTION REQUIRED: REPLACE THE URL BELOW WITH YOUR GOOGLE APPS SCRIPT WEB APP URL 👇👇👇
-            const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw33baOTO0BHqHbQcX6sJkeXUJDVR4eJmmXEmOjmoWMn222Czk4UWSAs4biVoT9v6Y/exec';
+            const CONTACT_API_URL = `${import.meta.env.VITE_API_URL}/api/contact/`;
 
-            const response = await fetch(SCRIPT_URL, {
+            const response = await fetch(CONTACT_API_URL, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                mode: "no-cors", // Required for Google Apps Script redirects
                 body: JSON.stringify({
                     date: systemDate,
                     email: formData.email,
@@ -57,8 +55,9 @@ const Home = ({ data }) => {
                 }),
             });
 
-            // Note: with no-cors, we can't reliably parse response.json()
-            // but we can assume success if the fetch doesn't throw.
+            if (!response.ok) {
+                throw new Error('Backend submission failed');
+            }
             setStatus({ type: "success", message: "Message sent successfully!" });
             setFormData({ email: "", purpose: "", message: "" });
 
@@ -340,39 +339,40 @@ const Home = ({ data }) => {
 
             {/* Social Media Section */}
             <section className=" px-8 mb-20">
-                <h1 className="py-10 text-3xl md:text-5xl font-bold mb-4 text-center">Let's Connect.</h1>
+                <h1 className="py-10 text-3xl md:text-5xl font-bold mb-4 text-center">Let's Connect on social handles</h1>
                 <div className="max-w-[1400px] mx-auto">
                     <div className="flex flex-wrap justify-center gap-4 md:gap-8">
-                        <a href="https://github.com/saadkhi" target="_blank" rel="noopener noreferrer" className="group flex flex-col items-center gap-3">
-                            <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-2xl group-hover:bg-primary-accent group-hover:text-black group-hover:scale-110 transition-all duration-300">
-                                <i className="fa-brands fa-github"></i>
-                            </div>
-                            <span className="text-[10px] font-bold uppercase tracking-widest text-text-secondary group-hover:text-primary-accent transition-colors">GitHub</span>
-                        </a>
-                        <a href="https://www.linkedin.com/in/saadkhi/" target="_blank" rel="noopener noreferrer" className="group flex flex-col items-center gap-3">
-                            <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-2xl group-hover:bg-[#0077b5] group-hover:text-white group-hover:scale-110 transition-all duration-300">
-                                <i className="fa-brands fa-linkedin-in"></i>
-                            </div>
-                            <span className="text-[10px] font-bold uppercase tracking-widest text-text-secondary group-hover:text-white transition-colors">LinkedIn</span>
-                        </a>
-                        <a href={`mailto:saadalioffic@gmail.com`} className="group flex flex-col items-center gap-3">
-                            <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-2xl group-hover:bg-primary-accent group-hover:text-black group-hover:scale-110 transition-all duration-300">
-                                <i className="fa-solid fa-envelope"></i>
-                            </div>
-                            <span className="text-[10px] font-bold uppercase tracking-widest text-text-secondary group-hover:text-primary-accent transition-colors">Email</span>
-                        </a>
-                        <a href="https://x.com/saadkhi_?s=21" className="group flex flex-col items-center gap-3">
-                            <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-2xl group-hover:bg-[#1DA1F2] group-hover:text-white group-hover:scale-110 transition-all duration-300">
-                                <i className="fa-brands fa-x-twitter"></i>
-                            </div>
-                            <span className="text-[10px] font-bold uppercase tracking-widest text-text-secondary group-hover:text-[#1DA1F2] transition-colors">Twitter</span>
-                        </a>
-                        <a href="#" className="group flex flex-col items-center gap-3">
-                            <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-2xl group-hover:bg-[#E4405F] group-hover:text-white group-hover:scale-110 transition-all duration-300">
-                                <i className="fa-brands fa-instagram"></i>
-                            </div>
-                            <span className="text-[10px] font-bold uppercase tracking-widest text-text-secondary group-hover:text-[#E4405F] transition-colors">Instagram</span>
-                        </a>
+                        {data.social_links && data.social_links.map((link, index) => {
+                            const getHoverColor = (name) => {
+                                const platform = name.toLowerCase();
+                                if (platform.includes('github')) return 'group-hover:bg-primary-accent group-hover:text-black';
+                                if (platform.includes('linkedin')) return 'group-hover:bg-primary-accent group-hover:text-black';
+                                if (platform.includes('twitter') || platform.includes('x.com')) return 'group-hover:bg-primary-accent group-hover:text-black';
+                                if (platform.includes('instagram')) return 'group-hover:bg-primary-accent group-hover:text-black';
+                                if (platform.includes('facebook')) return 'group-hover:bg-primary-accent group-hover:text-black';
+                                if (platform.includes('youtube')) return 'group-hover:bg-primary-accent group-hover:text-black';
+                                if (platform.includes('discord')) return 'group-hover:bg-primary-accent group-hover:text-black';
+                                if (platform.includes('whatsapp')) return 'group-hover:bg-primary-accent group-hover:text-black';
+                                return 'group-hover:bg-primary-accent group-hover:text-black';
+                            };
+
+                            return (
+                                <a key={index} href={link.url} target="_blank" rel="noopener noreferrer" className="group flex flex-col items-center gap-3">
+                                    <div className={`w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-2xl group-hover:scale-110 group-hover:-translate-y-2 transition-all duration-300 ${getHoverColor(link.name)} overflow-hidden shadow-lg`}>
+                                        {link.icon_image ? (
+                                            <img
+                                                src={link.icon_image.startsWith('http') ? link.icon_image : `${import.meta.env.VITE_API_URL}${link.icon_image}`}
+                                                alt={link.name}
+                                                className="w-8 h-8 object-contain"
+                                            />
+                                        ) : (
+                                            <i className={link.icon_class || 'fa-solid fa-link'}></i>
+                                        )}
+                                    </div>
+                                    <span className="text-[10px] font-bold uppercase tracking-widest text-text-secondary group-hover:text-white transition-colors text-center">{link.name}</span>
+                                </a>
+                            );
+                        })}
                     </div>
                 </div>
             </section>

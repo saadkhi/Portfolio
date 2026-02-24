@@ -1,6 +1,6 @@
 from rest_framework import serializers, viewsets
 from django.http import JsonResponse
-from .models import Project, Profile, Skill
+from .models import Project, Profile, Skill, SocialLink
 
 class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
@@ -15,6 +15,11 @@ class ProfileSerializer(serializers.ModelSerializer):
 class SkillSerializer(serializers.ModelSerializer):
     class Meta:
         model = Skill
+        fields = '__all__'
+
+class SocialLinkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SocialLink
         fields = '__all__'
 
 class ProjectViewSet(viewsets.ReadOnlyModelViewSet):
@@ -44,6 +49,16 @@ def get_portfolio_data(request):
         {"name": "PostgreSQL", "icon": "fas fa-database"}
     ]
 
+    # Get social links
+    social_links = SocialLink.objects.all()
+    social_links_data = SocialLinkSerializer(social_links, many=True).data if social_links.exists() else [
+        {"name": "GitHub", "url": "https://github.com/saadkhi", "icon_class": "fa-brands fa-github"},
+        {"name": "LinkedIn", "url": "https://linkedin.com/in/saadkhi", "icon_class": "fa-brands fa-linkedin-in"},
+        {"name": "Email", "url": "mailto:saadalioffic@gmail.com", "icon_class": "fa-solid fa-envelope"},
+        {"name": "Twitter", "url": "https://x.com/saadkhi_?s=21", "icon_class": "fa-brands fa-x-twitter"},
+        {"name": "Instagram", "url": "#", "icon_class": "fa-brands fa-instagram"}
+    ]
+
     featured_serializer = ProjectSerializer(featured_projects, many=True)
     latest_serializer = ProjectSerializer(latest_projects, many=True)
 
@@ -61,6 +76,7 @@ def get_portfolio_data(request):
             "description": profile_data.get("bio") or "I'm a software engineer focused on building clean, scalable backends and modern, intuitive interfaces. I specialize in the Python ecosystem, particularly Django and FastAPI, while crafting premium frontend experiences with React and Tailwind CSS."
         },
         "skills": skills_data,
+        "social_links": social_links_data,
         "featured_projects": featured_serializer.data,
         "latest_projects": latest_serializer.data,
         "contact": {

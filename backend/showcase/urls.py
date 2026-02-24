@@ -9,6 +9,7 @@ router.register(r'projects', api.ProjectViewSet)
 
 urlpatterns = [
     path('api/portfolio/', api.get_portfolio_data, name='api_portfolio'),
+    path('api/contact/', views.contact_form_submission, name='contact_api'),
     path('api/', include(router.urls)),
 ]
 

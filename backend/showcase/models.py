@@ -36,3 +36,16 @@ class Skill(models.Model):
 
     def __str__(self):
         return self.name
+
+class SocialLink(models.Model):
+    name = models.CharField(max_length=100, help_text="e.g., 'GitHub', 'LinkedIn', 'Twitter'")
+    url = models.URLField()
+    icon_class = models.CharField(max_length=100, blank=True, null=True, help_text="FontAwesome class (e.g., 'fa-brands fa-github').")
+    icon_image = models.ImageField(upload_to='social_icons/', blank=True, null=True, help_text="Upload a custom image icon. Takes priority over icon class.")
+    order = models.IntegerField(default=0)
+
+    class Meta:
+        ordering = ['order', 'name']
+
+    def __str__(self):
+        return self.name
