@@ -18,7 +18,7 @@ const Home = ({ data }) => {
                     </h1>
                 </div>
 
-                <div className="max-w-[1400px] mx-auto w-full grid md:grid-cols-2 gap-16 items-center">
+                <div className="max-w-[1200px] mx-auto w-full grid md:grid-cols-2 items-center">
 
                     {/* LEFT SIDE — TEXT */}
                     <div className="animate-fade-in text-center md:text-left">
@@ -27,9 +27,10 @@ const Home = ({ data }) => {
                         </h2>
 
                         <p className="text-lg md:text-xl text-text-secondary font-medium mb-12 max-w-[1000px]">
-                            Making AI products with the help of AI to make life easier since 2024. <br></br>
-                            AI Engineer @ <a className="hover:underline" href="https://www.linkedin.com/company/convex-consulting-llc/">Convex Consulting LLC.</a> <br></br>
-                            Open to new opportunities, let's connect!
+                            Making AI products to make life easier since 2024. <br></br>
+                            {/* AI Engineer @ Convex Consulting LLC. <br></br> */}
+                            Open to new opportunities and freelance projects, <br></br>
+                            <a href="#contact" className="text-primary-accent hover:underline">let's connect!</a>
                         </p>
 
                         <div className="flex flex-wrap justify-center md:justify-start gap-6">
@@ -62,12 +63,15 @@ const Home = ({ data }) => {
             {/* Featured Projects Section */}
             <section id="work" className=" px-8 max-w-[1400px] mx-auto">
                 <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
-                    <div className="max-w-[600px]">
+                    <div className="max-w-[1800px]">
                         {/* <span className="text-primary-accent uppercase tracking-widest text-xs font-bold mb-4 block">Selected Projects</span> */}
-                        <h2 className="text-4xl md:text-6xl font-bold">Who is Saad?</h2>
-                        <p className="text-lg md:text-xl text-text-secondary font-medium mb-12 max-w-[1000px]">
-                            I am a full-stack developer with experience in building web applications which contain Artifical Intelligence.
-                            I am passionate about creating user-friendly and efficient software.
+                        <h2 className="text-4xl md:text-6xl font-bold py-6">Hi, I'm Saad</h2>
+                        <p className="text-lg md:text-xl text-text-secondary font-medium">
+                            I am technologist who is passionate about building AI products. I transform raw data into intelligent models and bridge the gap between AI and real-world problems by creating seamless and efficient software.
+                            <h3 className='text-2xl md:text-4xl font-semibold py-4 mt-6'> What I bring to the company</h3>
+                            <p className='text-lg md:text-xl text-text-secondary font-medium mb-6'>If you hire me, I bring a strong problem-solving mindset, hands-on experience with AI/ML and backend systems, and the ability to turn an idea into working, production-ready solutions. Beyond technical skills, I bring ownership, continuous learning, and a focus on building scalable, reliable systems that create real business impact.</p>
+                            <h3 className='text-2xl md:text-4xl font-semibold py-4'> Why I am a good fit for this role</h3>
+                            <p className='text-lg md:text-xl text-text-secondary font-medium mb-6'>I am a quick learner, adaptable, and passionate about AI. I am confident that I can quickly get up to speed with your team and contribute meaningfully to your projects.</p>
                         </p>
                     </div>
                 </div>

@@ -50,7 +50,7 @@ const Projects = () => {
                             </div>
                             <div className="flex justify-between items-center mt-auto">
                                 <div className="flex flex-wrap gap-1">
-                                    {project.tech_stack.split(',').slice(0, 3).map((tech, i) => (
+                                    {project.tech_stack.split(',').slice(0, 5).map((tech, i) => (
                                         <span key={i} className="px-2 py-0.5 bg-white/5 border border-white/10 rounded text-[9px] font-bold uppercase tracking-wider">{tech.trim()}</span>
                                     ))}
                                 </div>
