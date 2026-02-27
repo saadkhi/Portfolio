@@ -1,9 +1,14 @@
 @import "tailwindcss";
 
+html {
+  scroll-behavior: smooth;
+}
+
 @theme {
   --color-bg-dark: #000000;
   --color-bg-card: rgba(10, 10, 10, 0.8);
-  --color-primary-accent: #ff8a00; /* Warm orange glow */
+  --color-primary-accent: #ff8a00;
+  /* Warm orange glow */
   --color-secondary-accent: #7a3e00;
   --color-text-primary: #ffffff;
   --color-text-secondary: #a1a1aa;
@@ -17,12 +22,16 @@
 @layer base {
   body {
     @apply bg-bg-dark font-body text-text-primary overflow-x-hidden min-h-screen selection:bg-primary-accent selection:text-black;
-    background-image: 
+    background-image:
       radial-gradient(circle at 15% 50%, rgba(255, 138, 0, 0.05), transparent 30%),
       radial-gradient(circle at 85% 30%, rgba(255, 138, 0, 0.03), transparent 30%);
   }
 
-  h1, h2, h3, h4, .font-heading {
+  h1,
+  h2,
+  h3,
+  h4,
+  .font-heading {
     @apply font-heading tracking-tight;
   }
 }
@@ -37,7 +46,7 @@
   }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center px-8 py-3 rounded-full font-semibold text-base transition-all duration-300 cursor-pointer bg-white/10 backdrop-blur-xl border border-primary-accent/40 text-white hover:bg-primary-accent/20 hover:border-primary-accent hover:shadow-[0_0_20px_rgba(255,138,0,0.3)] active:scale-95;
+    @apply inline-flex items-center justify-center px-8 py-3 rounded-full font-semibold text-base transition-all duration-300 cursor-pointer bg-white/10 backdrop-blur-xl border border-primary-accent/40 text-white hover:bg-primary-accent/20 hover:border-primary-accent hover:shadow-[0_0_20px_rgba(255, 138, 0, 0.3)] active:scale-95;
   }
 
   .btn-secondary {
@@ -46,8 +55,15 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .animate-fade-in {

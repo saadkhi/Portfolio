@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import { scrollToSection } from "../utils/scrollTo";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -8,6 +9,11 @@ const Navbar = () => {
 
   const navItem =
     "text-xs font-semibold uppercase tracking-widest text-white/70 hover:text-white transition-colors duration-200";
+
+  const handleNavClick = (id) => {
+    scrollToSection(id, navigate, location.pathname);
+    setIsOpen(false);
+  };
 
   const handleHomeClick = () => {
     if (location.pathname === "/") {
@@ -18,10 +24,6 @@ const Navbar = () => {
         window.scrollTo({ top: 0, behavior: "smooth" });
       }, 100);
     }
-    setIsOpen(false);
-  };
-
-  const handleCloseMenu = () => {
     setIsOpen(false);
   };
 
@@ -45,9 +47,9 @@ const Navbar = () => {
         </li>
 
         <li>
-          <a href="/#intro" className={navItem}>
+          <button onClick={() => handleNavClick("#intro")} className={navItem}>
             Intro
-          </a>
+          </button>
         </li>
 
         <li>
@@ -63,18 +65,18 @@ const Navbar = () => {
         </li>
 
         <li>
-          <a href="/#contact" className={navItem}>
+          <button onClick={() => handleNavClick("#contact")} className={navItem}>
             Book
-          </a>
+          </button>
         </li>
 
         <li>
-          <a
-            href="/#contact-form"
+          <button
+            onClick={() => handleNavClick("#contact-form")}
             className="text-xs font-bold uppercase tracking-widest text-white hover:text-white/80 transition-colors duration-200"
           >
             Connect
-          </a>
+          </button>
         </li>
       </ul>
 
@@ -98,17 +100,16 @@ const Navbar = () => {
             Home
           </button>
 
-          <a
-            href="/#intro"
-            onClick={handleCloseMenu}
+          <button
+            onClick={() => handleNavClick("#intro")}
             className={navItem}
           >
             Intro
-          </a>
+          </button>
 
           <Link
             to="/projects"
-            onClick={handleCloseMenu}
+            onClick={() => setIsOpen(false)}
             className={navItem}
           >
             Projects
@@ -116,27 +117,25 @@ const Navbar = () => {
 
           <Link
             to="/about"
-            onClick={handleCloseMenu}
+            onClick={() => setIsOpen(false)}
             className={navItem}
           >
             About
           </Link>
 
-          <a
-            href="/#contact"
-            onClick={handleCloseMenu}
+          <button
+            onClick={() => handleNavClick("#contact")}
             className={navItem}
           >
             Book
-          </a>
+          </button>
 
-          <a
-            href="/#contact-form"
-            onClick={handleCloseMenu}
+          <button
+            onClick={() => handleNavClick("#contact-form")}
             className="text-xs font-bold uppercase tracking-widest text-white hover:text-white/80"
           >
             Connect
-          </a>
+          </button>
 
         </div>
       )}

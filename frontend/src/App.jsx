@@ -4,6 +4,7 @@ import Navbar from './components/Navbar'
 import Home from './pages/Home'
 import Projects from './pages/Projects'
 import About from './pages/About'
+import ScrollToTop from './components/ScrollToTop'
 
 function App() {
   const [data, setData] = useState(null)
@@ -40,6 +41,7 @@ function App() {
 
   return (
     <>
+      <ScrollToTop />
       <Navbar />
       <Routes>
         <Route path="/" element={<Home data={data} />} />
