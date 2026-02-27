@@ -17,6 +17,8 @@ html {
 
   --font-heading: "Space Grotesk", sans-serif;
   --font-body: "Inter", sans-serif;
+
+  --shadow-primary-glow: 0 0 20px rgba(255, 138, 0, 0.3);
 }
 
 @layer base {
@@ -46,7 +48,7 @@ html {
   }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center px-8 py-3 rounded-full font-semibold text-base transition-all duration-300 cursor-pointer bg-white/10 backdrop-blur-xl border border-primary-accent/40 text-white hover:bg-primary-accent/20 hover:border-primary-accent hover:shadow-[0_0_20px_rgba(255, 138, 0, 0.3)] active:scale-95;
+    @apply inline-flex items-center justify-center px-8 py-3 rounded-full font-semibold text-base transition-all duration-300 cursor-pointer bg-white/10 backdrop-blur-xl border border-primary-accent/40 text-white hover:bg-primary-accent/20 hover:border-primary-accent hover:shadow-primary-glow active:scale-95;
   }
 
   .btn-secondary {

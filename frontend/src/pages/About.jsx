@@ -23,7 +23,7 @@ const About = ({ data }) => {
                     </h1> */}
                     <h1 className='text-5xl md:text-8xl font-bold leading-tight mb-8 tracking-tighter text-center'>About Me</h1>
                     <p className="text-xl md:text-2xl text-text-secondary font-medium max-w-[1000px] mx-auto leading-relaxed text-justify">
-                        I’m Saad Ali, a Software Engineering graduate with hands-on experience in AI/ML, LLM-based applications, and backend development. I’ve worked on building RAG chatbots, machine learning pipelines, and API-driven systems with a strong focus on practical, production-ready solutions.
+                        I’m Saad Ali, a Software Engineering graduate from NED University of Engineering and Technology in Software Engineering major, with hands-on experience in AI/ML, LLM-based applications, and backend development. I’ve worked on building RAG chatbots, machine learning pipelines, and API-driven systems with a strong focus on practical, production-ready solutions.
                         <br></br>
                         <br></br>
                         I’m deeply interested in Generative AI, intelligent automation, scalable SaaS products, and solving real-world problems through data and systems design. I enjoy clean architecture, continuous learning, and experimenting with new AI frameworks.
