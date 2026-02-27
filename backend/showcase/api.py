@@ -36,7 +36,10 @@ def get_portfolio_data(request):
         "name": "Saad",
         "title": "Software Engineer",
         "bio": "I'm a software engineer focused on building clean, scalable backends...",
-        "resume_file": None
+        "resume_file": None,
+        "phone_number": "+92 300 1234567",
+        "email": "saadalioffic@gmail.com",
+        "location": "Karachi, Pakistan"
     }
 
     # Get skills from database
@@ -80,7 +83,9 @@ def get_portfolio_data(request):
         "featured_projects": featured_serializer.data,
         "latest_projects": latest_serializer.data,
         "contact": {
-            "email": "saadalioffic@gmail.com",
+            "email": profile_data.get("email") or "saadalioffic@gmail.com",
+            "phone": profile_data.get("phone_number") or "+92 300 1234567",
+            "location": profile_data.get("location") or "Karachi, Pakistan",
             "linkedin": "https://linkedin.com/in/saadkhi",
             "github": "https://github.com/saadkhi"
         }

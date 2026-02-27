@@ -10,16 +10,24 @@ function App() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/portfolio/`)
-      .then(response => response.json())
+    const controller = new AbortController()
+
+    fetch(`${import.meta.env.VITE_API_URL}/api/portfolio/`, { signal: controller.signal })
+      .then(response => {
+        if (!response.ok) throw new Error('Network response was not ok')
+        return response.json()
+      })
       .then(data => {
         setData(data)
         setLoading(false)
       })
       .catch(error => {
+        if (error.name === 'AbortError') return
         console.error('Error fetching data:', error)
         setLoading(false)
       })
+
+    return () => controller.abort()
   }, [])
 
   if (loading) {

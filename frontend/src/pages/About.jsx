@@ -7,7 +7,7 @@ const About = ({ data }) => {
         <main className="pt-32 pb-20 px-8">
             <div className="max-w-[1000px] mx-auto">
                 {/* Hero Section */}
-                <section className="mb-24 animate-fade-in text-center">
+                <section className="py-32 animate-fade-in text-center">
                     <span className="text-primary-accent uppercase tracking-[0.3em] text-xs font-bold mb-6 block">The Story Behind The Code</span>
                     {/* <h1 className="text-5xl md:text-8xl font-bold leading-tight mb-8 tracking-tighter">
                         Crafting Digital <br /> Excellence.
@@ -19,7 +19,7 @@ const About = ({ data }) => {
                 </section>
 
                 {/* About Content Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-32">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 py-32">
                     <div className="glass-card p-8 md:p-12 space-y-6">
                         <h3 className="text-3xl font-bold">My Journey</h3>
                         <p className="text-text-secondary leading-relaxed text-lg">
@@ -65,7 +65,7 @@ const About = ({ data }) => {
                 </div>
 
                 {/* Toolkit/Expertise section */}
-                <section className="mb-32">
+                <section className="py-32">
                     <div className="text-center mb-16">
                         <h2 className="text-4xl md:text-6xl font-bold mb-4">My Toolkit</h2>
                         <p className="text-text-secondary">The technologies I use to bring ideas to life.</p>
@@ -87,11 +87,18 @@ const About = ({ data }) => {
                 </section>
 
                 {/* Closing Statement */}
-                <section className="text-center bg-white/5 border border-white/10 rounded-3xl p-12 md:p-20">
+                <section className="text-center bg-white/5 border border-white/10 rounded-3xl p-12 md:p-20 py-32">
                     <h2 className="text-3xl md:text-5xl font-bold mb-8 tracking-tight">Ready to build something extraordinary?</h2>
                     <div className="flex flex-wrap justify-center gap-6">
-                        <a href="/#contact-form" className="btn-primary">Get in Touch</a>
-                        <a href="/#contact" className="btn-secondary">Book a Call</a>
+                        <a href="/projects" className="btn-primary">
+                            {data.hero.cta_primary}
+                        </a>
+                        <a href="#contact" className="btn-secondary">
+                            Book a Session
+                        </a>
+                        <a href="#contact-form" className="btn-secondary">
+                            {data.hero.cta_secondary}
+                        </a>
                     </div>
                 </section>
             </div>

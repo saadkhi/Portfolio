@@ -7,6 +7,10 @@ class ProjectAdmin(admin.ModelAdmin):
     list_filter = ('is_featured', 'category')
     search_fields = ('title', 'tech_stack', 'category')
 
-admin.site.register(Profile)
+@admin.register(Profile)
+class ProfileAdmin(admin.ModelAdmin):
+    list_display = ('name', 'title', 'email', 'phone_number', 'location')
+    fields = ('name', 'title', 'bio', 'resume_file', 'phone_number', 'email', 'location')
+
 admin.site.register(Skill)
 admin.site.register(SocialLink)

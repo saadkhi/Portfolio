@@ -66,6 +66,19 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# Security Headers
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'
+REFERRER_POLICY = 'same-origin'
+
+REST_FRAMEWORK = {
+    'EXCEPTION_HANDLER': 'portfolio_core.exceptions.custom_exception_handler',
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny', # Adjust as needed for specific endpoints
+    ],
+}
+
 ROOT_URLCONF = 'portfolio_core.urls'
 
 TEMPLATES = [

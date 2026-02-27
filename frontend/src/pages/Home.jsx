@@ -25,7 +25,7 @@ const Home = ({ data }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Validation (Keep as requested previously)
+        // Validation
         if (!formData.email || !formData.purpose || !formData.message) {
             setStatus({
                 type: 'error',
@@ -37,9 +37,10 @@ const Home = ({ data }) => {
         setIsSubmitting(true);
         setStatus({ type: '', message: '' });
 
+        const controller = new AbortController();
+
         try {
             const systemDate = new Date().toLocaleString();
-
             const CONTACT_API_URL = `${import.meta.env.VITE_API_URL}/api/contact/`;
 
             const response = await fetch(CONTACT_API_URL, {
@@ -47,6 +48,7 @@ const Home = ({ data }) => {
                 headers: {
                     "Content-Type": "application/json",
                 },
+                signal: controller.signal,
                 body: JSON.stringify({
                     date: systemDate,
                     email: formData.email,
@@ -55,15 +57,22 @@ const Home = ({ data }) => {
                 }),
             });
 
+            const result = await response.json();
+
             if (!response.ok) {
-                throw new Error('Backend submission failed');
+                throw new Error(result.message || 'Submission failed');
             }
-            setStatus({ type: "success", message: "Message sent successfully!" });
+
+            setStatus({ type: "success", message: result.message || "Message sent successfully!" });
             setFormData({ email: "", purpose: "", message: "" });
 
         } catch (error) {
+            if (error.name === 'AbortError') return;
             console.error('Submission error:', error);
-            setStatus({ type: "error", message: "Something went wrong!" });
+            setStatus({
+                type: "error",
+                message: error.message || "Something went wrong! Please try again later."
+            });
         } finally {
             setIsSubmitting(false);
         }
@@ -121,12 +130,11 @@ const Home = ({ data }) => {
                             />
                         </div>
                     </div>
-
                 </div>
             </section>
 
             {/* Featured Projects Section */}
-            <section id="work" className=" px-8 max-w-[1400px] mx-auto">
+            <section id="intro" className="py-26 px-8 max-w-[1400px] mx-auto">
                 <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
                     <div className="max-w-[1800px]">
                         {/* <span className="text-primary-accent uppercase tracking-widest text-xs font-bold mb-4 block">Selected Projects</span> */}
@@ -178,10 +186,7 @@ const Home = ({ data }) => {
                         </div>
                     ))}
                 </div>
-            </section>
 
-            {/* Bento Grid / Tech Stack */}
-            <section className=" px-8 max-w-[1400px] mx-auto">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <div className="glass-card p-12 col-span-1 md:col-span-2 flex flex-col justify-center">
                         <h3 className="text-4xl font-bold mb-8">My Expertise</h3>
@@ -219,8 +224,14 @@ const Home = ({ data }) => {
                 </div>
             </section>
 
+            {/* Bento Grid / Tech Stack */}
+            {/* <section id="tech-stack" className="py-24 px-8 max-w-[1400px] mx-auto">
+
+                
+            </section> */}
+
             {/* Contact / Booking Section */}
-            <section id="contact" className="py-32 px-8">
+            <section id="contact" className="py-24 px-8">
                 <div className="max-w-[1400px] mx-auto glass-card overflow-hidden">
                     <div className="grid grid-cols-1 md:grid-cols-2">
                         {/* Left Side: Info */}
@@ -231,7 +242,10 @@ const Home = ({ data }) => {
                                 </div>
                                 <div>
                                     <h4 className="font-bold text-lg leading-tight">{data.hero.name}</h4>
-                                    <span className="text-text-secondary text-xs uppercase tracking-widest font-bold">Available for Projects</span>
+                                    <div className="flex flex-col">
+                                        <span className="text-text-secondary text-[10px] uppercase tracking-widest font-bold">Available for Projects</span>
+                                        <a href={`tel:${data.contact.phone.replace(/\s/g, '')}`} className="text-primary-accent text-xs font-bold hover:underline">{data.contact.phone}</a>
+                                    </div>
                                 </div>
                             </div>
 
@@ -272,73 +286,120 @@ const Home = ({ data }) => {
             </section>
 
             {/* Contact Form Section */}
-            <section id="contact-form" className="py-24 px-8 max-w-[800px] mx-auto">
-                <div className="glass-card p-8 md:p-12">
-                    <div className="text-center mb-12">
-                        <span className="text-primary-accent uppercase tracking-widest text-xs font-bold mb-4 block">Quick Connect</span>
-                        <h2 className="text-3xl md:text-5xl font-bold mb-4">Let's stay in touch.</h2>
-                        <p className="text-text-secondary">Drop your details below and I'll get back to you as soon as possible.</p>
+            <section id="contact-form" className="py-24 px-8 max-w-[1400px] mx-auto">
+                <h2 className="text-5xl md:text-7xl font-bold leading-[1.1] mb-8 tracking-tighter text-center"> Let's Connect </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+                    {/* Left Column: Contact Form */}
+                    <div className="glass-card p-8 md:p-12">
+                        <div className="mb-10">
+                            <span className="text-primary-accent uppercase tracking-widest text-xs font-bold mb-4 block">Quick Connect</span>
+                            <h2 className="text-3xl md:text-5xl font-bold mb-4">Let's stay in touch.</h2>
+                            <p className="text-text-secondary italic">Drop your details below and I'll get back to you as soon as possible.</p>
+                        </div>
+
+                        <form className="space-y-6" onSubmit={handleSubmit}>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="space-y-2">
+                                    <label htmlFor="email" className="text-xs font-bold uppercase tracking-widest text-text-secondary ml-1">Email Address</label>
+                                    <input
+                                        type="email"
+                                        id="email"
+                                        value={formData.email}
+                                        onChange={handleChange}
+                                        placeholder="your@email.com"
+                                        className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-primary-accent transition-colors"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label htmlFor="purpose" className="text-xs font-bold uppercase tracking-widest text-text-secondary ml-1">Purpose</label>
+                                    <select
+                                        id="purpose"
+                                        value={formData.purpose}
+                                        onChange={handleChange}
+                                        className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-primary-accent transition-colors appearance-none"
+                                    >
+                                        <option value="" className="bg-bg-dark">Select a purpose</option>
+                                        <option value="project" className="bg-bg-dark">New Project</option>
+                                        <option value="collaboration" className="bg-bg-dark">Collaboration</option>
+                                        <option value="inquiry" className="bg-bg-dark">General Inquiry</option>
+                                        <option value="other" className="bg-bg-dark">Something Else</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <label htmlFor="message" className="text-xs font-bold uppercase tracking-widest text-text-secondary ml-1">Message</label>
+                                <textarea
+                                    id="message"
+                                    value={formData.message}
+                                    onChange={handleChange}
+                                    placeholder="Your message"
+                                    rows="4"
+                                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-primary-accent transition-colors"
+                                ></textarea>
+                            </div>
+
+                            {status.message && (
+                                <div className={`p-4 rounded-xl text-sm font-bold text-center ${status.type === 'success' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
+                                    {status.message}
+                                </div>
+                            )}
+
+                            <button
+                                type="submit"
+                                disabled={isSubmitting}
+                                className={`btn-primary w-full shadow-[0_0_20px_rgba(255,255,255,0.1)] ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            >
+                                {isSubmitting ? 'Sending...' : 'Send Message'}
+                            </button>
+                        </form>
                     </div>
 
-                    <form className="space-y-6" onSubmit={handleSubmit}>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="space-y-2">
-                                <label htmlFor="email" className="text-xs font-bold uppercase tracking-widest text-text-secondary ml-1">Email Address</label>
-                                <input
-                                    type="email"
-                                    id="email"
-                                    value={formData.email}
-                                    onChange={handleChange}
-                                    placeholder="your@email.com"
-                                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-primary-accent transition-colors"
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <label htmlFor="purpose" className="text-xs font-bold uppercase tracking-widest text-text-secondary ml-1">Purpose</label>
-                                <select
-                                    id="purpose"
-                                    value={formData.purpose}
-                                    onChange={handleChange}
-                                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-primary-accent transition-colors appearance-none"
-                                >
-                                    <option value="" className="bg-bg-dark">Select a purpose</option>
-                                    <option value="project" className="bg-bg-dark">New Project</option>
-                                    <option value="collaboration" className="bg-bg-dark">Collaboration</option>
-                                    <option value="inquiry" className="bg-bg-dark">General Inquiry</option>
-                                    <option value="other" className="bg-bg-dark">Something Else</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div className="space-y-2">
-                            <label htmlFor="message" className="text-xs font-bold uppercase tracking-widest text-text-secondary ml-1">Message</label>
-                            <textarea
-                                id="message"
-                                value={formData.message}
-                                onChange={handleChange}
-                                placeholder="Your message"
-                                className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-primary-accent transition-colors"
-                            ></textarea>
+                    {/* Right Column: Contact info */}
+                    <div className="glass-card p-8 md:p-12 space-y-10">
+                        <div>
+                            <h2 className="text-4xl md:text-6xl font-bold mb-6 tracking-tighter">Get in touch with me.</h2>
+                            <p className="text-lg text-text-secondary max-w-[450px] leading-relaxed italic">
+                                I'm always open to new projects, collaborations, or even just a friendly chat about AI and software development.
+                            </p>
                         </div>
 
-                        {status.message && (
-                            <div className={`p-4 rounded-xl text-sm font-bold text-center ${status.type === 'success' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
-                                {status.message}
+                        <div className="space-y-8">
+                            <div className="flex items-start gap-6 group">
+                                <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-primary-accent group-hover:bg-primary-accent group-hover:text-black transition-all duration-300 shadow-lg">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                                </div>
+                                <div>
+                                    <span className="text-xs font-bold uppercase tracking-widest text-text-secondary block mb-1">Phone Number</span>
+                                    <a href={`tel:${data.contact.phone.replace(/\s/g, '')}`} className="text-xl font-bold hover:text-primary-accent transition-colors">{data.contact.phone}</a>
+                                </div>
                             </div>
-                        )}
 
-                        <button
-                            type="submit"
-                            disabled={isSubmitting}
-                            className={`btn-primary w-full shadow-[0_0_20px_rgba(255,255,255,0.1)] ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
-                        >
-                            {isSubmitting ? 'Sending...' : 'Send Message'}
-                        </button>
-                    </form>
+                            <div className="flex items-start gap-6 group">
+                                <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-primary-accent group-hover:bg-primary-accent group-hover:text-black transition-all duration-300 shadow-lg">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                                </div>
+                                <div>
+                                    <span className="text-xs font-bold uppercase tracking-widest text-text-secondary block mb-1">Email Address</span>
+                                    <a href={`mailto:${data.contact.email}`} className="text-xl font-bold hover:text-primary-accent transition-colors break-all">{data.contact.email}</a>
+                                </div>
+                            </div>
+
+                            <div className="flex items-start gap-6 group">
+                                <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-primary-accent group-hover:bg-primary-accent group-hover:text-black transition-all duration-300 shadow-lg">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                                </div>
+                                <div>
+                                    <span className="text-xs font-bold uppercase tracking-widest text-text-secondary block mb-1">Current Location</span>
+                                    <p className="text-xl font-bold">{data.contact.location}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
 
             {/* Social Media Section */}
-            <section className=" px-8 mb-20">
+            <section className="py-24 px-8">
                 <h1 className="py-10 text-3xl md:text-5xl font-bold mb-4 text-center">Let's Connect on social handles</h1>
                 <div className="max-w-[1400px] mx-auto">
                     <div className="flex flex-wrap justify-center gap-4 md:gap-8">
@@ -388,7 +449,14 @@ const Home = ({ data }) => {
                     </div>
 
                     {/* Column 2 */}
-                    <div className="flex justify-center gap-8">
+                    <div className="flex flex-wrap justify-center gap-6 md:gap-10">
+                        <a
+                            href={`tel:${data.contact.phone.replace(/\s/g, '')}`}
+                            className="text-text-secondary hover:text-primary-accent transition-colors uppercase tracking-widest text-xs font-bold flex items-center gap-2"
+                        >
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                            {data.contact.phone}
+                        </a>
                         <a
                             href="https://github.com/saadkhi"
                             className="text-text-secondary hover:text-white transition-colors uppercase tracking-widest text-xs font-bold"

@@ -19,6 +19,9 @@ class Profile(models.Model):
     title = models.CharField(max_length=200, default='Software Engineer')
     bio = models.TextField(blank=True)
     resume_file = models.FileField(upload_to='resumes/', blank=True, null=True)
+    phone_number = models.CharField(max_length=20, blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
+    location = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
         verbose_name_plural = "Profile"
