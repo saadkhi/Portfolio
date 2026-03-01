@@ -73,7 +73,8 @@ const Navbar = () => {
         <li>
           <button
             onClick={() => handleNavClick("#contact-form")}
-            className="text-xs font-bold uppercase tracking-widest text-white hover:text-white/80 transition-colors duration-200"
+            className={navItem}
+          // className="text-xs font-bold uppercase tracking-widest text-white hover:text-white/80 transition-colors duration-200"
           >
             Connect
           </button>
@@ -94,7 +95,7 @@ const Navbar = () => {
 
       {/* Mobile Dropdown Menu */}
       {isOpen && (
-        <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[92%] bg-black/90 backdrop-blur-xl border border-white/10 rounded-2xl py-6 flex flex-col items-center gap-6 md:hidden">
+        <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[92%] bg-black/90 backdrop-blur-xl border border-white/20 rounded-2xl py-6 flex flex-col items-center gap-6 md:hidden">
 
           <button onClick={handleHomeClick} className={navItem}>
             Home
@@ -132,7 +133,8 @@ const Navbar = () => {
 
           <button
             onClick={() => handleNavClick("#contact-form")}
-            className="text-xs font-bold uppercase tracking-widest text-white hover:text-white/80"
+            className={navItem}
+          // className="text-xs font-bold uppercase tracking-widest text-white hover:text-white/80"
           >
             Connect
           </button>

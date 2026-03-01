@@ -17,12 +17,12 @@ const About = ({ data }) => {
             <div className="max-w-[1000px] mx-auto">
                 {/* Hero Section */}
                 <section className="animate-fade-in">
-                    <span className="text-primary-accent uppercase tracking-[0.3em] text-xs font-bold block text-center">The Story Behind The Code</span>
+                    <span className="text-primary-accent uppercase tracking-[0.3em] text-xs font-bold block text-center py-2 md:py-0">The Story Behind The Code</span>
                     {/* <h1 className="text-5xl md:text-8xl font-bold leading-tight mb-8 tracking-tighter">
                         Crafting Digital <br /> Excellence.
                     </h1> */}
                     <h1 className='text-5xl md:text-8xl font-bold leading-tight mb-8 tracking-tighter text-center'>About Me</h1>
-                    <p className="text-xl md:text-2xl text-text-secondary font-medium max-w-[1000px] mx-auto leading-relaxed text-justify">
+                    <p className="text-lg md:text-xl text-text-secondary font-medium max-w-[1000px] mx-auto leading-relaxed text-justify">
                         I’m Saad Ali, a Software Engineering graduate from NED University of Engineering and Technology in Software Engineering major, with hands-on experience in AI/ML, LLM-based applications, and backend development. I’ve worked on building RAG chatbots, machine learning pipelines, and API-driven systems with a strong focus on practical, production-ready solutions.
                         <br></br>
                         <br></br>
@@ -91,50 +91,83 @@ const About = ({ data }) => {
                     </div>
                 </section>
 
-                <section className="relative bg-white/5 border border-white/10 rounded-3xl p-12 md:p-20 py-8">
+                <section className="relative bg-white/5 border border-white/20 rounded-3xl p-8 md:p-20">
 
                     <h2 className="text-3xl md:text-5xl font-bold text-center mb-16 tracking-tight">
                         My Journey
                     </h2>
 
-                    {/* Path Line */}
                     <div className="relative max-w-5xl mx-auto">
 
-                        {/* Horizontal Line */}
-                        <div className="absolute top-3 left-0 w-full h-[3px] bg-white/20"></div>
+                        {/* Desktop Horizontal Line */}
+                        <div className="hidden md:block absolute top-3 left-0 w-full h-[3px] bg-white/20"></div>
 
-                        <div className="relative grid md:grid-cols-4 gap-12">
+                        {/* Mobile Vertical Line (LEFT SIDE) */}
+                        <div className="md:hidden absolute left-3 top-0 w-[3px] h-full bg-white/20"></div>
+
+                        <div className="relative grid md:grid-cols-4 gap-16">
 
                             {/* Landmark 1 */}
-                            <div className="text-center">
-                                <div className="w-6 h-6 bg-primary-accent rounded-full mx-auto mb-6 shadow-lg"></div>
-                                <h3 className="text-xl font-semibold">MERL LAB</h3>
-                                <p className="text-sm text-text-secondary mt-2">RISC-V & AI Research Intern</p>
-                                <p className="text-sm text-text-secondary">Sep 2022 — Dec 2023</p>
+                            <div className="relative flex md:block items-start gap-6 md:gap-0">
+
+                                {/* Dot */}
+                                <div className="relative z-10 w-6 h-6 bg-primary-accent rounded-full shadow-lg 
+                        md:mx-auto md:mb-6 flex-shrink-0">
+                                </div>
+
+                                {/* Text */}
+                                <div className="md:text-center">
+                                    <h3 className="text-xl font-semibold">MERL LAB</h3>
+                                    <p className="text-sm text-text-secondary mt-2">
+                                        RISC-V & AI Research Intern
+                                    </p>
+                                    <p className="text-sm text-text-secondary">
+                                        Sep 2022 — Dec 2023
+                                    </p>
+                                </div>
+
                             </div>
 
                             {/* Landmark 2 */}
-                            <div className="text-center">
-                                <div className="w-6 h-6 bg-primary-accent rounded-full mx-auto mb-6 shadow-lg"></div>
-                                <h3 className="text-xl font-semibold">360 Xpert Solutions</h3>
-                                <p className="text-sm text-text-secondary mt-2">AI Engineer Intern</p>
-                                <p className="text-sm text-text-secondary">July 2024 — Aug 2025</p>
+                            <div className="relative flex md:block items-start gap-6 md:gap-0">
+                                <div className="relative z-10 w-6 h-6 bg-primary-accent rounded-full shadow-lg md:mx-auto md:mb-6 flex-shrink-0"></div>
+                                <div className="md:text-center">
+                                    <h3 className="text-xl font-semibold">360 Xpert Solutions</h3>
+                                    <p className="text-sm text-text-secondary mt-2">
+                                        AI Engineer Intern
+                                    </p>
+                                    <p className="text-sm text-text-secondary">
+                                        July 2024 — Aug 2025
+                                    </p>
+                                </div>
                             </div>
 
                             {/* Landmark 3 */}
-                            <div className="text-center">
-                                <div className="w-6 h-6 bg-primary-accent rounded-full mx-auto mb-6 shadow-lg"></div>
-                                <h3 className="text-xl font-semibold">Avennex Solutions</h3>
-                                <p className="text-sm text-text-secondary mt-2">AI Engineer</p>
-                                <p className="text-sm text-text-secondary">Sep 2025 — Sep 2025</p>
+                            <div className="relative flex md:block items-start gap-6 md:gap-0">
+                                <div className="relative z-10 w-6 h-6 bg-primary-accent rounded-full shadow-lg md:mx-auto md:mb-6 flex-shrink-0"></div>
+                                <div className="md:text-center">
+                                    <h3 className="text-xl font-semibold">Avennex Solutions</h3>
+                                    <p className="text-sm text-text-secondary mt-2">
+                                        AI Engineer
+                                    </p>
+                                    <p className="text-sm text-text-secondary">
+                                        Sep 2025 — Sep 2025
+                                    </p>
+                                </div>
                             </div>
 
                             {/* Landmark 4 */}
-                            <div className="text-center">
-                                <div className="w-6 h-6 bg-primary-accent rounded-full mx-auto mb-6 shadow-lg"></div>
-                                <h3 className="text-xl font-semibold">Convex Consulting</h3>
-                                <p className="text-sm text-text-secondary mt-2">AI Engineer</p>
-                                <p className="text-sm text-text-secondary">Oct 2025 — Present</p>
+                            <div className="relative flex md:block items-start gap-6 md:gap-0">
+                                <div className="relative z-10 w-6 h-6 bg-primary-accent rounded-full shadow-lg md:mx-auto md:mb-6 flex-shrink-0"></div>
+                                <div className="md:text-center">
+                                    <h3 className="text-xl font-semibold">Convex Consulting</h3>
+                                    <p className="text-sm text-text-secondary mt-2">
+                                        AI Engineer
+                                    </p>
+                                    <p className="text-sm text-text-secondary">
+                                        Oct 2025 — Present
+                                    </p>
+                                </div>
                             </div>
 
                         </div>
@@ -165,7 +198,7 @@ const About = ({ data }) => {
                 </section>
 
                 {/* Closing Statement */}
-                <section className="text-center bg-white/5 border border-white/10 rounded-3xl p-12 md:p-20 py-8">
+                <section className="text-center bg-white/5 border border-white/20 rounded-3xl p-12 md:p-20 py-8">
                     <h2 className="text-3xl md:text-5xl font-bold mb-8 tracking-tight">Ready to build something extraordinary?</h2>
                     <div className="flex flex-wrap justify-center gap-6">
                         <a href="/projects" className="btn-primary">

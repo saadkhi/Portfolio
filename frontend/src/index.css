@@ -12,8 +12,8 @@ html {
   --color-secondary-accent: #7a3e00;
   --color-text-primary: #ffffff;
   --color-text-secondary: #a1a1aa;
-  --color-glass-border: rgba(255, 255, 255, 0.05);
-  --color-glass-highlight: rgba(255, 255, 255, 0.1);
+  --color-glass-border: rgba(255, 255, 255, 0.15);
+  --color-glass-highlight: rgba(255, 255, 255, 0.3);
 
   --font-heading: "Space Grotesk", sans-serif;
   --font-body: "Inter", sans-serif;
@@ -40,7 +40,7 @@ html {
 
 @layer components {
   .glass-card {
-    @apply bg-bg-card border border-glass-border backdrop-blur-md rounded-3xl transition-all duration-300 hover:border-glass-highlight;
+    @apply bg-bg-card border border-glass-border backdrop-blur-md rounded-3xl transition-all duration-300 hover:border-glass-highlight hover:shadow-[0_0_30px_rgba(255, 255, 255, 0.05)];
   }
 
   .glow-text {

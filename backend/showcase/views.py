@@ -1,6 +1,7 @@
 from django.http import JsonResponse
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, throttle_classes
 from rest_framework.permissions import AllowAny
+from rest_framework.throttling import AnonRateThrottle
 from rest_framework.response import Response
 from rest_framework import status
 import requests
@@ -10,8 +11,12 @@ from .serializers import ContactFormSerializer
 
 logger = logging.getLogger(__name__)
 
+class ContactRateThrottle(AnonRateThrottle):
+    scope = 'contact'
+
 @api_view(['POST'])
 @permission_classes([AllowAny])
+@throttle_classes([ContactRateThrottle])
 def contact_form_submission(request):
     """
     Handles contact form submissions, validates data, and proxies to Google Sheets.

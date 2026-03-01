@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import myPic from '../assets/my_pic.png';
 import { scrollToSection } from '../utils/scrollTo';
+import { getCookie } from '../utils/csrf';
 
 const Home = ({ data }) => {
     const navigate = useNavigate();
@@ -56,6 +57,7 @@ const Home = ({ data }) => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    "X-CSRFToken": getCookie('csrftoken'),
                 },
                 signal: controller.signal,
                 body: JSON.stringify({
@@ -95,8 +97,8 @@ const Home = ({ data }) => {
                 className="min-h-[90vh] flex items-center relative px-8 overflow-hidden"
             >
                 {/* Background Glow Name */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -z-10 select-none opacity-[0.03]">
-                    <h1 className="text-[20vw] font-bold leading-none uppercase tracking-tighter">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -z-10 select-none opacity-[0.04]">
+                    <h1 className="md:text-[50vw] lg:text-[40vw] xl:text-[40vw] font-bold leading-none uppercase tracking-tighter">
                         {data.hero.name}
                     </h1>
                 </div>
@@ -181,14 +183,14 @@ const Home = ({ data }) => {
                                 <span className="text-xs font-bold uppercase tracking-widest text-primary-accent mb-4 block">{project.category}</span>
                                 <div className="flex justify-between items-start gap-4">
                                     <h3 className="text-3xl md:text-4xl font-bold mb-4">{project.title}</h3>
-                                    <a href={project.live_link} className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 flex items-center justify-center hover:bg-white/20 hover:border-white/40 transition-all">
+                                    <a href={project.live_link} className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 flex items-center justify-center hover:bg-white/20 hover:border-white/20 transition-all">
                                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
                                     </a>
                                 </div>
                                 <p className="text-text-secondary text-lg mb-8 max-w-[600px]">{project.description}</p>
                                 <div className="flex flex-wrap gap-2">
                                     {project.tech_stack.split(',').map((tech, i) => (
-                                        <span key={i} className="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-[10px] font-bold uppercase tracking-wider">{tech.trim()}</span>
+                                        <span key={i} className="px-3 py-1 bg-white/5 border border-white/20 rounded-full text-[10px] font-bold uppercase tracking-wider">{tech.trim()}</span>
                                     ))}
                                 </div>
                             </div>
@@ -262,7 +264,7 @@ const Home = ({ data }) => {
                                 Let's Chat About <br /> Your Next Big Idea.
                             </h2>
 
-                            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-full mb-8 w-fit">
+                            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/20 rounded-full mb-8 w-fit">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary-accent"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
                                 <span className="text-xs font-bold uppercase tracking-widest">60 Minute Session</span>
                             </div>
@@ -316,7 +318,7 @@ const Home = ({ data }) => {
                                         value={formData.email}
                                         onChange={handleChange}
                                         placeholder="your@email.com"
-                                        className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-primary-accent transition-colors"
+                                        className="w-full bg-white/5 border border-white/20 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-primary-accent transition-colors"
                                     />
                                 </div>
                                 <div className="space-y-2">
@@ -325,7 +327,7 @@ const Home = ({ data }) => {
                                         id="purpose"
                                         value={formData.purpose}
                                         onChange={handleChange}
-                                        className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-primary-accent transition-colors appearance-none"
+                                        className="w-full bg-white/5 border border-white/20 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-primary-accent transition-colors appearance-none"
                                     >
                                         <option value="" className="bg-bg-dark">Select a purpose</option>
                                         <option value="project" className="bg-bg-dark">New Project</option>
@@ -343,7 +345,7 @@ const Home = ({ data }) => {
                                     onChange={handleChange}
                                     placeholder="Your message"
                                     rows="4"
-                                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-primary-accent transition-colors"
+                                    className="w-full bg-white/5 border border-white/20 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-primary-accent transition-colors"
                                 ></textarea>
                             </div>
 
@@ -374,7 +376,7 @@ const Home = ({ data }) => {
 
                         <div className="space-y-8">
                             <div className="flex items-start gap-6 group">
-                                <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-primary-accent group-hover:bg-primary-accent group-hover:text-black transition-all duration-300 shadow-lg">
+                                <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/20 flex items-center justify-center text-primary-accent group-hover:bg-primary-accent group-hover:text-black transition-all duration-300 shadow-lg">
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
                                 </div>
                                 <div>
@@ -384,7 +386,7 @@ const Home = ({ data }) => {
                             </div>
 
                             <div className="flex items-start gap-6 group">
-                                <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-primary-accent group-hover:bg-primary-accent group-hover:text-black transition-all duration-300 shadow-lg">
+                                <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/20 flex items-center justify-center text-primary-accent group-hover:bg-primary-accent group-hover:text-black transition-all duration-300 shadow-lg">
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
                                 </div>
                                 <div>
@@ -394,7 +396,7 @@ const Home = ({ data }) => {
                             </div>
 
                             <div className="flex items-start gap-6 group">
-                                <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-primary-accent group-hover:bg-primary-accent group-hover:text-black transition-all duration-300 shadow-lg">
+                                <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/20 flex items-center justify-center text-primary-accent group-hover:bg-primary-accent group-hover:text-black transition-all duration-300 shadow-lg">
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
                                 </div>
                                 <div>
@@ -428,7 +430,7 @@ const Home = ({ data }) => {
 
                             return (
                                 <a key={index} href={link.url} target="_blank" rel="noopener noreferrer" className="group flex flex-col items-center gap-3">
-                                    <div className={`w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-2xl group-hover:scale-110 group-hover:-translate-y-2 transition-all duration-300 ${getHoverColor(link.name)} overflow-hidden shadow-lg`}>
+                                    <div className={`w-16 h-16 rounded-2xl bg-white/5 border border-white/20 flex items-center justify-center text-2xl group-hover:scale-110 group-hover:-translate-y-2 transition-all duration-300 ${getHoverColor(link.name)} overflow-hidden shadow-lg`}>
                                         {link.icon_image ? (
                                             <img
                                                 src={link.icon_image.startsWith('http') ? link.icon_image : `${import.meta.env.VITE_API_URL}${link.icon_image}`}
