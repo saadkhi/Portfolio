@@ -19,6 +19,7 @@ html {
   --font-body: "Inter", sans-serif;
 
   --shadow-primary-glow: 0 0 20px rgba(255, 138, 0, 0.3);
+  --shadow-glass-hover: 0 0 30px rgba(255, 255, 255, 0.05);
 }
 
 @layer base {
@@ -40,7 +41,7 @@ html {
 
 @layer components {
   .glass-card {
-    @apply bg-bg-card border border-glass-border backdrop-blur-md rounded-3xl transition-all duration-300 hover:border-glass-highlight hover:shadow-[0_0_30px_rgba(255, 255, 255, 0.05)];
+    @apply bg-bg-card border border-glass-border backdrop-blur-md rounded-3xl transition-all duration-300 hover:border-glass-highlight hover:shadow-glass-hover;
   }
 
   .glow-text {

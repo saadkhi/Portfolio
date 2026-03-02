@@ -6,6 +6,8 @@ import Projects from './pages/Projects'
 import About from './pages/About'
 import ScrollToTop from './components/ScrollToTop'
 
+import ConnectionBackground from './components/ConnectionBackground'
+
 function App() {
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -41,6 +43,7 @@ function App() {
 
   return (
     <>
+      <ConnectionBackground />
       <ScrollToTop />
       <Navbar />
       <Routes>

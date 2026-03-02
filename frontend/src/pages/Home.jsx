@@ -97,11 +97,11 @@ const Home = ({ data }) => {
                 className="min-h-[90vh] flex items-center relative px-8 overflow-hidden"
             >
                 {/* Background Glow Name */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -z-10 select-none opacity-[0.04]">
+                {/* <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -z-10 select-none opacity-[0.04]">
                     <h1 className="md:text-[50vw] lg:text-[40vw] xl:text-[40vw] font-bold leading-none uppercase tracking-tighter">
                         {data.hero.name}
                     </h1>
-                </div>
+                </div> */}
 
                 <div className="max-w-[1200px] mx-auto w-full grid md:grid-cols-2 items-center gap-6">
 
