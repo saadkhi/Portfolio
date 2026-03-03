@@ -15,7 +15,8 @@ function App() {
   useEffect(() => {
     const controller = new AbortController()
 
-    fetch(`${import.meta.env.VITE_API_URL}/api/portfolio/`, { signal: controller.signal })
+    const API_URL = import.meta.env.VITE_API_URL || '';
+    fetch(`${API_URL}/api/portfolio/`, { signal: controller.signal })
       .then(response => {
         if (!response.ok) throw new Error('Network response was not ok')
         return response.json()

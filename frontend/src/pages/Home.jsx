@@ -51,7 +51,8 @@ const Home = ({ data }) => {
 
         try {
             const systemDate = new Date().toLocaleString();
-            const CONTACT_API_URL = `${import.meta.env.VITE_API_URL}/api/contact/`;
+            const API_URL = import.meta.env.VITE_API_URL || '';
+            const CONTACT_API_URL = `${API_URL}/api/contact/`;
 
             const response = await fetch(CONTACT_API_URL, {
                 method: "POST",
@@ -183,7 +184,7 @@ const Home = ({ data }) => {
                                 <span className="text-xs font-bold uppercase tracking-widest text-primary-accent mb-4 block">{project.category}</span>
                                 <div className="flex justify-between items-start gap-4">
                                     <h3 className="text-3xl md:text-4xl font-bold mb-4">{project.title}</h3>
-                                    <a href={project.live_link} className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 flex items-center justify-center hover:bg-white/20 hover:border-white/20 transition-all">
+                                    <a href={project.live_link} className="w-12 h-12 rounded-full bg-grey/10 backdrop-blur-xl border border-white/20 flex items-center justify-center hover:bg-white/20 hover:border-white/20 transition-all">
                                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
                                     </a>
                                 </div>

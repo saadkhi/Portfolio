@@ -2,12 +2,16 @@
     "version": 2,
     "builds": [
         {
-            "src": "backend/portfolio_core/wsgi.py",
+            "src": "api/index.py",
             "use": "@vercel/python",
             "config": {
                 "maxLambdaSize": "15mb",
                 "runtime": "python3.12"
             }
+        },
+        {
+            "src": "api/*.py",
+            "use": "@vercel/python"
         },
         {
             "src": "frontend/package.json",
@@ -20,22 +24,23 @@
     "routes": [
         {
             "src": "/api/(.*)",
-            "dest": "backend/portfolio_core/wsgi.py"
+            "dest": "api/index.py"
         },
         {
             "src": "/admin/(.*)",
-            "dest": "backend/portfolio_core/wsgi.py"
+            "dest": "api/index.py"
         },
         {
             "src": "/static/(.*)",
-            "dest": "backend/staticfiles/$1"
+            "dest": "api/staticfiles/$1"
         },
         {
             "src": "/media/(.*)",
-            "dest": "backend/media/$1"
+            "dest": "api/media/$1"
         },
         {
-            "handle": "filesystem"
+            "src": "/assets/(.*)",
+            "dest": "frontend/dist/assets/$1"
         },
         {
             "src": "/(.*)",
