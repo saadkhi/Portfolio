@@ -26,6 +26,7 @@ def contact_form_submission(request):
         return Response({
             'error': True,
             'message': 'Invalid form data.',
+            'code': 400,
             'details': serializer.errors
         }, status=status.HTTP_400_BAD_REQUEST)
 
@@ -36,7 +37,8 @@ def contact_form_submission(request):
         logger.error("GOOGLE_SHEETS_SCRIPT_URL not configured.")
         return Response({
             'error': True,
-            'message': 'Service temporarily unavailable.'
+            'message': 'Service temporarily unavailable.',
+            'code': 500
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     try:
@@ -62,11 +64,13 @@ def contact_form_submission(request):
         logger.error(f"Error proxying to Google Sheets: {str(e)}")
         return Response({
             'error': True,
-            'message': 'Failed to forward message. Please try again later.'
+            'message': 'Failed to forward message. Please try again later.',
+            'code': 503
         }, status=status.HTTP_503_SERVICE_UNAVAILABLE)
     except Exception as e:
         logger.error(f"Unexpected error in contact submission: {str(e)}")
         return Response({
             'error': True,
-            'message': 'An unexpected error occurred.'
+            'message': 'An unexpected error occurred.',
+            'code': 500
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
