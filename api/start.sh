@@ -3,8 +3,9 @@ set -e
 
 echo "🚀 Starting Railway Deployment Script..."
 
-# The repository root is at /app
-cd /app/api
+# Ensure we are in the api directory
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+cd "$DIR"
 
 echo "Environment Check:"
 echo "PORT: $PORT"
@@ -24,17 +25,15 @@ else
 fi
 
 echo "📦 Running Migrations..."
-# migrations should run from /app/api
 /opt/venv/bin/python manage.py migrate --noinput
 
 echo "🔥 Starting Gunicorn..."
-# Added access logging, trusted proxy ips, and shared memory for workers
 /opt/venv/bin/gunicorn portfolio_core.wsgi:application \
   --bind 0.0.0.0:${PORT:-8000} \
   --workers 2 \
   --threads 4 \
   --timeout 120 \
-  --log-level debug \
+  --log-level info \
   --access-logfile - \
   --error-logfile - \
   --forwarded-allow-ips="*" \

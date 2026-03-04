@@ -4,6 +4,8 @@ from rest_framework import status
 from django.conf import settings
 import logging
 
+from django.core.exceptions import ImproperlyConfigured
+
 logger = logging.getLogger(__name__)
 
 def custom_exception_handler(exc, context):
@@ -11,6 +13,16 @@ def custom_exception_handler(exc, context):
     Custom exception handler for Django REST Framework.
     Standardizes error responses across the API.
     """
+    # Handle Django core exceptions mapping to DRF
+    if isinstance(exc, ImproperlyConfigured):
+        logger.error(f"Configuration error: {str(exc)}")
+        return Response({
+            'error': True,
+            'message': 'Server configuration error.',
+            'code': 500,
+            'details': str(exc) if settings.DEBUG else None
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
     # Call REST framework's default exception handler first,
     # to get the standard error response.
     response = exception_handler(exc, context)

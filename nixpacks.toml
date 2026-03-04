@@ -9,14 +9,15 @@ nixPkgs = ["python311", "nodejs_22", "gcc"]
 cmds = [
   "python3 -m venv /opt/venv",
   "/opt/venv/bin/pip install -r api/requirements.txt",
-  "cd frontend && npm install"
+  "cd frontend && npm install --include=dev"
 ]
 
 [phases.build]
 cmds = [
   "cd frontend && npm run build",
+  "rm -rf api/frontend_dist",
   "mkdir -p api/frontend_dist",
-  "cp -a frontend/dist/. api/frontend_dist/",
+  "cp -r frontend/dist/* api/frontend_dist/",
   "export DJANGO_SETTINGS_MODULE=portfolio_core.settings && export SECRET_KEY=dummy && /opt/venv/bin/python api/manage.py collectstatic --noinput",
   "chmod +x api/start.sh"
 ]
