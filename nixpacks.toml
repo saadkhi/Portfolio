@@ -5,7 +5,7 @@ NIXPACKS_NODE_VERSION = "20"
 NIXPACKS_PYTHON_VERSION = "3.11"
 
 [phases.setup]
-nixPkgs = ["gcc"]
+nixPkgs = ["python311", "nodejs_20", "gcc"]
 
 [phases.install]
 cmds = ["python3 -m pip install -r api/requirements.txt", "cd frontend && npm install"]
