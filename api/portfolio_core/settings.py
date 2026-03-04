@@ -92,10 +92,16 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Serve Vite build output at the root (required for assets like /assets/...)
+WHITENOISE_ROOT = os.path.join(BASE_DIR, 'frontend_dist')
+
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'frontend_dist', 'assets'),
+    os.path.join(BASE_DIR, 'frontend_dist'),
 ]
+
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 
 # Media files
 MEDIA_URL = '/media/'

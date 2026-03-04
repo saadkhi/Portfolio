@@ -1,8 +1,18 @@
 #!/bin/bash
 set -e
-echo "🚀 Starting Railway Deployment..."
 
+echo "🚀 Starting Railway Deployment Script..."
+
+# Check current directory
+echo "Current directory: $(pwd)"
+ls -la
+
+# The repository root is at /app
 cd /app/api
+
+echo "Environment Check:"
+echo "PORT: $PORT"
+echo "PYTHON_PATH: $(which python)"
 
 echo "📦 Running Migrations..."
 /opt/venv/bin/python manage.py migrate --noinput
