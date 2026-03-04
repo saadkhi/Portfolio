@@ -9,3 +9,4 @@ psycopg2-binary==2.9.10
 Pillow==11.1.0
 python-dotenv
 requests
+gunicorn==23.0.0
