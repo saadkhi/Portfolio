@@ -15,7 +15,13 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'fallback-dev-key-change-in-production
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
+# ALLOWED_HOSTS handling
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
+if '*' not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append('localhost')
+    ALLOWED_HOSTS.append('127.0.0.1')
+    # Add common railway patterns
+    ALLOWED_HOSTS.append('.up.railway.app')
 
 # Application definition
 INSTALLED_APPS = [
@@ -66,7 +72,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'portfolio_core.wsgi.application'
 
 # Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 DATABASES = {
     'default': dj_database_url.config(
         default=os.environ.get('DATABASE_URL', f'sqlite:///{BASE_DIR}/db.sqlite3'),
@@ -102,7 +107,6 @@ STATICFILES_DIRS = [
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-
 # Media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -114,7 +118,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOWED_ORIGINS = os.environ.get('CORS_ALLOWED_ORIGINS', 'http://localhost:5173').split(',')
 CORS_ALLOW_ALL_ORIGINS = os.environ.get('DEBUG', 'False') == 'True'
 
-# REST Framework settings (Retained from original)
+# CSRF Trusted Origins
+CSRF_TRUSTED_ORIGINS = os.environ.get('CSRF_TRUSTED_ORIGINS', 'https://*.up.railway.app').split(',')
+
+# REST Framework settings (Retained)
 REST_FRAMEWORK = {
     'EXCEPTION_HANDLER': 'portfolio_core.exceptions.custom_exception_handler',
     'DEFAULT_PERMISSION_CLASSES': [
@@ -130,3 +137,12 @@ REST_FRAMEWORK = {
         'contact': '5/hour',
     }
 }
+
+# Production Security
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    X_FRAME_OPTIONS = 'DENY'

@@ -15,10 +15,10 @@ cmds = [
 [phases.build]
 cmds = [
   "cd frontend && npm run build",
-  "cp -r frontend/dist api/frontend_dist",
+  "mkdir -p api/frontend_dist",
+  "cp -a frontend/dist/. api/frontend_dist/",
   "chmod +x api/start.sh"
 ]
 
 [start]
 cmd = "bash api/start.sh"
-
