@@ -10,10 +10,6 @@
             }
         },
         {
-            "src": "api/*.py",
-            "use": "@vercel/python"
-        },
-        {
             "src": "frontend/package.json",
             "use": "@vercel/static-build",
             "config": {
@@ -43,7 +39,7 @@
         },
         {
             "src": "/(.*)",
-            "dest": "/index.html"
+            "dest": "index.html"
         }
     ]
 }
