@@ -1,0 +1,9 @@
+# Nixpacks configuration for Django + React Monorepo
+[phases.setup]
+nixPkgs = ["python312", "nodejs", "gcc"]
+
+[phases.build]
+cmds = ["chmod +x build.sh && ./build.sh", "pip install -r api/requirements.txt"]
+
+[start]
+cmd = "chmod +x api/start.sh && cd api && ./start.sh"
