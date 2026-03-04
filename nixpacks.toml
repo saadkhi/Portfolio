@@ -20,4 +20,5 @@ cmds = [
 ]
 
 [start]
-cmd = "bash /app/api/start.sh"
+cmd = "bash api/start.sh"
+
