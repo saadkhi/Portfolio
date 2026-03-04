@@ -1,5 +1,3 @@
-providers = ["python", "node"]
-
 [phases.setup]
 nixPkgs = ["python311", "python311Packages.pip", "nodejs_20", "gcc"]
 
