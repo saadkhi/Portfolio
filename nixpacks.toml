@@ -1,21 +1,23 @@
 [variables]
 NIXPACKS_PYTHON_VERSION = "3.11"
+NODE_VERSION = "22"
 
 [phases.setup]
 nixPkgs = ["python311", "nodejs_22", "gcc"]
 
 [phases.install]
 cmds = [
-    "python3 -m venv /opt/venv",
-    "/opt/venv/bin/pip install -r api/requirements.txt",
-    "cd frontend && npm install"
+  "python3 -m venv /opt/venv",
+  "/opt/venv/bin/pip install -r api/requirements.txt",
+  "cd frontend && npm install"
 ]
 
 [phases.build]
 cmds = [
-    "cd frontend && npm run build",
-    "chmod +x api/start.sh"
+  "cd frontend && npm run build",
+  "cp -r frontend/dist api/frontend_dist",
+  "chmod +x api/start.sh"
 ]
 
 [start]
-cmd = "PATH=/opt/venv/bin:$PATH ./api/start.sh"
+cmd = "bash /app/api/start.sh"

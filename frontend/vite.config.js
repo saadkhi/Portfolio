@@ -8,11 +8,20 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  base: '/',
+  build: {
+    outDir: 'dist',
+    emptyOutDir: true,
+  },
   server: {
     proxy: {
-      '/admin': 'http://127.0.0.1:8000',
-      '/static/admin': 'http://127.0.0.1:8000',
-      '/media': 'http://127.0.0.1:8000',
+      '/api': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+      },
+      '/admin': 'http://localhost:8000',
+      '/static/admin': 'http://localhost:8000',
+      '/media': 'http://localhost:8000',
     }
   }
 })
