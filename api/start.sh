@@ -29,11 +29,12 @@ echo "📦 Running Migrations..."
 
 echo "🔥 Starting Gunicorn..."
 /opt/venv/bin/gunicorn portfolio_core.wsgi:application \
-  --bind 0.0.0.0:${PORT:-8000} \
-  --workers 3 \
-  --timeout 120 \
+  --bind 0.0.0.0:${PORT:-8080} \
+  --workers 2 \
+  --threads 4 \
+  --worker-class gthread \
+  --timeout 60 \
   --log-level debug \
   --access-logfile - \
   --error-logfile - \
-  --forwarded-allow-ips="*" \
-  --worker-tmp-dir /dev/shm
+  --forwarded-allow-ips="*"
