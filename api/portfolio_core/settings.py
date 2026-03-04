@@ -15,13 +15,8 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'fallback-dev-key-change-in-production
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-# ALLOWED_HOSTS handling
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
-if '*' not in ALLOWED_HOSTS:
-    ALLOWED_HOSTS.append('localhost')
-    ALLOWED_HOSTS.append('127.0.0.1')
-    # Add common railway patterns
-    ALLOWED_HOSTS.append('.up.railway.app')
+# ALLOWED_HOSTS for Railway
+ALLOWED_HOSTS = ['*'] # Set to * for debugging to eliminate host header issues
 
 # Application definition
 INSTALLED_APPS = [
@@ -50,6 +45,10 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'portfolio_core.urls'
+
+# SECURE_PROXY_SSL_HEADER tells Django that the requests are coming over HTTPS
+# via Railway's load balancer.
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 TEMPLATES = [
     {
@@ -121,26 +120,18 @@ CORS_ALLOW_ALL_ORIGINS = os.environ.get('DEBUG', 'False') == 'True'
 # CSRF Trusted Origins
 CSRF_TRUSTED_ORIGINS = os.environ.get('CSRF_TRUSTED_ORIGINS', 'https://*.up.railway.app').split(',')
 
-# REST Framework settings (Retained)
+# REST Framework settings
 REST_FRAMEWORK = {
     'EXCEPTION_HANDLER': 'portfolio_core.exceptions.custom_exception_handler',
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     ],
-    'DEFAULT_THROTTLE_CLASSES': [
-        'rest_framework.throttling.AnonRateThrottle',
-        'rest_framework.throttling.UserRateThrottle'
-    ],
-    'DEFAULT_THROTTLE_RATES': {
-        'anon': '100/day',
-        'user': '1000/day',
-        'contact': '5/hour',
-    }
 }
 
 # Production Security
 if not DEBUG:
-    SECURE_SSL_REDIRECT = True
+    # Disable redirect for now to eliminate loop possibility during health check
+    SECURE_SSL_REDIRECT = False 
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_BROWSER_XSS_FILTER = True

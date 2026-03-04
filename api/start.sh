@@ -14,7 +14,6 @@ echo "Current directory: $(pwd)"
 echo "Checking for frontend_dist..."
 if [ -d "frontend_dist" ]; then
     echo "✅ frontend_dist found."
-    ls -la frontend_dist
     if [ -f "frontend_dist/index.html" ]; then
         echo "✅ index.html found."
     else
@@ -27,12 +26,11 @@ fi
 echo "📦 Running Migrations..."
 /opt/venv/bin/python manage.py migrate --noinput
 
-echo "📁 Collecting Static Files..."
-/opt/venv/bin/python manage.py collectstatic --noinput
-
 echo "🔥 Starting Gunicorn..."
+# Added --log-level debug and eliminated collectstatic to speed up startup
 /opt/venv/bin/gunicorn portfolio_core.wsgi:application \
   --bind 0.0.0.0:${PORT:-8000} \
   --workers 2 \
   --threads 4 \
-  --timeout 60
+  --timeout 60 \
+  --log-level debug
