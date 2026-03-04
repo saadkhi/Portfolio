@@ -115,7 +115,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # CORS settings
-CORS_ALLOWED_ORIGINS = os.environ.get('CORS_ALLOWED_ORIGINS', 'http://localhost:5173').split(',')
+_raw_origins = os.environ.get('CORS_ALLOWED_ORIGINS', 'http://localhost:5173').split(',')
+CORS_ALLOWED_ORIGINS = [o.strip() if '://' in o else f'https://{o.strip()}' for o in _raw_origins if o.strip()]
 CORS_ALLOW_ALL_ORIGINS = os.environ.get('DEBUG', 'False') == 'True'
 
 # CSRF Trusted Origins
