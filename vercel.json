@@ -17,29 +17,26 @@
             }
         }
     ],
-    "routes": [
+    "rewrites": [
         {
-            "src": "/api/(.*)",
-            "dest": "api/index.py"
+            "source": "/api/(.*)",
+            "destination": "api/index.py"
         },
         {
-            "src": "/admin/(.*)",
-            "dest": "api/index.py"
+            "source": "/admin/(.*)",
+            "destination": "api/index.py"
         },
         {
-            "src": "/static/(.*)",
-            "dest": "api/staticfiles/$1"
+            "source": "/static/(.*)",
+            "destination": "/api/staticfiles/$1"
         },
         {
-            "src": "/media/(.*)",
-            "dest": "api/media/$1"
+            "source": "/media/(.*)",
+            "destination": "/api/media/$1"
         },
         {
-            "handle": "filesystem"
-        },
-        {
-            "src": "/(.*)",
-            "dest": "index.html"
+            "source": "/(.*)",
+            "destination": "/index.html"
         }
     ]
 }
