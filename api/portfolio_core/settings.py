@@ -16,7 +16,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'fallback-dev-key-change-in-production
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 # ALLOWED_HOSTS for Railway
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 INSTALLED_APPS = [
@@ -105,6 +105,7 @@ STATICFILES_DIRS = [
 ]
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+WHITENOISE_MANIFEST_STRICT = False
 
 # Media files
 MEDIA_URL = '/media/'
@@ -135,12 +136,12 @@ REST_FRAMEWORK = {
 
 # Production Security
 if not DEBUG:
-    SECURE_SSL_REDIRECT = True 
+    # Set to False to prevent health check redirect loops/failures
+    SECURE_SSL_REDIRECT = False 
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
     X_FRAME_OPTIONS = 'DENY'
-    SECURE_HSTS_SECONDS = 31536000
-    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-    SECURE_HSTS_PRELOAD = True
+    # HSTS can be enabled once stable
+    SECURE_HSTS_SECONDS = 0 
