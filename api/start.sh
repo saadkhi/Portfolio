@@ -24,13 +24,18 @@ else
 fi
 
 echo "📦 Running Migrations..."
+# migrations should run from /app/api
 /opt/venv/bin/python manage.py migrate --noinput
 
 echo "🔥 Starting Gunicorn..."
-# Added --log-level debug and eliminated collectstatic to speed up startup
+# Added access logging, trusted proxy ips, and shared memory for workers
 /opt/venv/bin/gunicorn portfolio_core.wsgi:application \
   --bind 0.0.0.0:${PORT:-8000} \
   --workers 2 \
   --threads 4 \
-  --timeout 60 \
-  --log-level debug
+  --timeout 120 \
+  --log-level debug \
+  --access-logfile - \
+  --error-logfile - \
+  --forwarded-allow-ips="*" \
+  --worker-tmp-dir /dev/shm
