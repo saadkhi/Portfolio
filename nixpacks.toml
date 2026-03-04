@@ -1,8 +1,8 @@
 [phases.setup]
-nixPkgs = ["python312", "nodejs", "gcc"]
+nixPkgs = ["python311Full", "nodejs", "gcc"]
 
 [phases.install]
-cmds = ["python -m pip install -r api/requirements.txt || python3 -m pip install -r api/requirements.txt", "cd frontend && npm install"]
+cmds = ["python3 -m pip install -r api/requirements.txt", "cd frontend && npm install"]
 
 [phases.build]
 cmds = ["chmod +x build.sh && ./build.sh"]
