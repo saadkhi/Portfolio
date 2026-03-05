@@ -20,7 +20,7 @@ echo "Collecting static files..."
 python3 manage.py collectstatic --noinput --clear
 
 echo "🔥 Starting Gunicorn..."
-gunicorn portfolio_core.wsgi:application \
+exec gunicorn portfolio_core.wsgi:application \
   --bind 0.0.0.0:${PORT:-8080} \
   --workers 1 \
   --threads 1 \
