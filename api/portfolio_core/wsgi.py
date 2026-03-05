@@ -11,7 +11,10 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
+print("DEBUG: wsgi.py starting...")
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'portfolio_core.settings')
 
+print("DEBUG: Fetching WSGI application...")
 application = get_wsgi_application()
 app = application
+print("DEBUG: WSGI application loaded.")

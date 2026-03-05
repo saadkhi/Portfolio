@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+print(f"DEBUG: settings.py loading. BASE_DIR: {BASE_DIR}")
 
 # Load environment variables
 load_dotenv(os.path.join(BASE_DIR, '.env'))
