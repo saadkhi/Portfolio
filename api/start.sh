@@ -7,19 +7,16 @@ echo "🚀 Starting Railway Deployment Script..."
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 cd "$DIR"
 
-echo "Environment Check:"
-echo "PORT: $PORT"
-echo "PYTHON_PATH: $(which python)"
-echo "Current directory: $(pwd)"
+echo "Building React frontend..."
+cd ../frontend
+npm install
+npm run build
+cd ../api
 
-echo "Environment Check:"
-echo "PORT: $PORT"
-echo "PYTHON_PATH: $(which python)"
-echo "Current directory: $(pwd)"
-
-echo "📦 Preparing environment..."
-mkdir -p staticfiles media
+echo "Running migrations..."
 /opt/venv/bin/python manage.py migrate --noinput
+
+echo "Collecting static files..."
 /opt/venv/bin/python manage.py collectstatic --noinput --clear
 
 echo "🔥 Starting Gunicorn..."
