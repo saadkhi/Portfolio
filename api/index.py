@@ -1,12 +1,13 @@
 import os
-import json
 import logging
-from typing import Optional, List
-from fastapi import FastAPI, HTTPException, Request
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, EmailStr
-import requests
+from flask import Flask, jsonify, request, send_from_directory
+from flask_sqlalchemy import SQLAlchemy
+from flask_admin import Admin
+from flask_admin.contrib.sqla import ModelView
+from flask_cors import CORS
 from dotenv import load_dotenv
+import requests
+from models import db, Profile, Project, Skill, SocialLink
 
 # Load environment variables
 load_dotenv()
@@ -15,111 +16,145 @@ load_dotenv()
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-app = FastAPI(title="Portfolio API")
+app = Flask(__name__)
+CORS(app)
 
-# Configure CORS
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # Adjust this for production
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# Configuration
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'a-very-secret-key')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(BASE_DIR, 'portfolio.db')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
 
-# Constants
-DATA_FILE = os.path.join(os.path.dirname(__file__), "data.json")
+# Initialize Database
+db.init_app(app)
 
-# Models for Request Validation
-class ContactForm(BaseModel):
-    name: str
-    email: EmailStr
-    message: str
-    purpose: str
-    date: Optional[str] = ""
+# Initialize Admin
+admin = Admin(app, name='Portfolio Admin', template_mode='bootstrap3')
 
-def load_data():
-    try:
-        with open(DATA_FILE, 'r') as f:
-            return json.load(f)
-    except FileNotFoundError:
-        logger.error(f"Data file not found at {DATA_FILE}")
-        return {}
-    except json.JSONDecodeError:
-        logger.error(f"Error decoding JSON from {DATA_FILE}")
-        return {}
+class BaseFileView(ModelView):
+    """Custom view for models with file fields to show better in admin if needed"""
+    pass
 
-@app.get("/api/portfolio/")
-@app.get("/api/portfolio")
-async def get_portfolio():
-    data = load_data()
-    if not data:
-        raise HTTPException(status_code=500, detail="Portfolio data unavailable")
+admin.add_view(ModelView(Profile, db.session))
+admin.add_view(ModelView(Project, db.session))
+admin.add_view(ModelView(Skill, db.session))
+admin.add_view(ModelView(SocialLink, db.session))
 
-    profile = data.get('profile', {})
-    projects = data.get('projects', [])
-    skills = data.get('skills', [])
-    social_links = data.get('social_links', [])
+# Serve Media Files
+@app.route('/media/<path:filename>')
+def serve_media(filename):
+    return send_from_directory(os.path.join(BASE_DIR, 'media'), filename)
 
-    featured_projects = [p for p in projects if p.get('is_featured')][:3]
-    latest_projects = [p for p in projects if not p.get('is_featured')][:6]
+@app.route('/api/portfolio/', methods=['GET'])
+@app.route('/api/portfolio', methods=['GET'])
+def get_portfolio():
+    profile = Profile.query.first()
+    if not profile:
+        return jsonify({"error": "Profile not found"}), 404
 
-    return {
+    projects = Project.query.order_by(Project.created_at.desc()).all()
+    skills = Skill.query.order_by(Skill.order).all()
+    social_links = SocialLink.query.order_by(SocialLink.order).all()
+
+    featured_projects = []
+    latest_projects = []
+    
+    for p in projects:
+        p_dict = {
+            "id": p.id,
+            "title": p.title,
+            "description": p.description,
+            "tech_stack": p.tech_stack,
+            "image": f"/media/{p.image}" if p.image and not p.image.startswith('http') and not p.image.startswith('/') else p.image,
+            "video": f"/media/{p.video}" if p.video and not p.video.startswith('http') and not p.video.startswith('/') else p.video,
+            "live_link": p.live_link,
+            "category": p.category,
+            "is_featured": p.is_featured
+        }
+        if p.is_featured:
+            featured_projects.append(p_dict)
+        else:
+            latest_projects.append(p_dict)
+
+    return jsonify({
         "hero": {
-            "name": profile.get("name", "Saad"),
-            "title": profile.get("title", "Software Engineer"),
+            "name": profile.name,
+            "title": profile.title,
             "subtitle": "AI & Software Engineer",
             "cta_primary": "See My Work",
             "cta_secondary": "Get in Touch",
-            "resume_url": profile.get("resume_file")
+            "resume_url": f"/media/{profile.resume_file}" if profile.resume_file and not str(profile.resume_file).startswith('/') else profile.resume_file
         },
         "about": {
             "title": "About Me",
-            "description": profile.get("bio") or "I'm a software engineer focused on building clean, scalable backends..."
+            "description": profile.bio or "I'm a software engineer focused on building clean, scalable backends..."
         },
-        "skills": skills,
-        "social_links": social_links,
-        "featured_projects": featured_projects,
-        "latest_projects": latest_projects,
+        "skills": [{
+            "id": s.id,
+            "name": s.name,
+            "icon": f"/media/{s.icon}" if s.icon and not s.icon.startswith('http') and not s.icon.startswith('fa') and not s.icon.startswith('/') else s.icon,
+            "order": s.order
+        } for s in skills],
+        "social_links": [{
+            "id": sl.id,
+            "name": sl.name,
+            "url": sl.url,
+            "icon_class": sl.icon_class,
+            "icon_image": f"/media/{sl.icon_image}" if sl.icon_image and not sl.icon_image.startswith('/') else sl.icon_image
+        } for sl in social_links],
+        "featured_projects": featured_projects[:3],
+        "latest_projects": latest_projects[:6],
         "contact": {
-            "email": profile.get("email") or "saadalioffic@gmail.com",
-            "phone": profile.get("phone_number") or "+92 300 1234567",
-            "location": profile.get("location") or "Karachi, Pakistan",
+            "email": profile.email or "saadalioffic@gmail.com",
+            "phone": profile.phone_number or "",
+            "location": profile.location or "Karachi, Pakistan",
             "linkedin": "https://linkedin.com/in/saadkhi",
             "github": "https://github.com/saadkhi"
         }
-    }
+    })
 
-@app.post("/api/contact/")
-@app.post("/api/contact")
-async def contact_form_submission(form_data: ContactForm):
+@app.route('/api/projects/', methods=['GET'])
+@app.route('/api/projects', methods=['GET'])
+def get_projects():
+    projects = Project.query.order_by(Project.created_at.desc()).all()
+    return jsonify([{
+        "id": p.id,
+        "title": p.title,
+        "description": p.description,
+        "tech_stack": p.tech_stack,
+        "image": f"/media/{p.image}" if p.image and not p.image.startswith('http') and not p.image.startswith('/') else p.image,
+        "video": f"/media/{p.video}" if p.video and not p.video.startswith('http') and not p.video.startswith('/') else p.video,
+        "live_link": p.live_link,
+        "category": p.category,
+        "is_featured": p.is_featured
+    } for p in projects])
+
+@app.route('/api/contact/', methods=['POST'])
+@app.route('/api/contact', methods=['POST'])
+def contact_form_submission():
+    data = request.json
     google_script_url = os.environ.get('GOOGLE_SHEETS_SCRIPT_URL')
     
     if not google_script_url:
         logger.error("GOOGLE_SHEETS_SCRIPT_URL not configured.")
-        raise HTTPException(status_code=500, detail="Service temporarily unavailable.")
+        return jsonify({'error': True, 'message': 'Service temporarily unavailable.'}), 500
     
     try:
-        proxy_data = {
-            'email': form_data.email,
-            'purpose': form_data.purpose,
-            'message': form_data.message,
-            'date': form_data.date
-        }
-        
-        response = requests.post(google_script_url, json=proxy_data, timeout=10)
-        
-        return {
+        response = requests.post(google_script_url, json=data, timeout=10)
+        return jsonify({
             'error': False,
             'message': 'Message sent successfully!'
-        }
-
+        })
     except requests.exceptions.RequestException as e:
         logger.error(f"Error proxying to Google Sheets: {str(e)}")
-        raise HTTPException(status_code=503, detail="Failed to forward message. Please try again later.")
-    except Exception as e:
-        logger.error(f"Unexpected error in contact submission: {str(e)}")
-        raise HTTPException(status_code=500, detail="An unexpected error occurred.")
+        return jsonify({'error': True, 'message': 'Failed to forward message.'}), 503
 
-@app.get("/health")
-async def health_check():
-    return {"status": "ok"}
+@app.route('/health')
+def health_check():
+    return jsonify({"status": "ok"})
+
+if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
+    app.run(host='0.0.0.0', port=5000, debug=True)
