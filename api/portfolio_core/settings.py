@@ -70,11 +70,10 @@ WSGI_APPLICATION = 'portfolio_core.wsgi.application'
 
 # Database
 DATABASES = {
-    'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL', f'sqlite:///{BASE_DIR}/db.sqlite3'),
-        conn_max_age=600,
-        ssl_require=os.environ.get('DATABASE_SSL', 'False') == 'True'
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
 
 # Password validation
@@ -95,18 +94,20 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# Ensure directories exist to prevent warnings
+# React frontend build directory
+FRONTEND_DIST = os.path.join(BASE_DIR.parent, 'frontend', 'dist')
+
+STATICFILES_DIRS = [
+    FRONTEND_DIST,
+]
+
+# Ensure directories exist
 os.makedirs(STATIC_ROOT, exist_ok=True)
 os.makedirs(os.path.join(BASE_DIR, 'media'), exist_ok=True)
 
-# In standalone API mode, WhiteNoise only serves Django static files (like admin)
-# We do not serve the frontend build here anymore.
-
-STATICFILES_DIRS = []
-
+# WhiteNoise Configuration
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 WHITENOISE_MANIFEST_STRICT = False
-# Allow cross-origin requests for static assets if needed
 WHITENOISE_ALLOW_ALL_ORIGINS = True
 
 # Media files

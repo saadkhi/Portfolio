@@ -51,8 +51,7 @@ const Home = ({ data }) => {
 
         try {
             const systemDate = new Date().toLocaleString();
-            const API_URL = import.meta.env.VITE_API_URL || '';
-            const CONTACT_API_URL = `${API_URL}/api/contact/`;
+            const CONTACT_API_URL = `/api/contact/`;
 
             const response = await fetch(CONTACT_API_URL, {
                 method: "POST",
@@ -434,7 +433,7 @@ const Home = ({ data }) => {
                                     <div className={`w-16 h-16 rounded-2xl bg-white/5 border border-white/20 flex items-center justify-center text-2xl group-hover:scale-110 group-hover:-translate-y-2 transition-all duration-300 ${getHoverColor(link.name)} overflow-hidden shadow-lg`}>
                                         {link.icon_image ? (
                                             <img
-                                                src={link.icon_image.startsWith('http') ? link.icon_image : `${import.meta.env.VITE_API_URL}${link.icon_image}`}
+                                                src={link.icon_image.startsWith('http') ? link.icon_image : link.icon_image}
                                                 alt={link.name}
                                                 className="w-8 h-8 object-contain"
                                             />

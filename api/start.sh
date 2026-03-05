@@ -25,11 +25,9 @@ mkdir -p staticfiles media
 echo "🔥 Starting Gunicorn..."
 exec /opt/venv/bin/gunicorn portfolio_core.wsgi:application \
   --bind 0.0.0.0:${PORT:-8080} \
-  --workers 2 \
+  --workers 1 \
+  --threads 1 \
   --worker-class sync \
-  --preload \
-  --timeout 120 \
-  --log-level debug \
-  --access-logfile - \
-  --error-logfile - \
+  --timeout 60 \
+  --log-level info \
   --forwarded-allow-ips="*"
