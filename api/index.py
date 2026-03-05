@@ -1,5 +1,6 @@
 import os
 import logging
+import sys
 from flask import Flask, jsonify, request, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from flask_admin import Admin
@@ -7,6 +8,9 @@ from flask_admin.contrib.sqla import ModelView
 from flask_cors import CORS
 from dotenv import load_dotenv
 import requests
+
+# Ensure the local directory is in the path for Vercel
+sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from models import db, Profile, Project, Skill, SocialLink
 
 # Load environment variables
