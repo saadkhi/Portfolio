@@ -3,6 +3,15 @@ import dj_database_url
 from pathlib import Path
 from dotenv import load_dotenv
 
+class DebugMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+    def __call__(self, request):
+        print(f"DEBUG: INCOMING REQUEST: {request.method} {request.path}")
+        response = self.get_response(request)
+        print(f"DEBUG: OUTGOING RESPONSE: {response.status_code}")
+        return response
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 print(f"DEBUG: settings.py loading. BASE_DIR: {BASE_DIR}")
@@ -34,6 +43,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'portfolio_core.settings.DebugMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'corsheaders.middleware.CorsMiddleware',

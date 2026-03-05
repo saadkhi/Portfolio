@@ -28,7 +28,7 @@ echo "📦 Running Migrations..."
 /opt/venv/bin/python manage.py migrate --noinput
 
 echo "🔥 Starting Gunicorn..."
-/opt/venv/bin/gunicorn portfolio_core.wsgi:application \
+exec /opt/venv/bin/gunicorn portfolio_core.wsgi:application \
   --bind 0.0.0.0:${PORT:-8080} \
   --workers 2 \
   --worker-class sync \

@@ -7,6 +7,7 @@ from django.conf.urls.static import static
 from django.http import HttpResponse
 
 def health_check(request):
+    print("DEBUG: HEALTH CHECK HIT!")
     return HttpResponse("OK")
 
 urlpatterns = [
