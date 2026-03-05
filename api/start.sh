@@ -20,7 +20,7 @@ echo "Current directory: $(pwd)"
 echo "📦 Preparing environment..."
 mkdir -p staticfiles media
 /opt/venv/bin/python manage.py migrate --noinput
-/opt/venv/bin/python manage.py collectstatic --noinput
+/opt/venv/bin/python manage.py collectstatic --noinput --clear
 
 echo "🔥 Starting Gunicorn..."
 exec /opt/venv/bin/gunicorn portfolio_core.wsgi:application \

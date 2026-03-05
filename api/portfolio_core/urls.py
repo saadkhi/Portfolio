@@ -15,10 +15,3 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('showcase.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-# Admin and API routes
-urlpatterns = [
-    path('health/', health_check),
-    path('admin/', admin.site.urls),
-    path('api/', include('showcase.urls')),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
