@@ -30,11 +30,11 @@ CORS(app)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'a-very-secret-key-12345')
 
 # Admin Credentials
-ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME")
-ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD")
+ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME", "").strip()
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "").strip()
 
-logger.info(f"DEBUG: ADMIN_USERNAME is {'SET' if ADMIN_USERNAME else 'NOT SET'}")
-logger.info(f"DEBUG: ADMIN_PASSWORD is {'SET' if ADMIN_PASSWORD else 'NOT SET'}")
+logger.info(f"DEBUG: ADMIN_USERNAME is {'SET (length: ' + str(len(ADMIN_USERNAME)) + ')' if ADMIN_USERNAME else 'NOT SET'}")
+logger.info(f"DEBUG: ADMIN_PASSWORD is {'SET (length: ' + str(len(ADMIN_PASSWORD)) + ')' if ADMIN_PASSWORD else 'NOT SET'}")
 
 # Handle Vercel Read-Only Filesystem
 if os.environ.get('VERCEL'):
@@ -106,12 +106,23 @@ def login():
             user = User(username)
             login_user(user)
             return redirect(request.args.get('next') or url_for('admin.index'))
-        return render_template_string('''
+        
+        # Improved debug logging on failure
+        logger.warning(f"Login failed for user '{username}'.")
+        logger.info(f"DEBUG: Submitted username length: {len(username if username else '')}, expected length: {len(ADMIN_USERNAME)}")
+        logger.info(f"DEBUG: Submitted password length: {len(password if password else '')}, expected length: {len(ADMIN_PASSWORD)}")
+        
+        error_msg = "Invalid credentials"
+        if not ADMIN_USERNAME or not ADMIN_PASSWORD:
+            error_msg = "Server Error: Admin credentials not configured on server"
+            logger.error("Admin credentials are NOT SET on the server!")
+
+        return render_template_string(f'''
             <form method="post">
                 <p><input type=text name=username placeholder="Username">
                 <p><input type=password name=password placeholder="Password">
                 <p><input type=submit value=Login>
-                <p style="color:red">Invalid credentials</p>
+                <p style="color:red">{error_msg}</p>
             </form>
         ''')
     return render_template_string('''
