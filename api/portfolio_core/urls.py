@@ -14,8 +14,8 @@ urlpatterns = [
     path('health/', health_check),
     path('admin/', admin.site.urls),
     path('api/', include('showcase.urls')),
-    # SPA Fallback: Serve index.html for any other route not starting with /api/ or /static/
-    re_path(r'^(?!(api/|admin/|static/|media/)).*$', TemplateView.as_view(template_name='index.html')),
+    # SPA Fallback
+    re_path(r"^(?!api/).*", TemplateView.as_view(template_name="index.html")),
 ]
 
 if settings.DEBUG:
