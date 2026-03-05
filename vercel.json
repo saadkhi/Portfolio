@@ -3,6 +3,22 @@
         {
             "source": "/api/(.*)",
             "destination": "/api/index.py"
+        },
+        {
+            "source": "/admin(.*)",
+            "destination": "/api/index.py"
+        },
+        {
+            "source": "/static/admin/(.*)",
+            "destination": "/api/index.py"
+        },
+        {
+            "source": "/media/(.*)",
+            "destination": "/api/index.py"
+        },
+        {
+            "source": "/(.*)",
+            "destination": "/index.html"
         }
     ]
 }

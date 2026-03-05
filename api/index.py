@@ -154,7 +154,9 @@ def contact_form_submission():
 def health_check():
     return jsonify({"status": "ok"})
 
+# Initialize Tables (Required for some serverless environments if not using migrations)
+with app.app_context():
+    db.create_all()
+
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
     app.run(host='0.0.0.0', port=5000, debug=True)
