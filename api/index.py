@@ -33,6 +33,9 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'a-very-secret-key-12345
 ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME")
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD")
 
+logger.info(f"DEBUG: ADMIN_USERNAME is {'SET' if ADMIN_USERNAME else 'NOT SET'}")
+logger.info(f"DEBUG: ADMIN_PASSWORD is {'SET' if ADMIN_PASSWORD else 'NOT SET'}")
+
 # Handle Vercel Read-Only Filesystem
 if os.environ.get('VERCEL'):
     db_path = '/tmp/portfolio.db'
