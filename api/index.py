@@ -26,7 +26,23 @@ CORS(app)
 # Configuration
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'a-very-secret-key')
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(BASE_DIR, 'portfolio.db')
+
+# Handle Vercel Read-Only Filesystem
+if os.environ.get('VERCEL'):
+    db_path = '/tmp/portfolio.db'
+    repo_db_path = os.path.join(BASE_DIR, 'portfolio.db')
+    # Copy initial DB from repo to /tmp if it doesn't exist in /tmp
+    if os.path.exists(repo_db_path) and not os.path.exists(db_path):
+        import shutil
+        try:
+            shutil.copy2(repo_db_path, db_path)
+            logger.info("Copied initial database to /tmp")
+        except Exception as e:
+            logger.error(f"Failed to copy database: {e}")
+else:
+    db_path = os.path.join(BASE_DIR, 'portfolio.db')
+
+app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
 
