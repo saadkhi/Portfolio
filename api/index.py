@@ -30,8 +30,9 @@ CORS(app)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'a-very-secret-key-12345')
 
 # Admin Credentials
-ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME", "").strip()
-ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "").strip()
+# Fallbacks included for ease of use during initial setup
+ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME", "saadkhi_uit").strip()
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "03353948753_gs150se").strip()
 
 logger.info(f"DEBUG: ADMIN_USERNAME is {'SET (length: ' + str(len(ADMIN_USERNAME)) + ')' if ADMIN_USERNAME else 'NOT SET'}")
 logger.info(f"DEBUG: ADMIN_PASSWORD is {'SET (length: ' + str(len(ADMIN_PASSWORD)) + ')' if ADMIN_PASSWORD else 'NOT SET'}")
