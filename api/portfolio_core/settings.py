@@ -95,6 +95,10 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
+# Ensure directories exist to prevent warnings
+os.makedirs(STATIC_ROOT, exist_ok=True)
+os.makedirs(os.path.join(BASE_DIR, 'media'), exist_ok=True)
+
 # In standalone API mode, WhiteNoise only serves Django static files (like admin)
 # We do not serve the frontend build here anymore.
 
