@@ -1,11 +1,12 @@
 import os
 import logging
 import sys
-from flask import Flask, jsonify, request, send_from_directory
+from flask import Flask, jsonify, request, send_from_directory, render_template_string, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
-from flask_admin import Admin
+from flask_admin import Admin, AdminIndexView
 from flask_admin.contrib.sqla import ModelView
 from flask_cors import CORS
+from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from dotenv import load_dotenv
 import requests
 
@@ -25,13 +26,16 @@ CORS(app)
 
 # Configuration
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'a-very-secret-key')
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'a-very-secret-key-12345')
+
+# Admin Credentials
+ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME")
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD")
 
 # Handle Vercel Read-Only Filesystem
 if os.environ.get('VERCEL'):
     db_path = '/tmp/portfolio.db'
     repo_db_path = os.path.join(BASE_DIR, 'portfolio.db')
-    # Copy initial DB from repo to /tmp if it doesn't exist in /tmp
     if os.path.exists(repo_db_path) and not os.path.exists(db_path):
         import shutil
         try:
@@ -46,20 +50,78 @@ app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
 
+# User model for session management
+class User(UserMixin):
+    def __init__(self, id):
+        self.id = id
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+@login_manager.user_loader
+def load_user(user_id):
+    if user_id == ADMIN_USERNAME:
+        return User(user_id)
+    return None
+
+# Custom Admin View with Security
+class SecureModelView(ModelView):
+    def is_accessible(self):
+        return current_user.is_authenticated
+
+    def _handle_view(self, name, **kwargs):
+        if not self.is_accessible():
+            return redirect(url_for('login', next=request.url))
+
+class SecureAdminIndexView(AdminIndexView):
+    def is_accessible(self):
+        return current_user.is_authenticated
+
+    def _handle_view(self, name, **kwargs):
+        if not self.is_accessible():
+            return redirect(url_for('login', next=request.url))
+
 # Initialize Database
 db.init_app(app)
 
-# Initialize Admin
-admin = Admin(app, name='Portfolio Admin', template_mode='bootstrap3')
+# Initialize Admin with Security
+admin = Admin(app, name='Portfolio Admin', template_mode='bootstrap3', index_view=SecureAdminIndexView())
+admin.add_view(SecureModelView(Profile, db.session))
+admin.add_view(SecureModelView(Project, db.session))
+admin.add_view(SecureModelView(Skill, db.session))
+admin.add_view(SecureModelView(SocialLink, db.session))
 
-class BaseFileView(ModelView):
-    """Custom view for models with file fields to show better in admin if needed"""
-    pass
+# Authentication Routes
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
+            user = User(username)
+            login_user(user)
+            return redirect(request.args.get('next') or url_for('admin.index'))
+        return render_template_string('''
+            <form method="post">
+                <p><input type=text name=username placeholder="Username">
+                <p><input type=password name=password placeholder="Password">
+                <p><input type=submit value=Login>
+                <p style="color:red">Invalid credentials</p>
+            </form>
+        ''')
+    return render_template_string('''
+        <form method="post">
+            <p><input type=text name=username placeholder="Username">
+            <p><input type=password name=password placeholder="Password">
+            <p><input type=submit value=Login>
+        </form>
+    ''')
 
-admin.add_view(ModelView(Profile, db.session))
-admin.add_view(ModelView(Project, db.session))
-admin.add_view(ModelView(Skill, db.session))
-admin.add_view(ModelView(SocialLink, db.session))
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
 
 # Serve Media Files
 @app.route('/media/<path:filename>')
