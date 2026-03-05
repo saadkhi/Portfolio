@@ -14,8 +14,11 @@ import requests
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from models import db, Profile, Project, Skill, SocialLink
 
-# Load environment variables
-load_dotenv()
+# Configuration
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+
+# Load environment variables from api/.env
+load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -24,8 +27,6 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 CORS(app)
 
-# Configuration
-BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'a-very-secret-key-12345')
 
 # Admin Credentials
