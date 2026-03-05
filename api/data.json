@@ -1,0 +1,116 @@
+{
+    "profile": {
+        "id": 1,
+        "name": "Saad",
+        "title": "AI & Software Engineer",
+        "bio": "",
+        "resume_file": "resumes/Saad_Ali_Resume.pdf",
+        "email": "saadalioffic@gmail.com",
+        "location": "Karachi, Pakistan",
+        "phone_number": "+92 335 3948753"
+    },
+    "projects": [
+        {
+            "id": 2,
+            "title": "Air Tracker (PPT control by Gestures)",
+            "description": "Upload & present PowerPoints using hand gestures! Built with Tkinter/CustomTkinter, it features a user-friendly GUI and minimizes during presentations.",
+            "tech_stack": "Tkinter, Tensorflow, OpenCV, MediaPipe",
+            "image": "projects/images/ChatGPT_Image_Feb_22_2026_07_40_40_PM.png",
+            "video": "",
+            "live_link": "https://github.com/saadkhi/AIR-TRACKER",
+            "created_at": "2026-02-22 14:34:26.466048",
+            "category": "Desktop App, Computer Vision",
+            "is_featured": 0
+        },
+        {
+            "id": 1,
+            "title": "Talk2DB (DB Bot)",
+            "description": "AI chat interface that converts natural language into SQL and returns database results conversationally.",
+            "tech_stack": "SQL, Django, React, RESTapi",
+            "image": "projects/images/talk2db_banner.png",
+            "video": "",
+            "live_link": "https://github.com/saadkhi/Talk2DB",
+            "created_at": "2026-02-21 14:34:32.382669",
+            "category": "Web App, GenAI",
+            "is_featured": 0
+        }
+    ],
+    "skills": [
+        {
+            "id": 2,
+            "name": "PYTHON",
+            "icon": "skills/icons/python.png",
+            "order": 1
+        },
+        {
+            "id": 3,
+            "name": "DJANGO",
+            "icon": "skills/icons/django.png",
+            "order": 2
+        },
+        {
+            "id": 4,
+            "name": "MYSQL",
+            "icon": "skills/icons/mysql.png",
+            "order": 3
+        },
+        {
+            "id": 5,
+            "name": "FASTAPI",
+            "icon": "skills/icons/pngwing.com.png",
+            "order": 4
+        },
+        {
+            "id": 6,
+            "name": "REACT",
+            "icon": "skills/icons/pngwing.com_1.png",
+            "order": 5
+        },
+        {
+            "id": 7,
+            "name": "DOCKER",
+            "icon": "skills/icons/pngwing.com_2.png",
+            "order": 6
+        },
+        {
+            "id": 8,
+            "name": "GITHUB",
+            "icon": "skills/icons/pngwing.com_4.png",
+            "order": 7
+        }
+    ],
+    "social_links": [
+        {
+            "id": 7,
+            "name": "Github",
+            "url": "https://github.com/saadkhi",
+            "order": 1,
+            "icon_class": null,
+            "icon_image": "social_icons/pngwing.com_3.png"
+        },
+        {
+            "id": 5,
+            "name": "Linkedin",
+            "url": "https://www.linkedin.com/in/saadkhi/",
+            "order": 2,
+            "icon_class": null,
+            "icon_image": "social_icons/pngwing.com_7.png"
+        },
+        {
+            "id": 6,
+            "name": "Fiverr",
+            "url": "https://www.fiverr.com/",
+            "order": 4,
+            "icon_class": null,
+            "icon_image": "social_icons/pngwing.com_8.png"
+        },
+        {
+            "id": 8,
+            "name": "Upwork",
+            "url": "https://www.upwork.com/nx/find-work/best-matches",
+            "order": 5,
+            "icon_class": null,
+            "icon_image": "social_icons/CITYPNG.COMUpwork_Round_Logo_Icon_PNG_-_3000x3000.png"
+        }
+    ]
+}

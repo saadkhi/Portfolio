@@ -1,2 +1,0 @@
-# Dummy requirements.txt to help Railway Nixpacks detect the Python provider
--r api/requirements.txt

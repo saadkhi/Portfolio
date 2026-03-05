@@ -1,29 +1,24 @@
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-# Environments
-.env
-.venv
-env/
-venv/
+node_modules
+dist
+dist-ssr
+*.local
 
-# Node/Vite build artifacts
-node_modules/
-frontend/dist/
-api/frontend_dist/
-api/staticfiles/
-api/media/
-
-# Database files
-*.db
-*.sqlite
-*.sqlite3
-
-# IDEs
-.vscode/
-.idea/
-
-# OS
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
 .DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
