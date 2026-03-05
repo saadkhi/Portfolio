@@ -16,7 +16,9 @@ urlpatterns = [
     path('api/', include('showcase.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-# Catch-all: serve React app for all other routes
-urlpatterns += [
-    re_path(r'^.*$', TemplateView.as_view(template_name='index.html')),
-]
+# Admin and API routes
+urlpatterns = [
+    path('health/', health_check),
+    path('admin/', admin.site.urls),
+    path('api/', include('showcase.urls')),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

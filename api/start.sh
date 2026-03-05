@@ -12,17 +12,10 @@ echo "PORT: $PORT"
 echo "PYTHON_PATH: $(which python)"
 echo "Current directory: $(pwd)"
 
-echo "Checking for frontend_dist..."
-if [ -d "frontend_dist" ]; then
-    echo "✅ frontend_dist found."
-    if [ -f "frontend_dist/index.html" ]; then
-        echo "✅ index.html found."
-    else
-        echo "❌ index.html NOT found in frontend_dist!"
-    fi
-else
-    echo "❌ frontend_dist NOT found!"
-fi
+echo "Environment Check:"
+echo "PORT: $PORT"
+echo "PYTHON_PATH: $(which python)"
+echo "Current directory: $(pwd)"
 
 echo "📦 Running Migrations..."
 /opt/venv/bin/python manage.py migrate --noinput

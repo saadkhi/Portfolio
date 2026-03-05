@@ -14,7 +14,6 @@ class DebugMiddleware:
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-print(f"DEBUG: settings.py loading. BASE_DIR: {BASE_DIR}")
 
 # Load environment variables
 load_dotenv(os.path.join(BASE_DIR, '.env'))
@@ -43,7 +42,6 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'portfolio_core.settings.DebugMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'corsheaders.middleware.CorsMiddleware',
@@ -64,9 +62,7 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-            os.path.join(BASE_DIR, 'frontend_dist'),  # Vite build output
-        ],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -108,12 +104,10 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# Serve Vite build output at the root (required for assets like /assets/...)
-WHITENOISE_ROOT = os.path.join(BASE_DIR, 'frontend_dist')
+# In standalone API mode, WhiteNoise only serves Django static files (like admin)
+# We do not serve the frontend build here anymore.
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'frontend_dist'),
-]
+STATICFILES_DIRS = []
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 WHITENOISE_MANIFEST_STRICT = False
@@ -128,7 +122,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # CORS settings
 _raw_origins = os.environ.get('CORS_ALLOWED_ORIGINS', 'http://localhost:5173').split(',')
 CORS_ALLOWED_ORIGINS = [o.strip() if '://' in o else f'https://{o.strip()}' for o in _raw_origins if o.strip()]
-CORS_ALLOW_ALL_ORIGINS = os.environ.get('DEBUG', 'False') == 'True'
+CORS_ALLOW_ALL_ORIGINS = True # Set to True for ease of setup as requested
 
 # CSRF Trusted Origins
 CSRF_TRUSTED_ORIGINS = os.environ.get('CSRF_TRUSTED_ORIGINS', 'https://*.up.railway.app').split(',')

@@ -1,0 +1,20 @@
+[variables]
+NIXPACKS_PYTHON_VERSION = "3.11"
+
+[phases.setup]
+nixPkgs = ["python311", "gcc"]
+
+[phases.install]
+cmds = [
+  "python3 -m venv /opt/venv",
+  "/opt/venv/bin/pip install -r requirements.txt"
+]
+
+[phases.build]
+cmds = [
+  "export DJANGO_SETTINGS_MODULE=portfolio_core.settings && export SECRET_KEY=dummy && /opt/venv/bin/python manage.py collectstatic --noinput",
+  "chmod +x start.sh"
+]
+
+[start]
+cmd = "bash start.sh"
