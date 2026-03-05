@@ -1,15 +1,7 @@
 #!/bin/bash
 set -e
 
-echo "Installing frontend dependencies..."
-cd frontend
-npm install
-
-echo "Building React app..."
-npm run build
-cd ..
-
-echo "Running database migrations..."
+echo "Running migrations..."
 python manage.py migrate --noinput
 
 echo "Collecting static files..."
