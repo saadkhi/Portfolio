@@ -8,19 +8,19 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 cd "$DIR"
 
 echo "Building React frontend..."
-cd ../frontend
+cd frontend
 npm install
 npm run build
-cd ../api
+cd ..
 
 echo "Running migrations..."
-/opt/venv/bin/python manage.py migrate --noinput
+python3 manage.py migrate --noinput
 
 echo "Collecting static files..."
-/opt/venv/bin/python manage.py collectstatic --noinput --clear
+python3 manage.py collectstatic --noinput --clear
 
 echo "🔥 Starting Gunicorn..."
-exec /opt/venv/bin/gunicorn portfolio_core.wsgi:application \
+gunicorn portfolio_core.wsgi:application \
   --bind 0.0.0.0:${PORT:-8080} \
   --workers 1 \
   --threads 1 \

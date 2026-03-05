@@ -94,7 +94,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # React frontend build directory
-FRONTEND_DIST = BASE_DIR.parent / 'frontend' / 'dist'
+FRONTEND_DIST = BASE_DIR / "frontend" / "dist"
 
 STATICFILES_DIRS = [
     FRONTEND_DIST,
