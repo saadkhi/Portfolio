@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import myPic from '../assets/my_pic.png';
+import logo from '../assets/portfolio_logo.png';
 import { scrollToSection } from '../utils/scrollTo';
 import { getCookie } from '../utils/csrf';
 
@@ -454,9 +455,11 @@ const Home = ({ data }) => {
 
                     {/* Column 1 */}
                     <div className="flex justify-center md:justify-start">
-                        <div className="text-2xl font-bold">
-                            Saad A. <br></br>
-                            SWE & AI Engineer
+                        <div className="flex flex-col items-center md:items-start gap-4">
+                            <img src={logo} alt="Saad Ali" className="h-10 w-auto" />
+                            <div className="text-sm font-bold opacity-70 uppercase tracking-widest">
+                                SWE & AI Engineer
+                            </div>
                         </div>
                     </div>
 

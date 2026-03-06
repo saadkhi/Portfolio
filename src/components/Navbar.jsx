@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { scrollToSection } from "../utils/scrollTo";
+import logo from "../assets/portfolio_logo.png";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -33,9 +34,9 @@ const Navbar = () => {
       {/* Logo */}
       <button
         onClick={handleHomeClick}
-        className="font-bold text-lg tracking-tight text-white hover:opacity-80 transition-opacity duration-200"
+        className="flex items-center hover:opacity-80 transition-opacity duration-200"
       >
-        Saad A.
+        <img src={logo} alt="Saad Ali" className="h-8 w-auto" />
       </button>
 
       {/* Desktop Menu */}
