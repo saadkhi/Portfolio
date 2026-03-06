@@ -31,12 +31,11 @@ const Navbar = () => {
   return (
     <nav className="fixed top-6 left-1/2 -translate-x-1/2 w-[95%] max-w-5xl bg-grey/10 backdrop-blur-xl border border-white/20 px-8 py-3 rounded-full z-50 flex items-center justify-between">
 
-      {/* Logo */}
       <button
         onClick={handleHomeClick}
-        className="flex items-center hover:opacity-80 transition-opacity duration-200"
+        className="font-bold text-lg tracking-tight text-white hover:opacity-80 transition-opacity duration-200"
       >
-        <img src={logo} alt="Saad Ali" className="h-8 w-auto" />
+        Saad A.
       </button>
 
       {/* Desktop Menu */}
