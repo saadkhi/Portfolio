@@ -108,25 +108,25 @@ const Home = ({ data }) => {
 
                     {/* LEFT SIDE — TEXT */}
                     <div className="animate-fade-in text-center md:text-left">
-                        <h2 className="text-6xl md:text-8xl font-bold leading-[1.1] mb-8 tracking-tighter">
+                        <h2 className="text-4xl sm:text-5xl md:text-8xl font-bold leading-[1.1] mb-8 tracking-tighter">
                             Saad Ather Ali
                         </h2>
 
-                        <p className="text-xl md:text-2xl text-text-secondary font-medium mb-12 max-w-[1000px]">
+                        <p className="text-lg md:text-2xl text-text-secondary font-medium mb-12 max-w-[1000px] px-4 md:px-0">
                             Making AI products to make life easier since 2024. <br></br>
                             {/* AI Engineer @ Convex Consulting LLC. <br></br> */}
                             Open to new opportunities and freelance projects, <br></br>
                             <button onClick={() => handleNavClick("#contact")} className="text-primary-accent font-bold hover:underline">let's connect!</button>
                         </p>
 
-                        <div className="flex flex-wrap justify-center md:justify-start gap-6">
-                            <a href="/projects" className="btn-primary">
+                        <div className="flex flex-col sm:flex-row flex-wrap justify-center md:justify-start gap-4 md:gap-6 px-8 md:px-0">
+                            <a href="/projects" className="btn-primary w-full sm:w-auto">
                                 {data.hero.cta_primary}
                             </a>
-                            <button onClick={() => handleNavClick("#contact")} className="btn-secondary">
+                            <button onClick={() => handleNavClick("#contact")} className="btn-secondary w-full sm:w-auto">
                                 Book a Session
                             </button>
-                            <button onClick={() => handleNavClick("#contact-form")} className="btn-secondary">
+                            <button onClick={() => handleNavClick("#contact-form")} className="btn-secondary w-full sm:w-auto">
                                 {data.hero.cta_secondary}
                             </button>
                         </div>
@@ -146,18 +146,18 @@ const Home = ({ data }) => {
             </section>
 
             {/* Featured Projects Section */}
-            <section id="intro" className="py-26 px-8 max-w-[1400px] mx-auto">
-                <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
-                    <div className="max-w-[1800px]">
+            <section id="intro" className="py-20 md:py-26 px-6 md:px-8 max-w-[1400px] mx-auto">
+                <div className="flex flex-col md:flex-row justify-between items-end mb-12 md:mb-16 gap-8">
+                    <div className="max-w-[1800px] text-center md:text-left">
                         {/* <span className="text-primary-accent uppercase tracking-widest text-xs font-bold mb-4 block">Selected Projects</span> */}
                         <h2 className="text-4xl md:text-6xl font-bold py-6">Hi, I'm Saad</h2>
-                        <p className="text-lg md:text-xl text-text-secondary font-medium">
+                        <div className="text-lg md:text-xl text-text-secondary font-medium leading-relaxed">
                             I am technologist who is passionate about building AI products. I transform raw data into intelligent models and bridge the gap between AI and real-world problems by creating seamless and efficient software.
-                            <h3 className='text-2xl md:text-4xl font-semibold py-4 mt-6'> What I bring to the company</h3>
-                            <p className='text-lg md:text-xl text-text-secondary font-medium mb-6'>If you hire me, I bring a strong problem-solving mindset, hands-on experience with AI/ML and backend systems, and the ability to turn an idea into working, production-ready solutions. Beyond technical skills, I bring ownership, continuous learning, and a focus on building scalable, reliable systems that create real business impact.</p>
+                            <h3 className='text-2xl md:text-4xl font-semibold py-4 mt-8'> What I bring to the company</h3>
+                            <p className='mb-6'>If you hire me, I bring a strong problem-solving mindset, hands-on experience with AI/ML and backend systems, and the ability to turn an idea into working, production-ready solutions. Beyond technical skills, I bring ownership, continuous learning, and a focus on building scalable, reliable systems that create real business impact.</p>
                             <h3 className='text-2xl md:text-4xl font-semibold py-4'> Why I am a good fit for this role</h3>
-                            <p className='text-lg md:text-xl text-text-secondary font-medium'>I am a quick learner, adaptable, and passionate about AI. I am confident that I can quickly get up to speed with your team and contribute meaningfully to your projects. With AI tools like VibeCode, I can build projects faster and more efficiently than ever before.</p>
-                        </p>
+                            <p>I am a quick learner, adaptable, and passionate about AI. I am confident that I can quickly get up to speed with your team and contribute meaningfully to your projects. With AI tools like VibeCode, I can build projects faster and more efficiently than ever before.</p>
+                        </div>
                     </div>
                 </div>
 
@@ -202,17 +202,17 @@ const Home = ({ data }) => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <div className="glass-card p-12 col-span-1 md:col-span-2 flex flex-col justify-center">
                         <h3 className="text-4xl font-bold mb-8">My Expertise</h3>
-                        <div className="grid grid-cols-2 sm:grid-cols-5 gap-6">
+                        <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 md:gap-6">
                             {data.skills.map((skill, index) => (
-                                <div key={index} className="flex items-center gap-4 group">
-                                    <div className="hidden md:flex w-10 h-10 rounded-xl bg-white/5 items-center justify-center group-hover:bg-primary-accent group-hover:text-black transition-all">
+                                <div key={index} className="flex items-center gap-3 md:gap-4 group">
+                                    <div className="flex w-10 h-10 rounded-xl bg-white/5 items-center justify-center group-hover:bg-primary-accent group-hover:text-black transition-all">
                                         {skill.icon && (skill.icon.startsWith('http') || skill.icon.startsWith('/media/')) ? (
-                                            <img src={skill.icon} alt={skill.name} className="w-6 h-6 object-contain" />
+                                            <img src={skill.icon} alt={skill.name} className="w-5 h-5 md:w-6 md:h-6 object-contain" />
                                         ) : (
-                                            <i className={skill.icon}></i>
+                                            <i className={`${skill.icon} text-sm md:text-base`}></i>
                                         )}
                                     </div>
-                                    <span className="font-bold text-sm tracking-widest uppercase">{skill.name}</span>
+                                    <span className="font-bold text-[10px] md:text-sm tracking-widest uppercase text-text-secondary group-hover:text-white transition-colors">{skill.name}</span>
                                 </div>
                             ))}
                         </div>
@@ -282,7 +282,7 @@ const Home = ({ data }) => {
                         </div>
 
                         {/* Right Side: TidyCal Embed */}
-                        <div className="bg-white/5 min-h-[950px] relative">
+                        <div className="bg-white/5 min-h-[600px] md:min-h-[950px] relative px-4 md:px-0 py-8 md:py-0">
                             {/* We use an iframe for TidyCal to ensure it loads correctly in React */}
                             <iframe
                                 src="https://tidycal.com/saadalioffic/initial-discovery-session?embed=1"

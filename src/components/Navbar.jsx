@@ -29,7 +29,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="fixed top-6 left-1/2 -translate-x-1/2 w-[95%] max-w-5xl bg-grey/10 backdrop-blur-xl border border-white/20 px-8 py-3 rounded-full z-50 flex items-center justify-between">
+    <nav className="fixed top-4 md:top-6 left-1/2 -translate-x-1/2 w-[92%] md:w-[95%] max-w-5xl bg-grey/10 backdrop-blur-xl border border-white/20 px-6 md:px-8 py-3 rounded-full z-50 flex items-center justify-between">
 
       <button
         onClick={handleHomeClick}
@@ -95,7 +95,7 @@ const Navbar = () => {
 
       {/* Mobile Dropdown Menu */}
       {isOpen && (
-        <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[92%] bg-black/90 backdrop-blur-xl border border-white/20 rounded-2xl py-6 flex flex-col items-center gap-6 md:hidden">
+        <div className="absolute top-16 left-1/2 -translate-x-1/2 w-full bg-black/95 backdrop-blur-2xl border border-white/10 rounded-3xl py-8 flex flex-col items-center gap-8 md:hidden shadow-2xl animate-fade-in">
 
           <button onClick={handleHomeClick} className={navItem}>
             Home
@@ -133,8 +133,7 @@ const Navbar = () => {
 
           <button
             onClick={() => handleNavClick("#contact-form")}
-            className={navItem}
-          // className="text-xs font-bold uppercase tracking-widest text-white hover:text-white/80"
+            className="text-xs font-bold uppercase tracking-widest text-primary-accent bg-white/5 px-8 py-3 rounded-full border border-primary-accent/20"
           >
             Connect
           </button>
