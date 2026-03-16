@@ -11,11 +11,8 @@ from dotenv import load_dotenv
 import requests
 
 # Ensure the local directory is in the path for Vercel
-try:
-    from .models import db, Profile, Project, Skill, SocialLink
-except (ImportError, ValueError):
-    sys.path.append(os.path.abspath(os.path.dirname(__file__)))
-    from models import db, Profile, Project, Skill, SocialLink
+sys.path.append(os.path.abspath(os.path.dirname(__file__)))
+from models import db, Profile, Project, Skill, SocialLink
 
 # Configuration
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
