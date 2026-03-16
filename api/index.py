@@ -50,11 +50,26 @@ if os.environ.get('VERCEL'):
             logger.info("Copied initial database to /tmp")
         except Exception as e:
             logger.error(f"Failed to copy database: {e}")
+    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
+    
+    # Media root for Vercel
+    UPLOAD_BASE_DIR = '/tmp/media'
 else:
     db_path = os.path.join(BASE_DIR, 'portfolio.db')
+    app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(BASE_DIR, 'portfolio.db')}"
+    UPLOAD_BASE_DIR = os.path.join(BASE_DIR, 'media')
 
-app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# Ensure Media Directories Exist
+for subpath in ['resumes', 'projects', 'skills/icons', 'social_icons']:
+    path = os.path.join(UPLOAD_BASE_DIR, subpath)
+    if not os.path.exists(path):
+        try:
+            os.makedirs(path, exist_ok=True)
+            logger.info(f"Created directory: {path}")
+        except Exception as e:
+            logger.error(f"Failed to create directory {path}: {e}")
 app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
 
 # User model for session management
@@ -112,7 +127,7 @@ class ProfileModelView(SecureModelView):
     form_args = {
         'resume_file': {
             'label': 'Resume (PDF)',
-            'base_path': os.path.join(BASE_DIR, 'media/resumes'),
+            'base_path': os.path.join(UPLOAD_BASE_DIR, 'resumes'),
             'allow_overwrite': True
         }
     }
@@ -125,12 +140,12 @@ class ProjectModelView(SecureModelView):
     form_args = {
         'image': {
             'label': 'Project Image',
-            'base_path': os.path.join(BASE_DIR, 'media/projects'),
+            'base_path': os.path.join(UPLOAD_BASE_DIR, 'projects'),
             'allow_overwrite': True
         },
         'video': {
             'label': 'Project Video',
-            'base_path': os.path.join(BASE_DIR, 'media/projects'),
+            'base_path': os.path.join(UPLOAD_BASE_DIR, 'projects'),
             'allow_overwrite': True
         }
     }
@@ -142,7 +157,7 @@ class SkillModelView(SecureModelView):
     form_args = {
         'icon': {
             'label': 'Skill Icon',
-            'base_path': os.path.join(BASE_DIR, 'media/skills'),
+            'base_path': os.path.join(UPLOAD_BASE_DIR, 'skills/icons'),
             'allow_overwrite': True
         }
     }
@@ -154,7 +169,7 @@ class SocialLinkModelView(SecureModelView):
     form_args = {
         'icon_image': {
             'label': 'Icon Image',
-            'base_path': os.path.join(BASE_DIR, 'media/social_icons'),
+            'base_path': os.path.join(UPLOAD_BASE_DIR, 'social_icons'),
             'allow_overwrite': True
         }
     }
@@ -338,7 +353,17 @@ def logout():
 # Serve Media Files
 @app.route('/media/<path:filename>')
 def serve_media(filename):
-    return send_from_directory(os.path.join(BASE_DIR, 'media'), filename)
+    # Try project media folder first
+    project_media_dir = os.path.join(BASE_DIR, 'media')
+    if os.path.exists(os.path.join(project_media_dir, filename)):
+        return send_from_directory(project_media_dir, filename)
+    
+    # Check Vercel /tmp storage as fallback
+    tmp_media_dir = '/tmp/media'
+    if os.path.exists(os.path.join(tmp_media_dir, filename)):
+        return send_from_directory(tmp_media_dir, filename)
+    
+    return jsonify({"error": "Media file not found"}), 404
 
 @app.route('/api/portfolio/', methods=['GET'])
 @app.route('/api/portfolio', methods=['GET'])
