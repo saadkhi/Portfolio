@@ -25,7 +25,7 @@ const Projects = () => {
         <main className="pt-32 pb-32 px-8 max-w-[1400px] mx-auto min-h-screen">
             <header className="mb-8">
                 <span className="text-primary-accent uppercase tracking-widest text-xs font-bold mb-4 block animate-fade-in">Archive</span>
-                <h1 className="text-4xl sm:text-5xl md:text-8xl font-bold tracking-tighter animate-fade-in px-2 md:px-0">All Projects.</h1>
+                <h1 className="text-5xl md:text-8xl font-bold tracking-tighter animate-fade-in">All Projects.</h1>
             </header>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -48,17 +48,15 @@ const Projects = () => {
                                 <h2 className="text-2xl font-bold mb-4 tracking-tight">{project.title}</h2>
                                 <p className="text-text-secondary text-sm mb-6 line-clamp-3">{project.description}</p>
                             </div>
-                            <div className="flex flex-col gap-4 mt-auto">
-                                <div className="flex flex-wrap gap-2">
-                                    {project.tech_stack.split(',').slice(0, 6).map((tech, i) => (
-                                        <span key={i} className="px-2 py-1 bg-white/5 border border-grey/10 rounded text-[9px] font-bold uppercase tracking-wider">{tech.trim()}</span>
+                            <div className="flex justify-between items-center mt-auto">
+                                <div className="flex flex-wrap gap-1">
+                                    {project.tech_stack.split(',').slice(0, 5).map((tech, i) => (
+                                        <span key={i} className="px-2 py-0.5 bg-white/5 border border-grey/10 rounded text-[9px] font-bold uppercase tracking-wider">{tech.trim()}</span>
                                     ))}
                                 </div>
-                                <div className="flex justify-end">
-                                    <a href={project.live_link} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-grey/10 backdrop-blur-xl border border-white/20 flex items-center justify-center hover:bg-white/20 hover:border-white/40 transition-all">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
-                                    </a>
-                                </div>
+                                <a href={project.live_link} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-grey/10 backdrop-blur-xl border border-white/20 flex items-center justify-center hover:bg-white/20 hover:border-white/40 transition-all">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                                </a>
                             </div>
                         </div>
                     </div>
