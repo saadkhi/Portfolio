@@ -22,6 +22,8 @@ export default defineConfig({
       '/admin': 'http://localhost:8000',
       '/static/admin': 'http://localhost:8000',
       '/media': 'http://localhost:8000',
+      '/login': 'http://localhost:8000',
+      '/logout': 'http://localhost:8000',
     }
   }
 })

@@ -5,6 +5,7 @@ from flask import Flask, jsonify, request, send_from_directory, render_template_
 from flask_sqlalchemy import SQLAlchemy
 from flask_admin import Admin, AdminIndexView
 from flask_admin.contrib.sqla import ModelView
+from flask_admin.form.upload import FileUploadField
 from flask_cors import CORS
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from dotenv import load_dotenv
@@ -90,12 +91,67 @@ class SecureAdminIndexView(AdminIndexView):
 # Initialize Database
 db.init_app(app)
 
+# Specialized ModelViews with FileUploadField
+class ProfileModelView(SecureModelView):
+    form_overrides = {
+        'resume_file': FileUploadField
+    }
+    form_args = {
+        'resume_file': {
+            'label': 'Resume (PDF)',
+            'base_path': os.path.join(BASE_DIR, 'media/resumes'),
+            'allow_overwrite': True
+        }
+    }
+
+class ProjectModelView(SecureModelView):
+    form_overrides = {
+        'image': FileUploadField,
+        'video': FileUploadField
+    }
+    form_args = {
+        'image': {
+            'label': 'Project Image',
+            'base_path': os.path.join(BASE_DIR, 'media/projects'),
+            'allow_overwrite': True
+        },
+        'video': {
+            'label': 'Project Video',
+            'base_path': os.path.join(BASE_DIR, 'media/projects'),
+            'allow_overwrite': True
+        }
+    }
+
+class SkillModelView(SecureModelView):
+    form_overrides = {
+        'icon': FileUploadField
+    }
+    form_args = {
+        'icon': {
+            'label': 'Skill Icon',
+            'base_path': os.path.join(BASE_DIR, 'media/skills'),
+            'allow_overwrite': True
+        }
+    }
+
+class SocialLinkModelView(SecureModelView):
+    form_overrides = {
+        'icon_image': FileUploadField
+    }
+    form_args = {
+        'icon_image': {
+            'label': 'Icon Image',
+            'base_path': os.path.join(BASE_DIR, 'media/social_icons'),
+            'allow_overwrite': True
+        }
+    }
+
 # Initialize Admin with Security
 admin = Admin(app, name='Portfolio Admin', template_mode='bootstrap3', index_view=SecureAdminIndexView())
-admin.add_view(SecureModelView(Profile, db.session))
-admin.add_view(SecureModelView(Project, db.session))
-admin.add_view(SecureModelView(Skill, db.session))
-admin.add_view(SecureModelView(SocialLink, db.session))
+admin.add_view(ProfileModelView(Profile, db.session))
+admin.add_view(ProjectModelView(Project, db.session))
+admin.add_view(SkillModelView(Skill, db.session))
+admin.add_view(SocialLinkModelView(SocialLink, db.session))
 
 # Authentication Routes
 @app.route('/login', methods=['GET', 'POST'])
@@ -164,8 +220,8 @@ def get_portfolio():
             "title": p.title,
             "description": p.description,
             "tech_stack": p.tech_stack,
-            "image": f"/media/{p.image}" if p.image and not p.image.startswith('http') and not p.image.startswith('/') else p.image,
-            "video": f"/media/{p.video}" if p.video and not p.video.startswith('http') and not p.video.startswith('/') else p.video,
+            "image": f"/media/projects/{p.image}" if p.image and not p.image.startswith('http') and not p.image.startswith('/') else p.image,
+            "video": f"/media/projects/{p.video}" if p.video and not p.video.startswith('http') and not p.video.startswith('/') else p.video,
             "live_link": p.live_link,
             "category": p.category,
             "is_featured": p.is_featured
@@ -182,7 +238,7 @@ def get_portfolio():
             "subtitle": "AI & Software Engineer",
             "cta_primary": "See My Work",
             "cta_secondary": "Get in Touch",
-            "resume_url": f"/media/{profile.resume_file}" if profile.resume_file and not str(profile.resume_file).startswith('/') else profile.resume_file
+            "resume_url": f"/media/resumes/{profile.resume_file}" if profile.resume_file and not str(profile.resume_file).startswith('/') else profile.resume_file
         },
         "about": {
             "title": "About Me",
@@ -191,7 +247,7 @@ def get_portfolio():
         "skills": [{
             "id": s.id,
             "name": s.name,
-            "icon": f"/media/{s.icon}" if s.icon and not s.icon.startswith('http') and not s.icon.startswith('fa') and not s.icon.startswith('/') else s.icon,
+            "icon": f"/media/skills/{s.icon}" if s.icon and not s.icon.startswith('http') and not s.icon.startswith('fa') and not s.icon.startswith('/') else s.icon,
             "order": s.order
         } for s in skills],
         "social_links": [{
@@ -199,7 +255,7 @@ def get_portfolio():
             "name": sl.name,
             "url": sl.url,
             "icon_class": sl.icon_class,
-            "icon_image": f"/media/{sl.icon_image}" if sl.icon_image and not sl.icon_image.startswith('/') else sl.icon_image
+            "icon_image": f"/media/social_icons/{sl.icon_image}" if sl.icon_image and not sl.icon_image.startswith('/') else sl.icon_image
         } for sl in social_links],
         "featured_projects": featured_projects[:3],
         "latest_projects": latest_projects[:6],
@@ -221,8 +277,8 @@ def get_projects():
         "title": p.title,
         "description": p.description,
         "tech_stack": p.tech_stack,
-        "image": f"/media/{p.image}" if p.image and not p.image.startswith('http') and not p.image.startswith('/') else p.image,
-        "video": f"/media/{p.video}" if p.video and not p.video.startswith('http') and not p.video.startswith('/') else p.video,
+        "image": f"/media/projects/{p.image}" if p.image and not p.image.startswith('http') and not p.image.startswith('/') else p.image,
+        "video": f"/media/projects/{p.video}" if p.video and not p.video.startswith('http') and not p.video.startswith('/') else p.video,
         "live_link": p.live_link,
         "category": p.category,
         "is_featured": p.is_featured
@@ -257,4 +313,5 @@ with app.app_context():
     db.create_all()
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    port = int(os.environ.get('PORT', 8000))
+    app.run(host='0.0.0.0', port=port, debug=True)
