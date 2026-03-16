@@ -29,7 +29,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="fixed top-6 left-1/2 -translate-x-1/2 w-[95%] max-w-5xl bg-grey/10 backdrop-blur-xl border border-white/20 px-8 py-3 rounded-full z-50 flex items-center justify-between">
+    <nav className="fixed top-6 left-1/2 -translate-x-1/2 w-[95%] max-w-5xl bg-grey/10 backdrop-blur-xl border border-white/20 px-4 sm:px-8 py-3 rounded-full z-50 flex items-center justify-between">
 
       <button
         onClick={handleHomeClick}
@@ -81,15 +81,15 @@ const Navbar = () => {
         </li>
       </ul>
 
-      {/* Hamburger Button (Mobile) */}
-      <div className="md:hidden">
+      <div className="md:hidden flex items-center">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="flex flex-col gap-1"
+          className="flex flex-col gap-1 p-2"
+          aria-label="Toggle menu"
         >
-          <span className="w-6 h-0.5 bg-white"></span>
-          <span className="w-6 h-0.5 bg-white"></span>
-          <span className="w-6 h-0.5 bg-white"></span>
+          <span className={`w-6 h-0.5 bg-white transition-transform ${isOpen ? 'rotate-45 translate-y-1.5' : ''}`}></span>
+          <span className={`w-6 h-0.5 bg-white transition-opacity ${isOpen ? 'opacity-0' : ''}`}></span>
+          <span className={`w-6 h-0.5 bg-white transition-transform ${isOpen ? '-rotate-45 -translate-y-1.5' : ''}`}></span>
         </button>
       </div>
 

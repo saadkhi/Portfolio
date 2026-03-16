@@ -22,10 +22,10 @@ const Projects = () => {
     }
 
     return (
-        <main className="pt-32 pb-32 px-8 max-w-[1400px] mx-auto min-h-screen">
-            <header className="mb-8">
+        <main className="pt-24 sm:pt-32 pb-24 sm:pb-32 px-6 sm:px-8 max-w-[1400px] mx-auto min-h-screen">
+            <header className="mb-12">
                 <span className="text-primary-accent uppercase tracking-widest text-xs font-bold mb-4 block animate-fade-in">Archive</span>
-                <h1 className="text-5xl md:text-8xl font-bold tracking-tighter animate-fade-in">All Projects.</h1>
+                <h1 className="text-4xl sm:text-6xl md:text-8xl font-bold tracking-tighter animate-fade-in">All Projects.</h1>
             </header>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

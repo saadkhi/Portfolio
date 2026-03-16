@@ -13,34 +13,34 @@ const About = ({ data }) => {
     };
 
     return (
-        <main className="pt-32 pb-20 px-8">
+        <main className="pt-24 sm:pt-32 pb-20 px-6 sm:px-8 overflow-x-hidden">
             <div className="max-w-[1000px] mx-auto">
                 {/* Hero Section */}
                 <section className="animate-fade-in">
-                    <span className="text-primary-accent uppercase tracking-[0.3em] text-xs font-bold block text-center py-2 md:py-0">The Story Behind The Code</span>
-                    {/* <h1 className="text-5xl md:text-8xl font-bold leading-tight mb-8 tracking-tighter">
+                    <span className="text-primary-accent uppercase tracking-[0.2em] md:tracking-[0.3em] text-[10px] sm:text-xs font-bold block text-center py-2 md:py-0">The Story Behind The Code</span>
+                    {/* <h1 className="text-4xl sm:text-6xl md:text-8xl font-bold leading-tight mb-8 tracking-tighter">
                         Crafting Digital <br /> Excellence.
                     </h1> */}
-                    <h1 className='text-5xl md:text-8xl font-bold leading-tight mb-8 tracking-tighter text-center'>About Me</h1>
-                    <p className="text-lg md:text-xl text-text-secondary font-medium max-w-[1000px] mx-auto leading-relaxed text-justify">
-                        I’m Saad Ali, a Software Engineering graduate from NED University of Engineering and Technology in Software Engineering major, with hands-on experience in AI/ML, LLM-based applications, and backend development. I’ve worked on building RAG chatbots, machine learning pipelines, and API-driven systems with a strong focus on practical, production-ready solutions.
+                    <h1 className='text-4xl sm:text-6xl md:text-8xl font-bold leading-tight mb-8 tracking-tighter text-center'>About Me</h1>
+                    <p className="text-base sm:text-lg md:text-xl text-text-secondary font-medium max-w-[1000px] mx-auto leading-relaxed text-left sm:text-justify">
+                        I’m Saad Ali, a Software Engineering graduate from NED University of Engineering and Technology. I have hands-on experience in AI/ML, LLM-based applications, and backend development. I’ve worked on building RAG chatbots, machine learning pipelines, and API-driven systems with a strong focus on practical, production-ready solutions.
                         <br></br>
                         <br></br>
                         I’m deeply interested in Generative AI, intelligent automation, scalable SaaS products, and solving real-world problems through data and systems design. I enjoy clean architecture, continuous learning, and experimenting with new AI frameworks.
                         <br></br>
                         <br></br>
-                        I like working in growth-oriented environments with strong engineering culture and clear impact. I dislike unnecessary complexity, poor code practices, and stagnation — I prefer building things that are efficient, meaningful, and scalable.
+                        I like working in growth-oriented environments with a strong engineering culture and clear impact. I dislike unnecessary complexity, poor code practices, and stagnation — I prefer building things that are efficient, meaningful, and scalable.
                     </p>
 
 
                     {/* About Content Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-12 py-8">
-                        <div className="glass-card p-8 md:p-12 space-y-6">
-                            <h3 className="text-3xl font-bold">My Goal</h3>
-                            <p className="text-text-secondary leading-relaxed text-lg">
+                        <div className="glass-card p-6 sm:p-8 md:p-12 space-y-6">
+                            <h3 className="text-2xl sm:text-3xl font-bold">My Goal</h3>
+                            <p className="text-text-secondary leading-relaxed text-base sm:text-lg">
                                 {data.about.description}
                             </p>
-                            <p className="text-text-secondary leading-relaxed text-lg">
+                            <p className="text-text-secondary leading-relaxed text-base sm:text-lg">
                                 Over the years, I've honed my skills in the Python ecosystem and modern frontend frameworks. My approach is rooted in clean code, scalability, and a relentless focus on performance.
                             </p>
                         </div>
@@ -91,9 +91,9 @@ const About = ({ data }) => {
                     </div>
                 </section>
 
-                <section className="relative bg-white/5 border border-white/20 rounded-3xl p-8 md:p-20">
+                <section className="relative bg-white/5 border border-white/20 rounded-3xl p-6 sm:p-12 md:p-20">
 
-                    <h2 className="text-3xl md:text-5xl font-bold text-center mb-16 tracking-tight">
+                    <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold text-center mb-12 sm:mb-16 tracking-tight">
                         My Journey
                     </h2>
 
@@ -176,38 +176,38 @@ const About = ({ data }) => {
                 </section>
 
                 {/* Toolkit/Expertise section */}
-                <section className="py-8">
-                    <div className="text-center mb-16">
-                        <h2 className="text-4xl md:text-6xl font-bold mb-4">My Toolkit</h2>
-                        <p className="text-text-secondary">The technologies I use to bring ideas to life.</p>
+                <section className="py-12 md:py-8">
+                    <div className="text-center mb-12 md:mb-16">
+                        <h2 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-4">My Toolkit</h2>
+                        <p className="text-text-secondary text-base">The technologies I use to bring ideas to life.</p>
                     </div>
-                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-6">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 md:gap-6">
                         {data.skills.map((skill, index) => (
-                            <div key={index} className="glass-card p-8 flex flex-col items-center gap-4 group hover:bg-white/5 transition-all">
-                                <div className="hidden md:flex w-16 h-16 rounded-2xl bg-white/5 items-center justify-center text-3xl group-hover:bg-primary-accent group-hover:text-black transition-all duration-300">
+                            <div key={index} className="glass-card p-4 sm:p-8 flex flex-col items-center gap-4 group hover:bg-white/5 transition-all">
+                                <div className="hidden sm:flex w-12 h-12 md:w-16 md:h-16 rounded-2xl bg-white/5 items-center justify-center text-2xl md:text-3xl group-hover:bg-primary-accent group-hover:text-black transition-all duration-300">
                                     {skill.icon && (skill.icon.startsWith('http') || skill.icon.startsWith('/media/')) ? (
-                                        <img src={skill.icon} alt={skill.name} className="w-10 h-10 object-contain" />
+                                        <img src={skill.icon} alt={skill.name} className="w-8 h-8 md:w-10 md:h-10 object-contain" />
                                     ) : (
                                         <i className={skill.icon}></i>
                                     )}
                                 </div>
-                                <span className="font-bold text-xs tracking-[0.2em] uppercase text-text-secondary group-hover:text-white">{skill.name}</span>
+                                <span className="font-bold text-[9px] sm:text-xs tracking-[0.2em] uppercase text-text-secondary group-hover:text-white text-center">{skill.name}</span>
                             </div>
                         ))}
                     </div>
                 </section>
 
                 {/* Closing Statement */}
-                <section className="text-center bg-white/5 border border-white/20 rounded-3xl p-12 md:p-20 py-8">
-                    <h2 className="text-3xl md:text-5xl font-bold mb-8 tracking-tight">Ready to build something extraordinary?</h2>
-                    <div className="flex flex-wrap justify-center gap-6">
-                        <a href="/projects" className="btn-primary">
+                <section className="text-center bg-white/5 border border-white/20 rounded-3xl p-8 sm:p-12 md:p-20 py-12">
+                    <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold mb-8 tracking-tight px-4">Ready to build something extraordinary?</h2>
+                    <div className="flex flex-wrap justify-center gap-4 md:gap-6 px-4">
+                        <a href="/projects" className="btn-primary w-full sm:w-auto">
                             {data.hero.cta_primary}
                         </a>
-                        <button onClick={() => handleNavClick("#contact")} className="btn-secondary">
+                        <button onClick={() => handleNavClick("#contact")} className="btn-secondary w-full sm:w-auto">
                             Book a Session
                         </button>
-                        <button onClick={() => handleNavClick("#contact-form")} className="btn-secondary">
+                        <button onClick={() => handleNavClick("#contact-form")} className="btn-secondary w-full sm:w-auto">
                             {data.hero.cta_secondary}
                         </button>
                     </div>
