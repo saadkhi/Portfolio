@@ -62,7 +62,7 @@ else:
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Ensure Media Directories Exist
-for subpath in ['resumes', 'projects', 'skills/icons', 'social_icons']:
+for subpath in ['resumes', 'projects', 'skills', 'social_icons']:
     path = os.path.join(UPLOAD_BASE_DIR, subpath)
     if not os.path.exists(path):
         try:
@@ -157,7 +157,7 @@ class SkillModelView(SecureModelView):
     form_args = {
         'icon': {
             'label': 'Skill Icon',
-            'base_path': os.path.join(UPLOAD_BASE_DIR, 'skills/icons'),
+            'base_path': os.path.join(UPLOAD_BASE_DIR, 'skills'),
             'allow_overwrite': True
         }
     }
@@ -353,17 +353,28 @@ def logout():
 # Serve Media Files
 @app.route('/media/<path:filename>')
 def serve_media(filename):
-    # Try project media folder first
-    project_media_dir = os.path.join(BASE_DIR, 'media')
-    if os.path.exists(os.path.join(project_media_dir, filename)):
-        return send_from_directory(project_media_dir, filename)
+    # Search in multiple potential locations for compatibility
+    search_dirs = [
+        os.path.join(BASE_DIR, 'media'),
+        '/tmp/media'
+    ]
     
-    # Check Vercel /tmp storage as fallback
-    tmp_media_dir = '/tmp/media'
-    if os.path.exists(os.path.join(tmp_media_dir, filename)):
-        return send_from_directory(tmp_media_dir, filename)
+    # Files might be nested in subfolders like 'skills/icons/' due to legacy data
+    # We strip any path parts and search for the basename in our standard subfolders
+    base_name = os.path.basename(filename)
     
-    return jsonify({"error": "Media file not found"}), 404
+    # List of subfolders to check
+    subfolders = ['', 'resumes', 'projects', 'skills', 'skills/icons', 'social_icons']
+    
+    for d in search_dirs:
+        if not os.path.exists(d):
+            continue
+        for sub in subfolders:
+            target_path = os.path.join(d, sub, base_name)
+            if os.path.isfile(target_path):
+                return send_from_directory(os.path.join(d, sub), base_name)
+
+    return jsonify({"error": "Media file not found", "attempted": filename}), 404
 
 @app.route('/api/portfolio/', methods=['GET'])
 @app.route('/api/portfolio', methods=['GET'])
@@ -385,8 +396,8 @@ def get_portfolio():
             "title": p.title,
             "description": p.description,
             "tech_stack": p.tech_stack,
-            "image": f"/media/projects/{p.image}" if p.image and not p.image.startswith('http') and not p.image.startswith('/') else p.image,
-            "video": f"/media/projects/{p.video}" if p.video and not p.video.startswith('http') and not p.video.startswith('/') else p.video,
+            "image": f"/media/projects/{os.path.basename(p.image)}" if p.image and not p.image.startswith('http') and not p.image.startswith('/') else p.image,
+            "video": f"/media/projects/{os.path.basename(p.video)}" if p.video and not p.video.startswith('http') and not p.video.startswith('/') else p.video,
             "live_link": p.live_link,
             "category": p.category,
             "is_featured": p.is_featured
@@ -403,7 +414,7 @@ def get_portfolio():
             "subtitle": "AI & Software Engineer",
             "cta_primary": "See My Work",
             "cta_secondary": "Get in Touch",
-            "resume_url": f"/media/resumes/{profile.resume_file}" if profile.resume_file and not str(profile.resume_file).startswith('/') else profile.resume_file
+            "resume_url": f"/media/resumes/{os.path.basename(profile.resume_file)}" if profile.resume_file and not str(profile.resume_file).startswith('/') else profile.resume_file
         },
         "about": {
             "title": "About Me",
@@ -412,7 +423,7 @@ def get_portfolio():
         "skills": [{
             "id": s.id,
             "name": s.name,
-            "icon": f"/media/skills/{s.icon}" if s.icon and not s.icon.startswith('http') and not s.icon.startswith('fa') and not s.icon.startswith('/') else s.icon,
+            "icon": f"/media/skills/{os.path.basename(s.icon)}" if s.icon and not s.icon.startswith('http') and not s.icon.startswith('fa') and not s.icon.startswith('/') else s.icon,
             "order": s.order
         } for s in skills],
         "social_links": [{
@@ -420,7 +431,7 @@ def get_portfolio():
             "name": sl.name,
             "url": sl.url,
             "icon_class": sl.icon_class,
-            "icon_image": f"/media/social_icons/{sl.icon_image}" if sl.icon_image and not sl.icon_image.startswith('/') else sl.icon_image
+            "icon_image": f"/media/social_icons/{os.path.basename(sl.icon_image)}" if sl.icon_image and not sl.icon_image.startswith('/') else sl.icon_image
         } for sl in social_links],
         "featured_projects": featured_projects[:3],
         "latest_projects": latest_projects[:6],
@@ -442,8 +453,8 @@ def get_projects():
         "title": p.title,
         "description": p.description,
         "tech_stack": p.tech_stack,
-        "image": f"/media/projects/{p.image}" if p.image and not p.image.startswith('http') and not p.image.startswith('/') else p.image,
-        "video": f"/media/projects/{p.video}" if p.video and not p.video.startswith('http') and not p.video.startswith('/') else p.video,
+        "image": f"/media/projects/{os.path.basename(p.image)}" if p.image and not p.image.startswith('http') and not p.image.startswith('/') else p.image,
+        "video": f"/media/projects/{os.path.basename(p.video)}" if p.video and not p.video.startswith('http') and not p.video.startswith('/') else p.video,
         "live_link": p.live_link,
         "category": p.category,
         "is_featured": p.is_featured
