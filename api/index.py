@@ -3,7 +3,8 @@ import logging
 import sys
 from flask import Flask, jsonify, request, send_from_directory, render_template_string, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
-from flask_admin import Admin, AdminIndexView
+from flask_admin import Admin, AdminIndexView, expose
+from flask_admin.base import MenuLink
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.form.upload import FileUploadField
 from flask_cors import CORS
@@ -88,6 +89,18 @@ class SecureAdminIndexView(AdminIndexView):
         if not self.is_accessible():
             return redirect(url_for('login', next=request.url))
 
+    @expose('/')
+    def index(self):
+        profiles = Profile.query.all()
+        projects = Project.query.all()
+        skills = Skill.query.all()
+        social_links = SocialLink.query.all()
+        return self.render('admin/index.html', 
+                           profiles=profiles, 
+                           projects=projects, 
+                           skills=skills, 
+                           social_links=social_links)
+
 # Initialize Database
 db.init_app(app)
 
@@ -147,15 +160,19 @@ class SocialLinkModelView(SecureModelView):
     }
 
 # Initialize Admin with Security
-admin = Admin(app, name='Portfolio Admin', template_mode='bootstrap3', index_view=SecureAdminIndexView())
+admin = Admin(app, name='Portfolio Admin', template_mode='bootstrap3', index_view=SecureAdminIndexView(), base_template='admin/custom_base.html')
 admin.add_view(ProfileModelView(Profile, db.session))
 admin.add_view(ProjectModelView(Project, db.session))
 admin.add_view(SkillModelView(Skill, db.session))
 admin.add_view(SocialLinkModelView(SocialLink, db.session))
 
+# logout Link
+admin.add_link(MenuLink(name='Logout', category='', url='/logout'))
+
 # Authentication Routes
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    error_msg = None
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
@@ -164,31 +181,154 @@ def login():
             login_user(user)
             return redirect(request.args.get('next') or url_for('admin.index'))
         
-        # Improved debug logging on failure
         logger.warning(f"Login failed for user '{username}'.")
-        logger.info(f"DEBUG: Submitted username length: {len(username if username else '')}, expected length: {len(ADMIN_USERNAME)}")
-        logger.info(f"DEBUG: Submitted password length: {len(password if password else '')}, expected length: {len(ADMIN_PASSWORD)}")
-        
         error_msg = "Invalid credentials"
         if not ADMIN_USERNAME or not ADMIN_PASSWORD:
-            error_msg = "Server Error: Admin credentials not configured on server"
-            logger.error("Admin credentials are NOT SET on the server!")
+            error_msg = "Server Error: Admin credentials not configured"
 
-        return render_template_string(f'''
-            <form method="post">
-                <p><input type=text name=username placeholder="Username">
-                <p><input type=password name=password placeholder="Password">
-                <p><input type=submit value=Login>
-                <p style="color:red">{error_msg}</p>
-            </form>
-        ''')
     return render_template_string('''
-        <form method="post">
-            <p><input type=text name=username placeholder="Username">
-            <p><input type=password name=password placeholder="Password">
-            <p><input type=submit value=Login>
-        </form>
-    ''')
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Admin Login | Portfolio</title>
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Space+Grotesk:wght@600&display=swap" rel="stylesheet">
+            <style>
+                :root {
+                    --primary: #ff8a00;
+                    --primary-hover: #ffa733;
+                    --bg: #f8fafc;
+                    --card-bg: #ffffff;
+                    --text: #1e293b;
+                    --text-muted: #64748b;
+                    --border: #e2e8f0;
+                }
+                body {
+                    font-family: 'Inter', sans-serif;
+                    background-color: var(--bg);
+                    color: var(--text);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    min-height: 100vh;
+                    margin: 0;
+                }
+                .login-card {
+                    background: var(--card-bg);
+                    border: 1px solid var(--border);
+                    padding: 3rem;
+                    border-radius: 2rem;
+                    width: 100%;
+                    max-width: 420px;
+                    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+                }
+                .header {
+                    margin-bottom: 2.5rem;
+                    text-align: center;
+                }
+                .header h1 {
+                    font-size: 2.25rem;
+                    font-weight: 700;
+                    font-family: 'Space Grotesk', sans-serif;
+                    margin: 0 0 0.5rem 0;
+                    color: var(--primary);
+                    letter-spacing: -1px;
+                }
+                .header p {
+                    color: var(--text-muted);
+                    font-size: 0.95rem;
+                    margin: 0;
+                }
+                .form-group {
+                    margin-bottom: 1.5rem;
+                }
+                .form-group label {
+                    display: block;
+                    font-size: 0.875rem;
+                    font-weight: 500;
+                    margin-bottom: 0.6rem;
+                    color: var(--text-muted);
+                    text-transform: uppercase;
+                    letter-spacing: 0.05em;
+                }
+                input {
+                    width: 100%;
+                    padding: 1rem 1.25rem;
+                    background: #f8fafc;
+                    border: 1px solid var(--border);
+                    border-radius: 1rem;
+                    color: var(--text);
+                    font-size: 1rem;
+                    transition: all 0.3s;
+                    box-sizing: border-box;
+                }
+                input:focus {
+                    outline: none;
+                    border-color: var(--primary);
+                    background: #ffffff;
+                    box-shadow: 0 0 0 4px rgba(255, 138, 0, 0.1);
+                }
+                button {
+                    width: 100%;
+                    padding: 1rem;
+                    background: var(--primary);
+                    color: white;
+                    border: none;
+                    border-radius: 1rem;
+                    font-size: 1.1rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                    margin-top: 1.5rem;
+                }
+                button:hover {
+                    background: #ffa733;
+                    transform: translateY(-2px);
+                    box-shadow: 0 10px 20px rgba(255, 138, 0, 0.2);
+                }
+                button:active {
+                    transform: translateY(0);
+                }
+                .error {
+                    background: #fef2f2;
+                    border: 1px solid #fee2e2;
+                    color: #ef4444;
+                    padding: 1rem;
+                    border-radius: 1rem;
+                    font-size: 0.9rem;
+                    margin-bottom: 2rem;
+                    text-align: center;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="login-card">
+                <div class="header">
+                    <h1>Admin Access</h1>
+                    <p>Portfolio Dashboard Login</p>
+                </div>
+                
+                {% if error %}
+                <div class="error">
+                    {{ error }}
+                </div>
+                {% endif %}
+                
+                <form method="post">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" name="username" placeholder="admin" required autofocus>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" name="password" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit">Log In</button>
+                </form>
+            </div>
+        </body>
+        </html>
+    ''', error=error_msg)
 
 @app.route('/logout')
 def logout():

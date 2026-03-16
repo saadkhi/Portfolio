@@ -1,0 +1,128 @@
+{% extends 'admin/custom_base.html' %}
+
+{% block body %}
+<div class="row">
+    <div class="col-md-12">
+        <h1 class="page-header">Portfolio Dashboard</h1>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Profile Section -->
+    <div class="col-md-12">
+        <div class="well">
+            <h3><i class="fa fa-user"></i> Profiles <a href="{{ url_for('profile.index_view') }}"
+                    class="btn btn-xs btn-default pull-right">Manage</a></h3>
+            {% if profiles %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Title</th>
+                            <th>Email</th>
+                            <th>Location</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in profiles %}
+                        <tr>
+                            <td>{{ p.name }}</td>
+                            <td>{{ p.title }}</td>
+                            <td>{{ p.email }}</td>
+                            <td>{{ p.location }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted">No profile data found.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Projects Section -->
+    <div class="col-md-12">
+        <div class="well">
+            <h3><i class="fa fa-code-fork"></i> Projects <a href="{{ url_for('project.index_view') }}"
+                    class="btn btn-xs btn-default pull-right">Manage</a></h3>
+            {% if projects %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Category</th>
+                            <th>Featured</th>
+                            <th>Stack</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in projects %}
+                        <tr>
+                            <td>{{ p.title }}</td>
+                            <td>{{ p.category }}</td>
+                            <td>{% if p.is_featured %}<span class="label label-success">Yes</span>{% else %}<span
+                                    class="label label-default">No</span>{% endif %}</td>
+                            <td
+                                style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                {{ p.tech_stack }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted">No projects found.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Skills & Social Links -->
+    <div class="col-md-6">
+        <div class="well">
+            <h3><i class="fa fa-terminal"></i> Skills <a href="{{ url_for('skill.index_view') }}"
+                    class="btn btn-xs btn-default pull-right">Manage</a></h3>
+            {% if skills %}
+            <ul class="list-group">
+                {% for s in skills %}
+                <li class="list-group-item d-flex justify-content-between align-items-center"
+                    style="background: transparent; border: none; border-bottom: 1px solid var(--border-color);">
+                    <span>{% if s.icon %}<img
+                            src="{{ url_for('static', filename=s.icon.replace('static/', '')) if 'static/' in s.icon else s.icon }}"
+                            width="20" height="20" style="margin-right: 10px;">{% endif %} {{ s.name }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p class="text-muted">No skills found.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="well">
+            <h3><i class="fa fa-share-alt"></i> Social Links <a href="{{ url_for('sociallink.index_view') }}"
+                    class="btn btn-xs btn-default pull-right">Manage</a></h3>
+            {% if social_links %}
+            <ul class="list-group">
+                {% for s in social_links %}
+                <li class="list-group-item"
+                    style="background: transparent; border: none; border-bottom: 1px solid var(--border-color);">
+                    <i class="{{ s.icon_class or 'fa fa-link' }}"></i> <a href="{{ s.url }}" target="_blank">{{ s.name
+                        }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p class="text-muted">No social links found.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
