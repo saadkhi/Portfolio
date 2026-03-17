@@ -109,12 +109,11 @@ const Home = ({ data }) => {
                     {/* LEFT SIDE — TEXT */}
                     <div className="animate-fade-in text-center md:text-left">
                         <h2 className="text-6xl md:text-8xl font-bold leading-[1.1] mb-8 tracking-tighter">
-                            Saad Ather Ali
+                            {data.hero.name}
                         </h2>
 
                         <p className="text-xl md:text-2xl text-text-secondary font-medium mb-12 max-w-[1000px]">
-                            Making AI products to make life easier since 2024. <br></br>
-                            {/* AI Engineer @ Convex Consulting LLC. <br></br> */}
+                            {data.hero.title} <br></br>
                             Open to new opportunities and freelance projects, <br></br>
                             <button onClick={() => handleNavClick("#contact")} className="text-primary-accent font-bold hover:underline">let's connect!</button>
                         </p>
@@ -136,8 +135,8 @@ const Home = ({ data }) => {
                     <div className="flex justify-center md:justify-end">
                         <div className="relative w-[280px] md:w-[400px] aspect-square rounded-2xl overflow-hidden">
                             <img
-                                src={myPic}
-                                alt="Saad Ather Ali"
+                                src={data.hero.profile_pic || myPic}
+                                alt={data.hero.name}
                                 className="w-full h-full object-cover"
                             />
                         </div>
@@ -150,14 +149,10 @@ const Home = ({ data }) => {
                 <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
                     <div className="max-w-[1800px]">
                         {/* <span className="text-primary-accent uppercase tracking-widest text-xs font-bold mb-4 block">Selected Projects</span> */}
-                        <h2 className="text-4xl md:text-6xl font-bold py-6">Hi, I'm Saad</h2>
-                        <p className="text-lg md:text-xl text-text-secondary font-medium">
-                            I am technologist who is passionate about building AI products. I transform raw data into intelligent models and bridge the gap between AI and real-world problems by creating seamless and efficient software.
-                            <h3 className='text-2xl md:text-4xl font-semibold py-4 mt-6'> What I bring to the company</h3>
-                            <p className='text-lg md:text-xl text-text-secondary font-medium mb-6'>If you hire me, I bring a strong problem-solving mindset, hands-on experience with AI/ML and backend systems, and the ability to turn an idea into working, production-ready solutions. Beyond technical skills, I bring ownership, continuous learning, and a focus on building scalable, reliable systems that create real business impact.</p>
-                            <h3 className='text-2xl md:text-4xl font-semibold py-4'> Why I am a good fit for this role</h3>
-                            <p className='text-lg md:text-xl text-text-secondary font-medium'>I am a quick learner, adaptable, and passionate about AI. I am confident that I can quickly get up to speed with your team and contribute meaningfully to your projects. With AI tools like VibeCode, I can build projects faster and more efficiently than ever before.</p>
-                        </p>
+                        <h2 className="text-4xl md:text-6xl font-bold py-6">Hi, I'm {data.hero.name.split(' ')[0]}</h2>
+                        <div className="text-lg md:text-xl text-text-secondary font-medium space-y-6">
+                            <p>{data.about.description}</p>
+                        </div>
                     </div>
                 </div>
 

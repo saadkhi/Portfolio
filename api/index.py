@@ -62,7 +62,7 @@ else:
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Ensure Media Directories Exist
-for subpath in ['resumes', 'projects', 'skills', 'social_icons']:
+for subpath in ['resumes', 'projects', 'skills', 'social_icons', 'profile']:
     path = os.path.join(UPLOAD_BASE_DIR, subpath)
     if not os.path.exists(path):
         try:
@@ -119,15 +119,37 @@ class SecureAdminIndexView(AdminIndexView):
 # Initialize Database
 db.init_app(app)
 
+# Create tables and handle migrations
+with app.app_context():
+    db.create_all()
+    # Check if profile_pic column exists in Profile table
+    try:
+        from sqlalchemy import inspect, text
+        inspector = inspect(db.engine)
+        columns = [c['name'] for c in inspector.get_columns('profile')]
+        if 'profile_pic' not in columns:
+            with db.engine.connect() as conn:
+                conn.execute(text('ALTER TABLE profile ADD COLUMN profile_pic VARCHAR(255)'))
+                conn.commit()
+                logger.info("Added profile_pic column to profile table")
+    except Exception as e:
+        logger.error(f"Migration error: {e}")
+
 # Specialized ModelViews with FileUploadField
 class ProfileModelView(SecureModelView):
     form_overrides = {
-        'resume_file': FileUploadField
+        'resume_file': FileUploadField,
+        'profile_pic': FileUploadField
     }
     form_args = {
         'resume_file': {
             'label': 'Resume (PDF)',
             'base_path': os.path.join(UPLOAD_BASE_DIR, 'resumes'),
+            'allow_overwrite': True
+        },
+        'profile_pic': {
+            'label': 'Profile Picture',
+            'base_path': os.path.join(UPLOAD_BASE_DIR, 'profile'),
             'allow_overwrite': True
         }
     }
@@ -414,7 +436,8 @@ def get_portfolio():
             "subtitle": "AI & Software Engineer",
             "cta_primary": "See My Work",
             "cta_secondary": "Get in Touch",
-            "resume_url": f"/media/resumes/{os.path.basename(profile.resume_file)}" if profile.resume_file and not str(profile.resume_file).startswith('/') else profile.resume_file
+            "resume_url": f"/media/resumes/{os.path.basename(profile.resume_file)}" if profile.resume_file and not str(profile.resume_file).startswith('/') else profile.resume_file,
+            "profile_pic": f"/media/profile/{os.path.basename(profile.profile_pic)}" if profile.profile_pic and not str(profile.profile_pic).startswith('/') else profile.profile_pic
         },
         "about": {
             "title": "About Me",
