@@ -39,8 +39,17 @@ ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "03353948753_gs150se").strip()
 logger.info(f"DEBUG: ADMIN_USERNAME is {'SET (length: ' + str(len(ADMIN_USERNAME)) + ')' if ADMIN_USERNAME else 'NOT SET'}")
 logger.info(f"DEBUG: ADMIN_PASSWORD is {'SET (length: ' + str(len(ADMIN_PASSWORD)) + ')' if ADMIN_PASSWORD else 'NOT SET'}")
 
-# Handle Vercel Read-Only Filesystem
-if os.environ.get('VERCEL'):
+# Handle Database Persistence
+DATABASE_URL = os.environ.get('DATABASE_URL')
+
+if DATABASE_URL:
+    # Handle SQLAlchemy 1.4+ compatibility for 'postgres://' vs 'postgresql://'
+    if DATABASE_URL.startswith("postgres://"):
+        DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+    app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
+    logger.info("Using external persistent database")
+    UPLOAD_BASE_DIR = '/tmp/media' if os.environ.get('VERCEL') else os.path.join(BASE_DIR, 'media')
+elif os.environ.get('VERCEL'):
     db_path = '/tmp/portfolio.db'
     repo_db_path = os.path.join(BASE_DIR, 'portfolio.db')
     if os.path.exists(repo_db_path) and not os.path.exists(db_path):
@@ -51,11 +60,8 @@ if os.environ.get('VERCEL'):
         except Exception as e:
             logger.error(f"Failed to copy database: {e}")
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
-    
-    # Media root for Vercel
     UPLOAD_BASE_DIR = '/tmp/media'
 else:
-    db_path = os.path.join(BASE_DIR, 'portfolio.db')
     app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(BASE_DIR, 'portfolio.db')}"
     UPLOAD_BASE_DIR = os.path.join(BASE_DIR, 'media')
 

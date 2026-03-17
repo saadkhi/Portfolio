@@ -7,3 +7,4 @@ requests==2.32.3
 Pillow==11.0.0
 Flask-Login==0.6.3
 python-multipart==0.0.9
+psycopg2-binary==2.9.9
