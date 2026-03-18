@@ -141,11 +141,38 @@ with app.app_context():
     except Exception as e:
         logger.error(f"Migration error: {e}")
 
-# Specialized ModelViews with FileUploadField
+# Helper for thumbnail formatting
+from markupsafe import Markup
+
+def thumbnail_formatter(view, context, model, name):
+    if not getattr(model, name):
+        return ""
+    
+    # Standardize the path for display
+    base_name = os.path.basename(getattr(model, name))
+    # Determine subfolder based on model type
+    subfolder = ""
+    if isinstance(model, Profile): subfolder = "profile"
+    elif isinstance(model, Project): subfolder = "projects"
+    elif isinstance(model, Skill): subfolder = "skills"
+    elif isinstance(model, SocialLink): subfolder = "social_icons"
+    
+    url = f"/media/{subfolder}/{base_name}"
+    return Markup(f'<img src="{url}" height="40" style="border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">')
+
+# Specialized ModelViews with FileUploadField/ImageUploadField
+from flask_admin.form.upload import ImageUploadField
+
 class ProfileModelView(SecureModelView):
+    column_list = ('name', 'title', 'email', 'profile_pic_thumb')
+    column_labels = {'profile_pic_thumb': 'Photo'}
+    column_formatters = {
+        'profile_pic_thumb': lambda v, c, m, p: thumbnail_formatter(v, c, m, 'profile_pic')
+    }
+    
     form_overrides = {
         'resume_file': FileUploadField,
-        'profile_pic': FileUploadField
+        'profile_pic': ImageUploadField
     }
     form_args = {
         'resume_file': {
@@ -161,8 +188,14 @@ class ProfileModelView(SecureModelView):
     }
 
 class ProjectModelView(SecureModelView):
+    column_list = ('title', 'category', 'is_featured', 'image_thumb')
+    column_labels = {'image_thumb': 'Preview'}
+    column_formatters = {
+        'image_thumb': lambda v, c, m, p: thumbnail_formatter(v, c, m, 'image')
+    }
+    
     form_overrides = {
-        'image': FileUploadField,
+        'image': ImageUploadField,
         'video': FileUploadField
     }
     form_args = {
@@ -179,8 +212,14 @@ class ProjectModelView(SecureModelView):
     }
 
 class SkillModelView(SecureModelView):
+    column_list = ('name', 'order', 'icon_thumb')
+    column_labels = {'icon_thumb': 'Icon'}
+    column_formatters = {
+        'icon_thumb': lambda v, c, m, p: thumbnail_formatter(v, c, m, 'icon')
+    }
+    
     form_overrides = {
-        'icon': FileUploadField
+        'icon': ImageUploadField
     }
     form_args = {
         'icon': {
@@ -191,8 +230,14 @@ class SkillModelView(SecureModelView):
     }
 
 class SocialLinkModelView(SecureModelView):
+    column_list = ('name', 'url', 'icon_thumb')
+    column_labels = {'icon_thumb': 'Icon'}
+    column_formatters = {
+        'icon_thumb': lambda v, c, m, p: thumbnail_formatter(v, c, m, 'icon_image')
+    }
+    
     form_overrides = {
-        'icon_image': FileUploadField
+        'icon_image': ImageUploadField
     }
     form_args = {
         'icon_image': {
@@ -391,16 +436,23 @@ def serve_media(filename):
     # We strip any path parts and search for the basename in our standard subfolders
     base_name = os.path.basename(filename)
     
-    # List of subfolders to check
-    subfolders = ['', 'resumes', 'projects', 'skills', 'skills/icons', 'social_icons']
+    # Standard subfolders to check
+    subfolders = ['', 'resumes', 'projects', 'skills', 'social_icons', 'profile', 'projects/images', 'skills/icons']
     
     for d in search_dirs:
         if not os.path.exists(d):
             continue
+        # 1. First check if the file exists directly or in specific subfolder
         for sub in subfolders:
             target_path = os.path.join(d, sub, base_name)
             if os.path.isfile(target_path):
                 return send_from_directory(os.path.join(d, sub), base_name)
+        
+        # 2. Recursive search for robustness
+        import glob
+        matches = glob.glob(os.path.join(d, '**', base_name), recursive=True)
+        if matches:
+            return send_from_directory(os.path.dirname(matches[0]), base_name)
 
     return jsonify({"error": "Media file not found", "attempted": filename}), 404
 
