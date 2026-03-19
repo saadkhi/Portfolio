@@ -4,6 +4,20 @@
 <div class="row">
     <div class="col-md-12">
         <h1 class="page-header">Portfolio Dashboard</h1>
+
+        {% if is_ephemeral %}
+        <div class="alert alert-warning"
+            style="border-left: 5px solid #8a6d3b; background-color: #fcf8e3; color: #8a6d3b; padding: 20px; margin-bottom: 30px; border-radius: 8px;">
+            <h4 style="margin-top: 0;"><i class="fa fa-warning"></i> <strong>Important: Temporary Database</strong></h4>
+            <p>You are running on Vercel using a temporary local database. <strong>Any changes you make here will be
+                    deleted</strong> when Vercel restarts your server instance (which happens frequently).</p>
+            <p>To make your skills and projects permanent, you <strong>must</strong> set up an external database (like
+                Neon or Supabase) and add the <code>DATABASE_URL</code> to your Vercel Environment Variables.</p>
+            <hr style="border-top: 1px solid rgba(0,0,0,0.1);">
+            <p style="margin-bottom: 0;"><i class="fa fa-info-circle"></i> Check the <strong>walkthrough.md</strong> for
+                step-by-step instructions.</p>
+        </div>
+        {% endif %}
     </div>
 </div>
 

@@ -116,11 +116,13 @@ class SecureAdminIndexView(AdminIndexView):
         projects = Project.query.all()
         skills = Skill.query.all()
         social_links = SocialLink.query.all()
+        is_ephemeral = os.environ.get('VERCEL') is not None and os.environ.get('DATABASE_URL') is None
         return self.render('admin/index.html', 
                            profiles=profiles, 
                            projects=projects, 
                            skills=skills, 
-                           social_links=social_links)
+                           social_links=social_links,
+                           is_ephemeral=is_ephemeral)
 
 # Initialize Database
 db.init_app(app)
