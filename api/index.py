@@ -516,8 +516,8 @@ def get_portfolio():
             "icon_class": sl.icon_class,
             "icon_image": f"/media/social_icons/{os.path.basename(sl.icon_image)}" if sl.icon_image and not sl.icon_image.startswith('/') else sl.icon_image
         } for sl in social_links],
-        "featured_projects": featured_projects[:3],
-        "latest_projects": latest_projects[:6],
+        "featured_projects": featured_projects,
+        "latest_projects": latest_projects,
         "contact": {
             "email": profile.email or "saadalioffic@gmail.com",
             "phone": profile.phone_number or "",
