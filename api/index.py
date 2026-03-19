@@ -462,8 +462,22 @@ def serve_media(filename):
 @app.route('/api/portfolio', methods=['GET'])
 def get_portfolio():
     profile = Profile.query.first()
-    if not profile:
-        return jsonify({"error": "Profile not found"}), 404
+    
+    # Use database values or defaults for profile info
+    name = profile.name if profile else "Saad Ali"
+    title = profile.title if profile else "AI & Software Engineer"
+    bio = profile.bio if profile else "I'm a software engineer focused on building clean, scalable backends..."
+    email = profile.email if profile else "saadalioffic@gmail.com"
+    phone = profile.phone_number if profile else ""
+    location = profile.location if profile else "Karachi, Pakistan"
+    
+    resume_url = ""
+    if profile and profile.resume_file:
+        resume_url = f"/media/resumes/{os.path.basename(profile.resume_file)}" if not str(profile.resume_file).startswith('/') else profile.resume_file
+        
+    profile_pic = ""
+    if profile and profile.profile_pic:
+        profile_pic = f"/media/profile/{os.path.basename(profile.profile_pic)}" if not str(profile.profile_pic).startswith('/') else profile.profile_pic
 
     projects = Project.query.order_by(Project.created_at.desc()).all()
     skills = Skill.query.order_by(Skill.order).all()
@@ -477,11 +491,11 @@ def get_portfolio():
             "id": p.id,
             "title": p.title,
             "description": p.description,
-            "tech_stack": p.tech_stack,
+            "tech_stack": p.tech_stack or "",
             "image": f"/media/projects/{os.path.basename(p.image)}" if p.image and not p.image.startswith('http') and not p.image.startswith('/') else p.image,
             "video": f"/media/projects/{os.path.basename(p.video)}" if p.video and not p.video.startswith('http') and not p.video.startswith('/') else p.video,
-            "live_link": p.live_link,
-            "category": p.category,
+            "live_link": p.live_link or "#",
+            "category": p.category or "Development",
             "is_featured": p.is_featured
         }
         if p.is_featured:
@@ -491,37 +505,37 @@ def get_portfolio():
 
     return jsonify({
         "hero": {
-            "name": profile.name,
-            "title": profile.title,
+            "name": name,
+            "title": title,
             "subtitle": "AI & Software Engineer",
             "cta_primary": "See My Work",
             "cta_secondary": "Get in Touch",
-            "resume_url": f"/media/resumes/{os.path.basename(profile.resume_file)}" if profile.resume_file and not str(profile.resume_file).startswith('/') else profile.resume_file,
-            "profile_pic": f"/media/profile/{os.path.basename(profile.profile_pic)}" if profile.profile_pic and not str(profile.profile_pic).startswith('/') else profile.profile_pic
+            "resume_url": resume_url,
+            "profile_pic": profile_pic
         },
         "about": {
             "title": "About Me",
-            "description": profile.bio or "I'm a software engineer focused on building clean, scalable backends..."
+            "description": bio
         },
         "skills": [{
             "id": s.id,
             "name": s.name,
-            "icon": f"/media/skills/{os.path.basename(s.icon)}" if s.icon and not s.icon.startswith('http') and not s.icon.startswith('fa') and not s.icon.startswith('/') else s.icon,
+            "icon": f"/media/skills/{os.path.basename(s.icon)}" if s.icon and not s.icon.startswith('http') and not s.icon.startswith('fa') and not s.icon.startswith('/') else (s.icon or ""),
             "order": s.order
         } for s in skills],
         "social_links": [{
             "id": sl.id,
             "name": sl.name,
             "url": sl.url,
-            "icon_class": sl.icon_class,
-            "icon_image": f"/media/social_icons/{os.path.basename(sl.icon_image)}" if sl.icon_image and not sl.icon_image.startswith('/') else sl.icon_image
+            "icon_class": sl.icon_class or "fa-solid fa-link",
+            "icon_image": f"/media/social_icons/{os.path.basename(sl.icon_image)}" if sl.icon_image and not sl.icon_image.startswith('/') else (sl.icon_image or "")
         } for sl in social_links],
         "featured_projects": featured_projects,
         "latest_projects": latest_projects,
         "contact": {
-            "email": profile.email or "saadalioffic@gmail.com",
-            "phone": profile.phone_number or "",
-            "location": profile.location or "Karachi, Pakistan",
+            "email": email,
+            "phone": phone,
+            "location": location,
             "linkedin": "https://linkedin.com/in/saadkhi",
             "github": "https://github.com/saadkhi"
         }

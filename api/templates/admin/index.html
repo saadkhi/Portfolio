@@ -25,8 +25,14 @@
     <!-- Profile Section -->
     <div class="col-md-12">
         <div class="well">
-            <h3><i class="fa fa-user"></i> Profiles <a href="{{ url_for('profile.index_view') }}"
-                    class="btn btn-xs btn-default pull-right">Manage</a></h3>
+            <h3>
+                <i class="fa fa-user"></i> Profiles
+                <div class="pull-right">
+                    <a href="{{ url_for('profile.create_view', next=request.url) }}" class="btn btn-xs btn-success"><i
+                            class="fa fa-plus"></i> Add New</a>
+                    <a href="{{ url_for('profile.index_view') }}" class="btn btn-xs btn-default">Manage</a>
+                </div>
+            </h3>
             {% if profiles %}
             <div class="table-responsive">
                 <table class="table table-striped">
@@ -51,7 +57,8 @@
                 </table>
             </div>
             {% else %}
-            <p class="text-muted">No profile data found.</p>
+            <p class="text-muted">No profile data found. <a
+                    href="{{ url_for('profile.create_view', next=request.url) }}">Create your profile now.</a></p>
             {% endif %}
         </div>
     </div>
@@ -61,8 +68,14 @@
     <!-- Projects Section -->
     <div class="col-md-12">
         <div class="well">
-            <h3><i class="fa fa-code-fork"></i> Projects <a href="{{ url_for('project.index_view') }}"
-                    class="btn btn-xs btn-default pull-right">Manage</a></h3>
+            <h3>
+                <i class="fa fa-code-fork"></i> Projects
+                <div class="pull-right">
+                    <a href="{{ url_for('project.create_view', next=request.url) }}" class="btn btn-xs btn-success"><i
+                            class="fa fa-plus"></i> Add New</a>
+                    <a href="{{ url_for('project.index_view') }}" class="btn btn-xs btn-default">Manage</a>
+                </div>
+            </h3>
             {% if projects %}
             <div class="table-responsive">
                 <table class="table table-striped">
@@ -90,7 +103,8 @@
                 </table>
             </div>
             {% else %}
-            <p class="text-muted">No projects found.</p>
+            <p class="text-muted">No projects found. <a
+                    href="{{ url_for('project.create_view', next=request.url) }}">Add your first project.</a></p>
             {% endif %}
         </div>
     </div>
@@ -100,8 +114,14 @@
     <!-- Skills & Social Links -->
     <div class="col-md-6">
         <div class="well">
-            <h3><i class="fa fa-terminal"></i> Skills <a href="{{ url_for('skill.index_view') }}"
-                    class="btn btn-xs btn-default pull-right">Manage</a></h3>
+            <h3>
+                <i class="fa fa-terminal"></i> Skills
+                <div class="pull-right">
+                    <a href="{{ url_for('skill.create_view', next=request.url) }}" class="btn btn-xs btn-success"><i
+                            class="fa fa-plus"></i> Add New</a>
+                    <a href="{{ url_for('skill.index_view') }}" class="btn btn-xs btn-default">Manage</a>
+                </div>
+            </h3>
             {% if skills %}
             <ul class="list-group">
                 {% for s in skills %}
@@ -114,15 +134,22 @@
                 {% endfor %}
             </ul>
             {% else %}
-            <p class="text-muted">No skills found.</p>
+            <p class="text-muted">No skills found. <a href="{{ url_for('skill.create_view', next=request.url) }}">Add a
+                    skill.</a></p>
             {% endif %}
         </div>
     </div>
 
     <div class="col-md-6">
         <div class="well">
-            <h3><i class="fa fa-share-alt"></i> Social Links <a href="{{ url_for('sociallink.index_view') }}"
-                    class="btn btn-xs btn-default pull-right">Manage</a></h3>
+            <h3>
+                <i class="fa fa-share-alt"></i> Social Links
+                <div class="pull-right">
+                    <a href="{{ url_for('sociallink.create_view', next=request.url) }}"
+                        class="btn btn-xs btn-success"><i class="fa fa-plus"></i> Add New</a>
+                    <a href="{{ url_for('sociallink.index_view') }}" class="btn btn-xs btn-default">Manage</a>
+                </div>
+            </h3>
             {% if social_links %}
             <ul class="list-group">
                 {% for s in social_links %}
@@ -134,7 +161,8 @@
                 {% endfor %}
             </ul>
             {% else %}
-            <p class="text-muted">No social links found.</p>
+            <p class="text-muted">No social links found. <a
+                    href="{{ url_for('sociallink.create_view', next=request.url) }}">Add a social link.</a></p>
             {% endif %}
         </div>
     </div>

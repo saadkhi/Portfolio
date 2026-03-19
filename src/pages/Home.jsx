@@ -168,7 +168,7 @@ const Home = ({ data }) => {
                                     />
                                 ) : (
                                     <img
-                                        src={project.image}
+                                        src={project.image || 'https://via.placeholder.com/800x450?text=No+Image'}
                                         alt={project.title}
                                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                                     />
@@ -179,13 +179,13 @@ const Home = ({ data }) => {
                                 <span className="text-xs font-bold uppercase tracking-widest text-primary-accent mb-4 block">{project.category}</span>
                                 <div className="flex justify-between items-start gap-4">
                                     <h3 className="text-3xl md:text-4xl font-bold mb-4">{project.title}</h3>
-                                    <a href={project.live_link} className="w-12 h-12 rounded-full bg-grey/10 backdrop-blur-xl border border-white/20 flex items-center justify-center hover:bg-white/20 hover:border-white/20 transition-all">
+                                    <a href={project.live_link || '#'} target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-full bg-grey/10 backdrop-blur-xl border border-white/20 flex items-center justify-center hover:bg-white/20 hover:border-white/20 transition-all">
                                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
                                     </a>
                                 </div>
                                 <p className="text-text-secondary text-lg mb-8 max-w-[600px]">{project.description}</p>
                                 <div className="flex flex-wrap gap-2">
-                                    {project.tech_stack.split(',').map((tech, i) => (
+                                    {project.tech_stack && project.tech_stack.split(',').map((tech, i) => (
                                         <span key={i} className="px-3 py-1 bg-white/5 border border-white/20 rounded-full text-[10px] font-bold uppercase tracking-wider">{tech.trim()}</span>
                                     ))}
                                 </div>
@@ -194,7 +194,58 @@ const Home = ({ data }) => {
                     ))}
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {/* Latest Projects Section */}
+                {data.latest_projects && data.latest_projects.length > 0 && (
+                    <div className="mt-24">
+                        <div className="flex items-center gap-4 mb-12">
+                            <h2 className="text-3xl md:text-5xl font-bold tracking-tighter">Latest Projects</h2>
+                            <div className="h-[1px] flex-grow bg-white/10"></div>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            {data.latest_projects.map((project) => (
+                                <div key={project.id} className="glass-card group flex flex-col overflow-hidden">
+                                    <div className="w-full aspect-video overflow-hidden relative">
+                                        {project.video ? (
+                                            <video
+                                                src={project.video}
+                                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                                muted loop playsInline onMouseOver={e => e.target.play()} onMouseOut={e => e.target.pause()}
+                                            />
+                                        ) : (
+                                            <img
+                                                src={project.image || 'https://via.placeholder.com/400x225?text=No+Image'}
+                                                alt={project.title}
+                                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                            />
+                                        )}
+                                    </div>
+                                    <div className="p-6 flex-grow flex flex-col">
+                                        <span className="text-[10px] font-bold uppercase tracking-widest text-primary-accent mb-2 block">{project.category}</span>
+                                        <div className="flex justify-between items-start gap-2 mb-4">
+                                            <h3 className="text-xl font-bold leading-tight">{project.title}</h3>
+                                            <a href={project.live_link || '#'} target="_blank" rel="noopener noreferrer" className="text-white/50 hover:text-white transition-colors">
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                                            </a>
+                                        </div>
+                                        <p className="text-text-secondary text-sm mb-6 line-clamp-2">{project.description}</p>
+                                        <div className="mt-auto flex flex-wrap gap-2">
+                                            {project.tech_stack && project.tech_stack.split(',').slice(0, 3).map((tech, i) => (
+                                                <span key={i} className="px-2 py-0.5 bg-white/5 border border-white/10 rounded text-[9px] font-bold uppercase tracking-wider">{tech.trim()}</span>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        <div className="mt-12 text-center">
+                            <a href="/projects" className="inline-flex items-center gap-2 text-primary-accent font-bold hover:underline">
+                                View Archive <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                            </a>
+                        </div>
+                    </div>
+                )}
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-24">
                     <div className="glass-card p-12 col-span-1 md:col-span-2 flex flex-col justify-center">
                         <h3 className="text-4xl font-bold mb-8">My Expertise</h3>
                         <div className="grid grid-cols-2 sm:grid-cols-5 gap-6">
