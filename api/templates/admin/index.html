@@ -6,16 +6,38 @@
         <h1 class="page-header">Portfolio Dashboard</h1>
 
         {% if is_ephemeral %}
-        <div class="alert alert-warning"
-            style="border-left: 5px solid #8a6d3b; background-color: #fcf8e3; color: #8a6d3b; padding: 20px; margin-bottom: 30px; border-radius: 8px;">
-            <h4 style="margin-top: 0;"><i class="fa fa-warning"></i> <strong>Important: Temporary Database</strong></h4>
-            <p>You are running on Vercel using a temporary local database. <strong>Any changes you make here will be
-                    deleted</strong> when Vercel restarts your server instance (which happens frequently).</p>
-            <p>To make your skills and projects permanent, you <strong>must</strong> set up an external database (like
-                Neon or Supabase) and add the <code>DATABASE_URL</code> to your Vercel Environment Variables.</p>
-            <hr style="border-top: 1px solid rgba(0,0,0,0.1);">
-            <p style="margin-bottom: 0;"><i class="fa fa-info-circle"></i> Check the <strong>walkthrough.md</strong> for
-                step-by-step instructions.</p>
+        <div class="alert alert-danger"
+            style="border-left: 5px solid #a94442; background-color: #f2dede; color: #a94442; padding: 25px; margin-bottom: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+            <h4 style="margin-top: 0; font-weight: 700;"><i class="fa fa-warning"></i> <strong>CRITICAL: DATA LOSS
+                    RISK</strong></h4>
+            <p style="font-size: 1.1em;">You are currently using a <strong>Temporary (Ephemeral) Database</strong>. This
+                is because <code>DATABASE_URL</code> is not configured in Vercel.</p>
+            <p><strong>Warning:</strong> Any data you add or delete now will be <strong>lost forever</strong> when
+                Vercel restarts your application (which happens after every deployment or after a periods of
+                inactivity).</p>
+
+            <div style="margin-top: 20px; background: rgba(255,255,255,0.5); padding: 15px; border-radius: 8px;">
+                <h5 style="margin-top: 0; color: #a94442; font-weight: 600;">How to Fix Permanently:</h5>
+                <ol style="margin-bottom: 0;">
+                    <li>Create a free database on <strong><a href="https://neon.tech" target="_blank"
+                                style="color: #a94442; text-decoration: underline;">Neon.tech</a></strong> or
+                        <strong>Supabase</strong>.</li>
+                    <li>Copy your <strong>Database Connection String</strong> (e.g.,
+                        <code>postgres://user:pass@host/db</code>).</li>
+                    <li>Go to your <strong>Vercel Dashboard</strong> > Settings > Environment Variables.</li>
+                    <li>Add a new variable named <code>DATABASE_URL</code> and paste your connection string.</li>
+                    <li><strong>Redeploy</strong> your application.</li>
+                </ol>
+            </div>
+
+            <hr style="border-top: 1px solid rgba(169, 68, 66, 0.2);">
+            <p style="margin-bottom: 0;"><i class="fa fa-info-circle"></i> Once <code>DATABASE_URL</code> is set, this
+                warning will disappear and your data will be safe.</p>
+        </div>
+        {% else %}
+        <div class="alert alert-success" style="border-left: 5px solid #3c763d; border-radius: 12px;">
+            <i class="fa fa-check-circle"></i> <strong>Persistence Active:</strong> Your data is being stored in a
+            persistent database.
         </div>
         {% endif %}
     </div>

@@ -143,6 +143,85 @@ with app.app_context():
     except Exception as e:
         logger.error(f"Migration error: {e}")
 
+# Database Seeding Logic
+def seed_database():
+    import json
+    from models import Profile, Project, Skill, SocialLink
+    
+    # Only seed if Profile is empty
+    if Profile.query.first():
+        return
+        
+    data_file = os.path.join(BASE_DIR, 'data.json')
+    if not os.path.exists(data_file):
+        logger.warning(f"Seed data file {data_file} not found.")
+        return
+
+    try:
+        with open(data_file, 'r') as f:
+            data = json.load(f)
+            
+        logger.info("Seeding database from data.json...")
+        
+        # Profile
+        p_data = data.get('profile', {})
+        if p_data:
+            profile = Profile(
+                name=p_data.get('name'),
+                title=p_data.get('title'),
+                bio=p_data.get('bio'),
+                resume_file=p_data.get('resume_file'),
+                email=p_data.get('email'),
+                location=p_data.get('location'),
+                phone_number=p_data.get('phone_number')
+            )
+            db.session.add(profile)
+            
+        # Projects
+        for proj in data.get('projects', []):
+            p = Project(
+                title=proj.get('title'),
+                description=proj.get('description'),
+                tech_stack=proj.get('tech_stack'),
+                image=proj.get('image'),
+                video=proj.get('video'),
+                live_link=proj.get('live_link'),
+                category=proj.get('category'),
+                is_featured=bool(proj.get('is_featured'))
+            )
+            db.session.add(p)
+            
+        # Skills
+        for skill in data.get('skills', []):
+            s = Skill(
+                name=skill.get('name'),
+                icon=skill.get('icon'),
+                order=skill.get('order', 0)
+            )
+            db.session.add(s)
+            
+        # Social Links
+        for link in data.get('social_links', []):
+            sl = SocialLink(
+                name=link.get('name'),
+                url=link.get('url'),
+                icon_class=link.get('icon_class'),
+                icon_image=link.get('icon_image'),
+                order=link.get('order', 0)
+            )
+            db.session.add(sl)
+            
+        db.session.commit()
+        logger.info("Database seeding completed.")
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Error seeding database: {e}")
+
+# Initialize Tables and Seed
+with app.app_context():
+    db.create_all()
+    seed_database()
+
 # Helper for thumbnail formatting
 from markupsafe import Markup
 
@@ -581,9 +660,7 @@ def contact_form_submission():
 def health_check():
     return jsonify({"status": "ok"})
 
-# Initialize Tables (Required for some serverless environments if not using migrations)
-with app.app_context():
-    db.create_all()
+# Removed redundant db.create_all() as it's handled above
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 8000))
