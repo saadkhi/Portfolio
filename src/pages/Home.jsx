@@ -146,10 +146,10 @@ const Home = ({ data }) => {
 
             {/* Featured Projects Section */}
             <section id="intro" className="py-16 md:py-26 px-6 md:px-8 max-w-[1400px] mx-auto">
-                <div className="flex flex-col md:flex-row justify-between items-end gap-8 mb-12 md:mb-16">
+                <div className="flex flex-col md:flex-row justify-between items-end gap-8">
                     <div className="max-w-[1800px] text-center md:text-left w-full transition-all">
                         {/* <span className="text-primary-accent uppercase tracking-widest text-xs font-bold mb-4 block">Selected Projects</span> */}
-                        <h2 className="text-3xl sm:text-5xl md:text-6xl font-bold py-4 md:py-6">Hi, I'm {data.hero.name.split(' ')[0]}</h2>
+                        <h2 className="text-3xl sm:text-5xl md:text-6xl font-bold py-4 md:py-6 mt-8 md:mt-4">Hi, I'm {data.hero.name.split(' ')[0]}</h2>
                         <div className="text-md md:text-xl text-text-secondary font-medium space-y-6 leading-relaxed">
                             <p className="whitespace-pre-wrap">{data.about.description}</p>
                         </div>
@@ -245,7 +245,7 @@ const Home = ({ data }) => {
                     </div>
                 )} */}
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mt-16 md:mt-24">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
                     <div className="glass-card p-8 md:p-12 col-span-1 md:col-span-2 flex flex-col justify-center">
                         <h3 className="text-2xl md:text-4xl font-bold mb-6 md:mb-8 text-center md:text-left">My Expertise</h3>
                         <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4 md:gap-6">
@@ -345,7 +345,7 @@ const Home = ({ data }) => {
 
             {/* Contact Form Section */}
             <section id="contact-form" className="py-16 md:py-24 px-6 md:px-8 max-w-[1400px] mx-auto">
-                <h2 className="text-4xl sm:text-5xl md:text-7xl font-bold leading-[1.1] mb-8 md:mb-12 tracking-tighter text-center"> Let's Connect </h2>
+                <h2 className="text-4xl sm:text-5xl md:text-7xl font-bold leading-[1.1] mb-8 md:mb-12 tracking-tighter text-center mt-8 md:mt-4"> Let's Connect </h2>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-16 items-start">
                     {/* Left Column: Contact Form */}
                     <div className="glass-card p-6 md:p-12 order-2 lg:order-1">
