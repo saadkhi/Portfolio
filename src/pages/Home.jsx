@@ -151,7 +151,7 @@ const Home = ({ data }) => {
                         {/* <span className="text-primary-accent uppercase tracking-widest text-xs font-bold mb-4 block">Selected Projects</span> */}
                         <h2 className="text-4xl md:text-6xl font-bold py-6">Hi, I'm {data.hero.name.split(' ')[0]}</h2>
                         <div className="text-lg md:text-xl text-text-secondary font-medium space-y-6">
-                            <p>{data.about.description}</p>
+                            <p className="whitespace-pre-wrap">{data.about.description}</p>
                         </div>
                     </div>
                 </div>
