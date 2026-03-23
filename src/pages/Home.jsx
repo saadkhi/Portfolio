@@ -146,7 +146,7 @@ const Home = ({ data }) => {
 
             {/* Featured Projects Section */}
             <section id="intro" className="py-26 px-8 max-w-[1400px] mx-auto">
-                <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
+                <div className="flex flex-col md:flex-row justify-between items-end gap-8">
                     <div className="max-w-[1800px]">
                         {/* <span className="text-primary-accent uppercase tracking-widest text-xs font-bold mb-4 block">Selected Projects</span> */}
                         <h2 className="text-4xl md:text-6xl font-bold py-6">Hi, I'm {data.hero.name.split(' ')[0]}</h2>
