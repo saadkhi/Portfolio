@@ -5,6 +5,7 @@ import Home from './pages/Home'
 import Projects from './pages/Projects'
 import About from './pages/About'
 import ScrollToTop from './components/ScrollToTop'
+import Footer from './components/Footer'
 
 import ConnectionBackground from './components/ConnectionBackground'
 
@@ -54,6 +55,7 @@ function App() {
         <Route path="/about" element={<About data={data} />} />
         <Route path="/projects" element={<Projects />} />
       </Routes>
+      <Footer data={data} />
     </>
   )
 }

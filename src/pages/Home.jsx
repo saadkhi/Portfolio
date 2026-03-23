@@ -107,33 +107,33 @@ const Home = ({ data }) => {
                 <div className="max-w-[1200px] mx-auto w-full grid md:grid-cols-2 items-center gap-6">
 
                     {/* LEFT SIDE — TEXT */}
-                    <div className="animate-fade-in text-center md:text-left">
-                        <h2 className="text-6xl md:text-8xl font-bold leading-[1.1] mb-8 tracking-tighter">
+                    <div className="animate-fade-in text-center md:text-left order-2 md:order-1 pt-8 md:pt-0">
+                        <h2 className="text-4xl sm:text-6xl md:text-8xl font-bold leading-[1.1] mb-6 md:mb-8 tracking-tighter">
                             {data.hero.name}
                         </h2>
 
-                        <p className="text-xl md:text-2xl text-text-secondary font-medium mb-12 max-w-[1000px]">
-                            {data.hero.title} <br></br>
-                            Open to new opportunities and freelance projects, <br></br>
+                        <p className="text-lg md:text-2xl text-text-secondary font-medium mb-10 md:mb-12 max-w-[1000px] leading-relaxed">
+                            {data.hero.title} <br className="hidden md:block"></br>
+                            Open to new opportunities and freelance projects, <br className="hidden md:block"></br>
                             <button onClick={() => handleNavClick("#contact")} className="text-primary-accent font-bold hover:underline">let's connect!</button>
                         </p>
 
-                        <div className="flex flex-wrap justify-center md:justify-start gap-6">
-                            <a href="/projects" className="btn-primary">
+                        <div className="flex flex-wrap justify-center md:justify-start gap-4 md:gap-6">
+                            <a href="/projects" className="btn-primary w-full sm:w-auto">
                                 {data.hero.cta_primary}
                             </a>
-                            <button onClick={() => handleNavClick("#contact")} className="btn-secondary">
+                            <button onClick={() => handleNavClick("#contact")} className="btn-secondary w-full sm:w-auto">
                                 Book a Session
                             </button>
-                            <button onClick={() => handleNavClick("#contact-form")} className="btn-secondary">
+                            <button onClick={() => handleNavClick("#contact-form")} className="btn-secondary w-full sm:w-auto">
                                 {data.hero.cta_secondary}
                             </button>
                         </div>
                     </div>
 
                     {/* RIGHT SIDE — IMAGE */}
-                    <div className="flex justify-center md:justify-end">
-                        <div className="relative w-[280px] md:w-[400px] aspect-square rounded-2xl overflow-hidden">
+                    <div className="flex justify-center md:justify-end order-1 md:order-2">
+                        <div className="relative w-[240px] sm:w-[320px] md:w-[400px] aspect-square rounded-3xl overflow-hidden shadow-2xl">
                             <img
                                 src={data.hero.profile_pic || myPic}
                                 alt={data.hero.name}
@@ -145,21 +145,21 @@ const Home = ({ data }) => {
             </section>
 
             {/* Featured Projects Section */}
-            <section id="intro" className="py-26 px-8 max-w-[1400px] mx-auto">
-                <div className="flex flex-col md:flex-row justify-between items-end gap-8">
-                    <div className="max-w-[1800px]">
+            <section id="intro" className="py-16 md:py-26 px-6 md:px-8 max-w-[1400px] mx-auto">
+                <div className="flex flex-col md:flex-row justify-between items-end gap-8 mb-12 md:mb-16">
+                    <div className="max-w-[1800px] text-center md:text-left w-full transition-all">
                         {/* <span className="text-primary-accent uppercase tracking-widest text-xs font-bold mb-4 block">Selected Projects</span> */}
-                        <h2 className="text-4xl md:text-6xl font-bold py-6">Hi, I'm {data.hero.name.split(' ')[0]}</h2>
-                        <div className="text-lg md:text-xl text-text-secondary font-medium space-y-6">
+                        <h2 className="text-3xl sm:text-5xl md:text-6xl font-bold py-4 md:py-6">Hi, I'm {data.hero.name.split(' ')[0]}</h2>
+                        <div className="text-md md:text-xl text-text-secondary font-medium space-y-6 leading-relaxed">
                             <p className="whitespace-pre-wrap">{data.about.description}</p>
                         </div>
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-12">
                     {data.featured_projects && data.featured_projects.map((project, index) => (
                         <div key={project.id} className={`glass-card group flex flex-col overflow-hidden ${index === 0 ? 'md:col-span-2' : ''}`}>
-                            <div className={`w-full ${index === 0 ? 'aspect-[21/9]' : 'aspect-video'} overflow-hidden relative`}>
+                            <div className={`w-full ${index === 0 ? 'aspect-video md:aspect-[21/9]' : 'aspect-video'} overflow-hidden relative`}>
                                 {project.video ? (
                                     <video
                                         src={project.video}
@@ -175,18 +175,18 @@ const Home = ({ data }) => {
                                 )}
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                             </div>
-                            <div className="p-8 md:p-12 relative">
-                                <span className="text-xs font-bold uppercase tracking-widest text-primary-accent mb-4 block">{project.category}</span>
+                            <div className="p-6 md:p-12 relative">
+                                <span className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-primary-accent mb-3 md:mb-4 block">{project.category}</span>
                                 <div className="flex justify-between items-start gap-4">
-                                    <h3 className="text-3xl md:text-4xl font-bold mb-4">{project.title}</h3>
-                                    <a href={project.live_link || '#'} target="_blank" rel="noopener noreferrer" className="w-12 h-12 rounded-full bg-grey/10 backdrop-blur-xl border border-white/20 flex items-center justify-center hover:bg-white/20 hover:border-white/20 transition-all">
-                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                                    <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 md:mb-4">{project.title}</h3>
+                                    <a href={project.live_link || '#'} target="_blank" rel="noopener noreferrer" className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-grey/10 backdrop-blur-xl border border-white/20 flex items-center justify-center hover:bg-white/20 hover:border-white/20 transition-all">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
                                     </a>
                                 </div>
-                                <p className="text-text-secondary text-lg mb-8 max-w-[600px]">{project.description}</p>
+                                <p className="text-text-secondary text-sm md:text-lg mb-6 md:mb-8 max-w-[600px] leading-relaxed">{project.description}</p>
                                 <div className="flex flex-wrap gap-2">
                                     {project.tech_stack && project.tech_stack.split(',').map((tech, i) => (
-                                        <span key={i} className="px-3 py-1 bg-white/5 border border-white/20 rounded-full text-[10px] font-bold uppercase tracking-wider">{tech.trim()}</span>
+                                        <span key={i} className="px-2 md:px-3 py-1 bg-white/5 border border-white/20 rounded-full text-[9px] md:text-[10px] font-bold uppercase tracking-wider">{tech.trim()}</span>
                                     ))}
                                 </div>
                             </div>
@@ -245,27 +245,27 @@ const Home = ({ data }) => {
                     </div>
                 )} */}
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-24">
-                    <div className="glass-card p-12 col-span-1 md:col-span-2 flex flex-col justify-center">
-                        <h3 className="text-4xl font-bold mb-8">My Expertise</h3>
-                        <div className="grid grid-cols-2 sm:grid-cols-5 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mt-16 md:mt-24">
+                    <div className="glass-card p-8 md:p-12 col-span-1 md:col-span-2 flex flex-col justify-center">
+                        <h3 className="text-2xl md:text-4xl font-bold mb-6 md:mb-8 text-center md:text-left">My Expertise</h3>
+                        <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4 md:gap-6">
                             {data.skills.map((skill, index) => (
-                                <div key={index} className="flex items-center gap-4 group">
-                                    <div className="hidden md:flex w-10 h-10 rounded-xl bg-white/5 items-center justify-center group-hover:bg-primary-accent group-hover:text-black transition-all">
+                                <div key={index} className="flex items-center gap-3 md:gap-4 group justify-center md:justify-start">
+                                    <div className="flex w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-white/5 items-center justify-center group-hover:bg-primary-accent group-hover:text-black transition-all">
                                         {skill.icon && (skill.icon.startsWith('http') || skill.icon.startsWith('/media/')) ? (
-                                            <img src={skill.icon} alt={skill.name} className="w-6 h-6 object-contain" />
+                                            <img src={skill.icon} alt={skill.name} className="w-4 h-4 md:w-6 md:h-6 object-contain" />
                                         ) : (
-                                            <i className={skill.icon}></i>
+                                            <i className={`${skill.icon} text-xs md:text-base`}></i>
                                         )}
                                     </div>
-                                    <span className="font-bold text-sm tracking-widest uppercase">{skill.name}</span>
+                                    <span className="font-bold text-[10px] md:text-sm tracking-widest uppercase">{skill.name}</span>
                                 </div>
                             ))}
                         </div>
                     </div>
-                    <div className="glass-card p-12 bg-gradient-to-br from-primary-accent/20 to-transparent flex flex-col justify-between">
-                        <h3 className="text-3xl font-bold">Looking for an AI Engineer?</h3>
-                        <p className="text-text-secondary my-8">Let's build something extraordinary together.</p>
+                    <div className="glass-card p-8 md:p-12 bg-gradient-to-br from-primary-accent/20 to-transparent flex flex-col justify-between text-center md:text-left">
+                        <h3 className="text-2xl md:text-3xl font-bold mb-4 md:mb-0">Looking for an AI Engineer?</h3>
+                        <p className="text-text-secondary my-6 md:my-8 text-sm md:text-base">Let's build something extraordinary together.</p>
                         {/* <a href="#contact" className="btn-primary w-full">Start a Conversation</a> */}
                         {data.hero.resume_url && (
                             <a
@@ -273,7 +273,7 @@ const Home = ({ data }) => {
                                 target="_blank"
                                 // download={data.hero.resume_url}
                                 rel="noopener noreferrer"
-                                className="btn-secondary flex items-center gap-2"
+                                className="btn-secondary flex items-center justify-center gap-2 w-full"
                             >
                                 <i className="fa-solid fa-file-pdf"></i> Resume
                             </a>
@@ -289,16 +289,16 @@ const Home = ({ data }) => {
             </section> */}
 
             {/* Contact / Booking Section */}
-            <section id="contact" className="py-24 px-8">
+            <section id="contact" className="py-16 md:py-24 px-6 md:px-8">
                 <div className="max-w-[1400px] mx-auto glass-card overflow-hidden">
                     <div className="grid grid-cols-1 md:grid-cols-2">
                         {/* Left Side: Info */}
-                        <div className="p-8 md:p-16 md:py-24 border-b md:border-b-0 md:border-r border-glass-border flex flex-col justify-center">
-                            <div className="flex items-center gap-4 mb-8">
+                        <div className="p-8 md:p-16 md:py-24 border-b md:border-b-0 md:border-r border-glass-border flex flex-col justify-center text-center md:text-left">
+                            <div className="flex flex-col md:flex-row items-center gap-4 mb-8">
                                 <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-primary-accent shadow-[0_0_15px_rgba(255,138,0,0.3)] bg-gray-800">
                                     <img src={`https://ui-avatars.com/api/?name=${data.hero.name}&background=111&color=fff`} alt="Saad" className="w-full h-full object-cover" />
                                 </div>
-                                <div>
+                                <div className="flex flex-col">
                                     <h4 className="font-bold text-lg leading-tight">{data.hero.name}</h4>
                                     <div className="flex flex-col">
                                         <span className="text-text-secondary text-[10px] uppercase tracking-widest font-bold">Available for Projects</span>
@@ -307,28 +307,28 @@ const Home = ({ data }) => {
                                 </div>
                             </div>
 
-                            <h2 className="text-4xl md:text-6xl font-bold mb-8 tracking-tighter leading-tight">
-                                Let's Chat About <br /> Your Next Big Idea.
+                            <h2 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-6 md:mb-8 tracking-tighter leading-tight">
+                                Let's Chat About <br className="hidden md:block" /> Your Next Big Idea.
                             </h2>
 
-                            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/20 rounded-full mb-8 w-fit">
+                            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/20 rounded-full mb-8 w-fit mx-auto md:mx-0">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary-accent"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
                                 <span className="text-xs font-bold uppercase tracking-widest">60 Minute Session</span>
                             </div>
 
-                            <p className="text-text-secondary text-lg mb-12 leading-relaxed">
+                            <p className="text-text-secondary text-sm md:text-lg mb-10 md:mb-12 leading-relaxed">
                                 Whether you have a fully-fledged design or just a rough idea, I'm here to help you bring it to life. Let's discuss your business goals, tech stack, and how we can build something exceptional.
                             </p>
 
-                            <div className="p-6 bg-red-500/5 border border-red-500/10 rounded-2xl mt-auto">
-                                <p className="text-sm text-red-200/60 leading-relaxed italic">
+                            <div className="p-6 bg-red-500/5 border border-red-500/10 rounded-2xl mt-auto max-w-[500px] mx-auto md:mx-0">
+                                <p className="text-[11px] md:text-sm text-red-200/60 leading-relaxed italic">
                                     ⚠️ Please note: These sessions are for serious business inquiries only. Incomplete or vague bookings will be automatically canceled.
                                 </p>
                             </div>
                         </div>
 
                         {/* Right Side: TidyCal Embed */}
-                        <div className="bg-white/5 min-h-[950px] relative">
+                        <div className="bg-white/5 min-h-[600px] md:min-h-[950px] relative">
                             {/* We use an iframe for TidyCal to ensure it loads correctly in React */}
                             <iframe
                                 src="https://tidycal.com/saadalioffic/initial-discovery-session?embed=1"
@@ -344,15 +344,15 @@ const Home = ({ data }) => {
             </section>
 
             {/* Contact Form Section */}
-            <section id="contact-form" className="py-24 px-8 max-w-[1400px] mx-auto">
-                <h2 className="text-5xl md:text-7xl font-bold leading-[1.1] mb-8 tracking-tighter text-center"> Let's Connect </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+            <section id="contact-form" className="py-16 md:py-24 px-6 md:px-8 max-w-[1400px] mx-auto">
+                <h2 className="text-4xl sm:text-5xl md:text-7xl font-bold leading-[1.1] mb-8 md:mb-12 tracking-tighter text-center"> Let's Connect </h2>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-16 items-start">
                     {/* Left Column: Contact Form */}
-                    <div className="glass-card p-8 md:p-12">
-                        <div className="mb-10">
-                            <span className="text-primary-accent uppercase tracking-widest text-xs font-bold mb-4 block">Quick Connect</span>
-                            <h2 className="text-3xl md:text-5xl font-bold mb-4">Let's stay in touch.</h2>
-                            <p className="text-text-secondary italic">Drop your details below and I'll get back to you as soon as possible.</p>
+                    <div className="glass-card p-6 md:p-12 order-2 lg:order-1">
+                        <div className="mb-8 md:mb-10 text-center lg:text-left">
+                            <span className="text-primary-accent uppercase tracking-widest text-[10px] md:text-xs font-bold mb-2 md:mb-4 block">Quick Connect</span>
+                            <h2 className="text-2xl md:text-5xl font-bold mb-4">Let's stay in touch.</h2>
+                            <p className="text-sm md:text-base text-text-secondary italic">Drop your details below and I'll get back to you as soon as possible.</p>
                         </div>
 
                         <form className="space-y-6" onSubmit={handleSubmit}>
@@ -413,42 +413,42 @@ const Home = ({ data }) => {
                     </div>
 
                     {/* Right Column: Contact info */}
-                    <div className="glass-card p-8 md:p-12 space-y-10">
+                    <div className="glass-card p-8 md:p-12 space-y-8 md:space-y-10 order-1 lg:order-2 text-center lg:text-left">
                         <div>
-                            <h2 className="text-4xl md:text-6xl font-bold mb-6 tracking-tighter">Get in touch with me.</h2>
-                            <p className="text-lg text-text-secondary max-w-[450px] leading-relaxed italic">
+                            <h2 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-4 md:mb-6 tracking-tighter">Get in touch with me.</h2>
+                            <p className="text-sm md:text-lg text-text-secondary max-w-[450px] leading-relaxed italic mx-auto lg:mx-0">
                                 I'm always open to new projects, collaborations, or even just a friendly chat about AI and software development.
                             </p>
                         </div>
 
-                        <div className="space-y-8">
-                            <div className="flex items-start gap-6 group">
-                                <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/20 flex items-center justify-center text-primary-accent group-hover:bg-primary-accent group-hover:text-black transition-all duration-300 shadow-lg">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-6 md:gap-8">
+                            <div className="flex flex-col lg:flex-row items-center lg:items-start gap-4 md:gap-6 group">
+                                <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-white/5 border border-white/20 flex items-center justify-center text-primary-accent group-hover:bg-primary-accent group-hover:text-black transition-all duration-300 shadow-lg shrink-0">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
                                 </div>
                                 <div>
-                                    <span className="text-xs font-bold uppercase tracking-widest text-text-secondary block mb-1">Phone Number</span>
-                                    <a href={`tel:${data.contact.phone.replace(/\s/g, '')}`} className="text-xl font-bold hover:text-primary-accent transition-colors">{data.contact.phone}</a>
+                                    <span className="text-[10px] font-bold uppercase tracking-widest text-text-secondary block mb-1">Phone Number</span>
+                                    <a href={`tel:${data.contact.phone.replace(/\s/g, '')}`} className="text-lg md:text-xl font-bold hover:text-primary-accent transition-colors">{data.contact.phone}</a>
                                 </div>
                             </div>
 
-                            <div className="flex items-start gap-6 group">
-                                <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/20 flex items-center justify-center text-primary-accent group-hover:bg-primary-accent group-hover:text-black transition-all duration-300 shadow-lg">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                            <div className="flex flex-col lg:flex-row items-center lg:items-start gap-4 md:gap-6 group">
+                                <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-white/5 border border-white/20 flex items-center justify-center text-primary-accent group-hover:bg-primary-accent group-hover:text-black transition-all duration-300 shadow-lg shrink-0">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
                                 </div>
                                 <div>
-                                    <span className="text-xs font-bold uppercase tracking-widest text-text-secondary block mb-1">Email Address</span>
-                                    <a href={`mailto:${data.contact.email}`} className="text-xl font-bold hover:text-primary-accent transition-colors break-all">{data.contact.email}</a>
+                                    <span className="text-[10px] font-bold uppercase tracking-widest text-text-secondary block mb-1">Email Address</span>
+                                    <a href={`mailto:${data.contact.email}`} className="text-lg md:text-xl font-bold hover:text-primary-accent transition-colors break-all shrink-0">{data.contact.email}</a>
                                 </div>
                             </div>
 
-                            <div className="flex items-start gap-6 group">
-                                <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/20 flex items-center justify-center text-primary-accent group-hover:bg-primary-accent group-hover:text-black transition-all duration-300 shadow-lg">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                            <div className="flex flex-col lg:flex-row items-center lg:items-start gap-4 md:gap-6 group">
+                                <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-white/5 border border-white/20 flex items-center justify-center text-primary-accent group-hover:bg-primary-accent group-hover:text-black transition-all duration-300 shadow-lg shrink-0">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
                                 </div>
                                 <div>
-                                    <span className="text-xs font-bold uppercase tracking-widest text-text-secondary block mb-1">Current Location</span>
-                                    <p className="text-xl font-bold">{data.contact.location}</p>
+                                    <span className="text-[10px] font-bold uppercase tracking-widest text-text-secondary block mb-1">Current Location</span>
+                                    <p className="text-lg md:text-xl font-bold">{data.contact.location}</p>
                                 </div>
                             </div>
                         </div>
@@ -457,38 +457,29 @@ const Home = ({ data }) => {
             </section>
 
             {/* Social Media Section */}
-            <section className="py-24 px-8">
-                <h1 className="py-10 text-3xl md:text-5xl font-bold mb-4 text-center">Let's Connect on social handles</h1>
-                <div className="max-w-[1400px] mx-auto">
-                    <div className="flex flex-wrap justify-center gap-4 md:gap-8">
+            <section className="py-16 md:py-24 px-6 md:px-8 bg-black/20">
+                <h2 className="py-8 md:py-10 text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-center tracking-tighter">Let's Connect on social handles</h2>
+                <div className="max-w-[1200px] mx-auto">
+                    <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:flex md:flex-wrap justify-center gap-6 md:gap-8">
                         {data.social_links && data.social_links.map((link, index) => {
                             const getHoverColor = (name) => {
-                                const platform = name.toLowerCase();
-                                if (platform.includes('github')) return 'group-hover:bg-primary-accent group-hover:text-black';
-                                if (platform.includes('linkedin')) return 'group-hover:bg-primary-accent group-hover:text-black';
-                                if (platform.includes('twitter') || platform.includes('x.com')) return 'group-hover:bg-primary-accent group-hover:text-black';
-                                if (platform.includes('instagram')) return 'group-hover:bg-primary-accent group-hover:text-black';
-                                if (platform.includes('facebook')) return 'group-hover:bg-primary-accent group-hover:text-black';
-                                if (platform.includes('youtube')) return 'group-hover:bg-primary-accent group-hover:text-black';
-                                if (platform.includes('discord')) return 'group-hover:bg-primary-accent group-hover:text-black';
-                                if (platform.includes('whatsapp')) return 'group-hover:bg-primary-accent group-hover:text-black';
                                 return 'group-hover:bg-primary-accent group-hover:text-black';
                             };
 
                             return (
                                 <a key={index} href={link.url} target="_blank" rel="noopener noreferrer" className="group flex flex-col items-center gap-3">
-                                    <div className={`w-16 h-16 rounded-2xl bg-white/5 border border-white/20 flex items-center justify-center text-2xl group-hover:scale-110 group-hover:-translate-y-2 transition-all duration-300 ${getHoverColor(link.name)} overflow-hidden shadow-lg`}>
+                                    <div className={`w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-white/5 border border-white/20 flex items-center justify-center text-xl md:text-2xl group-hover:scale-110 group-hover:-translate-y-2 transition-all duration-300 ${getHoverColor(link.name)} overflow-hidden shadow-lg`}>
                                         {link.icon_image ? (
                                             <img
-                                                src={link.icon_image.startsWith('http') ? link.icon_image : link.icon_image}
+                                                src={link.icon_image}
                                                 alt={link.name}
-                                                className="w-8 h-8 object-contain"
+                                                className="w-7 h-7 md:w-8 md:h-8 object-contain"
                                             />
                                         ) : (
                                             <i className={link.icon_class || 'fa-solid fa-link'}></i>
                                         )}
                                     </div>
-                                    <span className="text-[10px] font-bold uppercase tracking-widest text-text-secondary group-hover:text-white transition-colors text-center">{link.name}</span>
+                                    <span className="text-[9px] md:text-[10px] font-bold uppercase tracking-widest text-text-secondary group-hover:text-white transition-colors text-center">{link.name}</span>
                                 </a>
                             );
                         })}
@@ -496,57 +487,6 @@ const Home = ({ data }) => {
                 </div>
             </section>
 
-            <footer className="py-20 px-8 border-t border-glass-border">
-                <div className="max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-3 items-center text-center md:text-left gap-10">
-
-                    {/* Column 1 */}
-                    <div className="flex justify-center md:justify-start">
-                        <div className="flex flex-col items-center md:items-start gap-4">
-                            <img src={logo} alt="Saad Ali" className="h-10 w-auto" />
-                            <div className="text-sm font-bold opacity-70 uppercase tracking-widest">
-                                SWE & AI Engineer
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Column 2 */}
-                    <div className="flex flex-wrap justify-center gap-6 md:gap-10">
-                        {/* <a
-                            href={`tel:${data.contact.phone.replace(/\s/g, '')}`}
-                            className="text-text-secondary hover:text-primary-accent transition-colors uppercase tracking-widest text-xs font-bold flex items-center gap-2"
-                        >
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-                            {data.contact.phone}
-                        </a> */}
-                        <a
-                            href="https://github.com/saadkhi"
-                            className="text-text-secondary hover:text-white transition-colors uppercase tracking-widest text-xs font-bold"
-                        >
-                            Github
-                        </a>
-                        <a
-                            href="https://www.linkedin.com/in/saadkhi/"
-                            className="text-text-secondary hover:text-white transition-colors uppercase tracking-widest text-xs font-bold"
-                        >
-                            LinkedIn
-                        </a>
-                        <a
-                            href="mailto:saadalioffic@gmail.com"
-                            className="text-text-secondary hover:text-white transition-colors uppercase tracking-widest text-xs font-bold"
-                        >
-                            Email
-                        </a>
-                    </div>
-
-                    {/* Column 3 */}
-                    <div className="flex justify-center md:justify-end">
-                        <p className="text-text-secondary text-xs uppercase tracking-widest font-bold opacity-30">
-                            © 2024 All Rights Reserved
-                        </p>
-                    </div>
-
-                </div>
-            </footer>
         </main>
     );
 };

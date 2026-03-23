@@ -85,25 +85,47 @@ const Navbar = () => {
       <div className="md:hidden">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="flex flex-col gap-1"
+          className="relative w-8 h-8 flex flex-col items-center justify-center group"
+          aria-label="Toggle Menu"
         >
-          <span className="w-6 h-0.5 bg-white"></span>
-          <span className="w-6 h-0.5 bg-white"></span>
-          <span className="w-6 h-0.5 bg-white"></span>
+          <span
+            className={`w-6 h-0.5 bg-white transition-all duration-300 absolute ${isOpen ? "rotate-45" : "-translate-y-2"
+              }`}
+          ></span>
+          <span
+            className={`w-6 h-0.5 bg-white transition-all duration-300 absolute ${isOpen ? "opacity-0" : ""
+              }`}
+          ></span>
+          <span
+            className={`w-6 h-0.5 bg-white transition-all duration-300 absolute ${isOpen ? "-rotate-45" : "translate-y-2"
+              }`}
+          ></span>
         </button>
       </div>
 
-      {/* Mobile Dropdown Menu */}
-      {isOpen && (
-        <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[92%] bg-black/90 backdrop-blur-xl border border-white/20 rounded-2xl py-6 flex flex-col items-center gap-6 md:hidden">
+      {/* Mobile Dropdown Menu Overlay */}
+      <div
+        className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-[-1] transition-opacity duration-300 md:hidden ${isOpen ? "opacity-100 visible" : "opacity-0 invisible"
+          }`}
+        onClick={() => setIsOpen(false)}
+      ></div>
 
-          <button onClick={handleHomeClick} className={navItem}>
+      {/* Mobile Dropdown Menu */}
+      <div
+        className={`absolute top-20 left-1/2 -translate-x-1/2 w-[92%] bg-black/90 backdrop-blur-2xl border border-white/20 rounded-3xl py-10 transition-all duration-300 scale-95 origin-top md:hidden ${isOpen ? "opacity-100 translate-y-0 visible scale-100" : "opacity-0 -translate-y-4 invisible scale-95"
+          }`}
+      >
+        <div className="flex flex-col items-center gap-8">
+          <button
+            onClick={handleHomeClick}
+            className={`${navItem} text-sm`}
+          >
             Home
           </button>
 
           <button
             onClick={() => handleNavClick("#intro")}
-            className={navItem}
+            className={`${navItem} text-sm`}
           >
             Intro
           </button>
@@ -111,7 +133,7 @@ const Navbar = () => {
           <Link
             to="/projects"
             onClick={() => setIsOpen(false)}
-            className={navItem}
+            className={`${navItem} text-sm`}
           >
             Projects
           </Link>
@@ -119,28 +141,26 @@ const Navbar = () => {
           <Link
             to="/about"
             onClick={() => setIsOpen(false)}
-            className={navItem}
+            className={`${navItem} text-sm`}
           >
             About
           </Link>
 
           <button
             onClick={() => handleNavClick("#contact")}
-            className={navItem}
+            className={`${navItem} text-sm`}
           >
             Book
           </button>
 
           <button
             onClick={() => handleNavClick("#contact-form")}
-            className={navItem}
-          // className="text-xs font-bold uppercase tracking-widest text-white hover:text-white/80"
+            className="w-[80%] btn-primary text-xs"
           >
             Connect
           </button>
-
         </div>
-      )}
+      </div>
     </nav>
   );
 };
