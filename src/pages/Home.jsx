@@ -245,7 +245,7 @@ const Home = ({ data }) => {
                     </div>
                 )} */}
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mt-8 md:mt-4">
                     <div className="glass-card p-8 md:p-12 col-span-1 md:col-span-2 flex flex-col justify-center">
                         <h3 className="text-2xl md:text-4xl font-bold mb-6 md:mb-8 text-center md:text-left">My Expertise</h3>
                         <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4 md:gap-6">
