@@ -46,8 +46,14 @@ if DATABASE_URL:
     # Handle SQLAlchemy 1.4+ compatibility for 'postgres://' vs 'postgresql://'
     if DATABASE_URL.startswith("postgres://"):
         DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+    
+    # Ensure SSL for Neon/Postgres if not specified
+    if "sslmode=" not in DATABASE_URL:
+        separator = "&" if "?" in DATABASE_URL else "?"
+        DATABASE_URL += f"{separator}sslmode=require"
+        
     app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
-    logger.info("Using external persistent database")
+    logger.info("Using external persistent database (PostgreSQL/Neon)")
     UPLOAD_BASE_DIR = '/tmp/media' if os.environ.get('VERCEL') else os.path.join(BASE_DIR, 'media')
 elif os.environ.get('VERCEL'):
     db_path = '/tmp/portfolio.db'
@@ -582,7 +588,7 @@ def get_portfolio():
         else:
             latest_projects.append(p_dict)
 
-    return jsonify({
+    response = jsonify({
         "hero": {
             "name": name,
             "title": title,
@@ -619,12 +625,19 @@ def get_portfolio():
             "github": "https://github.com/saadkhi"
         }
     })
+    
+    # Disable caching for real-time updates
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    
+    return response
 
 @app.route('/api/projects/', methods=['GET'])
 @app.route('/api/projects', methods=['GET'])
 def get_projects():
     projects = Project.query.order_by(Project.created_at.desc()).all()
-    return jsonify([{
+    response = jsonify([{
         "id": p.id,
         "title": p.title,
         "description": p.description,
@@ -635,6 +648,11 @@ def get_projects():
         "category": p.category,
         "is_featured": p.is_featured
     } for p in projects])
+    
+    # Disable caching
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    
+    return response
 
 @app.route('/api/contact/', methods=['POST'])
 @app.route('/api/contact', methods=['POST'])
