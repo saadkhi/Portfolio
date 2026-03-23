@@ -194,7 +194,7 @@ const Home = ({ data }) => {
                     ))}
                 </div>
 
-                {/* Latest Projects Section */}
+                {/* Latest Projects Section
                 {data.latest_projects && data.latest_projects.length > 0 && (
                     <div className="mt-24">
                         <div className="flex items-center gap-4 mb-12">
@@ -243,7 +243,7 @@ const Home = ({ data }) => {
                             </a>
                         </div>
                     </div>
-                )}
+                )} */}
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-24">
                     <div className="glass-card p-12 col-span-1 md:col-span-2 flex flex-col justify-center">
