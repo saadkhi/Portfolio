@@ -164,12 +164,13 @@ const Home = ({ data }) => {
                                     <video
                                         src={project.video}
                                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                                        autoPlay muted loop playsInline
+                                        muted loop playsInline preload="none" onMouseOver={e => e.target.play()} onMouseOut={e => e.target.pause()}
                                     />
                                 ) : (
                                     <img
                                         src={project.image || 'https://via.placeholder.com/800x450?text=No+Image'}
                                         alt={project.title}
+                                        loading="lazy"
                                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                                     />
                                 )}

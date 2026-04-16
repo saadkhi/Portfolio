@@ -36,10 +36,10 @@ const Projects = () => {
                                 <video
                                     src={project.video}
                                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                                    muted loop playsInline onMouseOver={e => e.target.play()} onMouseOut={e => e.target.pause()}
+                                    muted loop playsInline preload="none" onMouseOver={e => e.target.play()} onMouseOut={e => e.target.pause()}
                                 />
                             ) : (
-                                <img src={project.image} alt={project.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                                <img src={project.image} alt={project.title} loading="lazy" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                             )}
                         </div>
                         <div className="p-6 md:p-8 flex-grow flex flex-col justify-between">
