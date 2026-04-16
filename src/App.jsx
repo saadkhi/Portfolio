@@ -37,7 +37,16 @@ function App() {
   }, [])
 
   if (loading) {
-    return <div className="flex justify-center items-center h-screen text-white">Loading...</div>
+    return (
+      <>
+        <ConnectionBackground />
+        <Navbar />
+        <div className="flex flex-col justify-center items-center h-screen text-white">
+          <div className="w-12 h-12 border-2 border-primary-accent border-t-transparent rounded-full animate-spin mb-6"></div>
+          <p className="text-primary-accent/80 text-xs font-bold uppercase tracking-[0.3em] animate-pulse">Initializing Layout...</p>
+        </div>
+      </>
+    )
   }
 
   if (!data) {

@@ -16,7 +16,13 @@
 </head>
 
 <body class="bg-bg-dark font-body text-text-primary overflow-x-hidden min-h-screen">
-  <div id="root"></div>
+  <div id="root">
+    <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;height:100vh;background-color:#0f172a;">
+      <div style="width:48px;height:48px;border:2px solid #ff8a00;border-top-color:transparent;border-radius:50%;animation:spin 1s linear infinite;margin-bottom:24px;"></div>
+      <div style="color:rgba(255,138,0,0.8);font-family:sans-serif;font-size:10px;font-weight:bold;letter-spacing:0.3em;text-transform:uppercase;">Loading Platform...</div>
+      <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+    </div>
+  </div>
   <script type="module" src="/src/main.jsx"></script>
 </body>
 

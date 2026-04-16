@@ -133,21 +133,24 @@ class SecureAdminIndexView(AdminIndexView):
 # Initialize Database
 db.init_app(app)
 
-# Create tables and handle migrations
-with app.app_context():
-    db.create_all()
-    # Check if profile_pic column exists in Profile table
-    try:
-        from sqlalchemy import inspect, text
-        inspector = inspect(db.engine)
-        columns = [c['name'] for c in inspector.get_columns('profile')]
-        if 'profile_pic' not in columns:
-            with db.engine.connect() as conn:
-                conn.execute(text('ALTER TABLE profile ADD COLUMN profile_pic VARCHAR(255)'))
-                conn.commit()
-                logger.info("Added profile_pic column to profile table")
-    except Exception as e:
-        logger.error(f"Migration error: {e}")
+# Create tables and handle migrations locally
+# (On Vercel, this blocks lambda initialization, adding massive delays)
+if not os.environ.get('VERCEL'):
+    with app.app_context():
+        db.create_all()
+        # Check if profile_pic column exists in Profile table
+        try:
+            from sqlalchemy import inspect, text
+            inspector = inspect(db.engine)
+            if 'profile' in inspector.get_table_names():
+                columns = [c['name'] for c in inspector.get_columns('profile')]
+                if 'profile_pic' not in columns:
+                    with db.engine.connect() as conn:
+                        conn.execute(text('ALTER TABLE profile ADD COLUMN profile_pic VARCHAR(255)'))
+                        conn.commit()
+                        logger.info("Added profile_pic column to profile table")
+        except Exception as e:
+            logger.error(f"Migration error: {e}")
 
 # Database Seeding Logic
 def seed_database():
@@ -223,10 +226,25 @@ def seed_database():
         db.session.rollback()
         logger.error(f"Error seeding database: {e}")
 
-# Initialize Tables and Seed
-with app.app_context():
-    db.create_all()
-    seed_database()
+# Initialize Tables and Seed safely
+if not os.environ.get('VERCEL'):
+    with app.app_context():
+        db.create_all()
+        seed_database()
+else:
+    # On Vercel, apply a lazy initialization inside before_request to prevent halting the lambda container creation
+    db_initialized = False
+    @app.before_request
+    def lazy_db_init():
+        global db_initialized
+        if not db_initialized:
+            try:
+                # Fast check without full schema inspection DDLs
+                Profile.query.first()
+            except Exception:
+                db.create_all()
+                seed_database()
+            db_initialized = True
 
 # Helper for thumbnail formatting
 from markupsafe import Markup
