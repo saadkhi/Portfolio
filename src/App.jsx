@@ -17,8 +17,7 @@ function App() {
     const controller = new AbortController()
 
     fetch(`/api/portfolio/`, {
-      signal: controller.signal,
-      cache: 'no-store' // Adding cache busting
+      signal: controller.signal
     })
       .then(response => {
         if (!response.ok) throw new Error('Network response was not ok')

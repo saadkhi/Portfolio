@@ -5,7 +5,7 @@ const Projects = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetch(`/api/projects/`, { cache: 'no-store' })
+        fetch(`/api/projects/`)
             .then(response => response.json())
             .then(data => {
                 setProjects(data);

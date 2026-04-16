@@ -626,10 +626,8 @@ def get_portfolio():
         }
     })
     
-    # Disable caching for real-time updates
-    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
-    response.headers["Pragma"] = "no-cache"
-    response.headers["Expires"] = "0"
+    # Enable edge caching for fast loading in production (1 hour max-age, 1 day stale-while-revalidate)
+    response.headers["Cache-Control"] = "public, s-maxage=3600, stale-while-revalidate=86400"
     
     return response
 
@@ -649,8 +647,8 @@ def get_projects():
         "is_featured": p.is_featured
     } for p in projects])
     
-    # Disable caching
-    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    # Enable edge caching
+    response.headers["Cache-Control"] = "public, s-maxage=3600, stale-while-revalidate=86400"
     
     return response
 
