@@ -4,6 +4,7 @@ import Navbar from './components/Navbar'
 import Home from './pages/Home'
 import Projects from './pages/Projects'
 import About from './pages/About'
+import Resume from './pages/Resume'
 import ScrollToTop from './components/ScrollToTop'
 import Footer from './components/Footer'
 
@@ -61,6 +62,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home data={data} />} />
         <Route path="/about" element={<About data={data} />} />
+        <Route path="/resume" element={<Resume />} />
         <Route path="/projects" element={<Projects />} />
       </Routes>
       <Footer data={data} />

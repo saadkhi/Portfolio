@@ -1,7 +1,7 @@
 import os
 import logging
 import sys
-from flask import Flask, jsonify, request, send_from_directory, render_template_string, redirect, url_for
+from flask import Flask, jsonify, request, send_from_directory, render_template_string, redirect, url_for, send_file
 from flask_sqlalchemy import SQLAlchemy
 from flask_admin import Admin, AdminIndexView, expose
 from flask_admin.base import MenuLink
@@ -11,10 +11,14 @@ from flask_cors import CORS
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from dotenv import load_dotenv
 import requests
+from io import BytesIO
+from docx import Document
+from docx.shared import Pt, Inches
+from docx.enum.text import WD_ALIGN_PARAGRAPH
 
 # Ensure the local directory is in the path for Vercel
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
-from models import db, Profile, Project, Skill, SocialLink
+from models import db, Profile, Project, Skill, SocialLink, Experience, Education, Certification
 
 # Configuration
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -121,13 +125,18 @@ class SecureAdminIndexView(AdminIndexView):
         profiles = Profile.query.all()
         projects = Project.query.all()
         skills = Skill.query.all()
-        social_links = SocialLink.query.all()
+        experiences = Experience.query.all()
+        educations = Education.query.all()
+        certifications = Certification.query.all()
         is_ephemeral = os.environ.get('VERCEL') is not None and os.environ.get('DATABASE_URL') is None
         return self.render('admin/index.html', 
                            profiles=profiles, 
                            projects=projects, 
                            skills=skills, 
                            social_links=social_links,
+                           experiences=experiences,
+                           educations=educations,
+                           certifications=certifications,
                            is_ephemeral=is_ephemeral)
 
 # Initialize Database
@@ -149,6 +158,11 @@ if not os.environ.get('VERCEL'):
                         conn.execute(text('ALTER TABLE profile ADD COLUMN profile_pic VARCHAR(255)'))
                         conn.commit()
                         logger.info("Added profile_pic column to profile table")
+                if 'resume_summary' not in columns:
+                    with db.engine.connect() as conn:
+                        conn.execute(text('ALTER TABLE profile ADD COLUMN resume_summary TEXT'))
+                        conn.commit()
+                        logger.info("Added resume_summary column to profile table")
         except Exception as e:
             logger.error(f"Migration error: {e}")
 
@@ -358,6 +372,9 @@ admin.add_view(ProfileModelView(Profile, db.session))
 admin.add_view(ProjectModelView(Project, db.session))
 admin.add_view(SkillModelView(Skill, db.session))
 admin.add_view(SocialLinkModelView(SocialLink, db.session))
+admin.add_view(SecureModelView(Experience, db.session))
+admin.add_view(SecureModelView(Education, db.session))
+admin.add_view(SecureModelView(Certification, db.session))
 
 # logout Link
 admin.add_link(MenuLink(name='Logout', category='', url='/logout'))
@@ -564,7 +581,11 @@ def serve_media(filename):
 @app.route('/api/portfolio/', methods=['GET'])
 @app.route('/api/portfolio', methods=['GET'])
 def get_portfolio():
-    profile = Profile.query.first()
+    try:
+        profile = Profile.query.first()
+    except Exception as e:
+        logger.error(f"Error fetching profile: {e}")
+        profile = None
     
     # Use database values or defaults for profile info
     name = profile.name if profile else "Saad Ali"
@@ -669,6 +690,219 @@ def get_projects():
     response.headers["Cache-Control"] = "public, s-maxage=3600, stale-while-revalidate=86400"
     
     return response
+
+@app.route('/api/resume/', methods=['GET'])
+@app.route('/api/resume', methods=['GET'])
+def get_resume():
+    try:
+        profile = Profile.query.first()
+    except Exception as e:
+        logger.error(f"Error fetching profile for resume: {e}")
+        profile = None
+
+    try:
+        experiences = Experience.query.order_by(Experience.order).all()
+    except Exception as e:
+        logger.error(f"Error fetching experiences: {e}")
+        experiences = []
+
+    try:
+        educations = Education.query.order_by(Education.order).all()
+    except Exception as e:
+        logger.error(f"Error fetching education: {e}")
+        educations = []
+
+    try:
+        certifications = Certification.query.order_by(Certification.order).all()
+    except Exception as e:
+        logger.error(f"Error fetching certifications: {e}")
+        certifications = []
+
+    try:
+        skills = Skill.query.order_by(Skill.order).all()
+    except Exception as e:
+        logger.error(f"Error fetching skills: {e}")
+        skills = []
+
+    try:
+        projects = Project.query.order_by(Project.created_at.desc()).all()
+    except Exception as e:
+        logger.error(f"Error fetching projects: {e}")
+        projects = []
+
+    try:
+        social_links = SocialLink.query.order_by(SocialLink.order).all()
+    except Exception as e:
+        logger.error(f"Error fetching social links: {e}")
+        social_links = []
+
+    resume_data = {
+        "header": {
+            "name": profile.name if profile else "Saad Ali",
+            "title": profile.title if profile else "AI & Software Engineer",
+            "email": profile.email if profile else "saadalioffic@gmail.com",
+            "phone": profile.phone_number if profile else "",
+            "location": profile.location if profile else "Karachi, Pakistan",
+            "github": "https://github.com/saadkhi",
+            "linkedin": "https://linkedin.com/in/saadkhi",
+            "portfolio": request.host_url
+        },
+        "summary": profile.resume_summary if profile else "",
+        "experiences": [{
+            "id": e.id,
+            "title": e.title,
+            "company": e.company,
+            "location": e.location,
+            "period": e.period,
+            "description": e.description
+        } for e in experiences],
+        "education": [{
+            "id": ed.id,
+            "degree": ed.degree,
+            "university": ed.university,
+            "year": ed.year,
+            "gpa": ed.gpa,
+            "courses": ed.courses
+        } for ed in educations],
+        "skills": [s.name for s in skills],
+        "projects": [{
+            "title": p.title,
+            "description": p.description,
+            "tech_stack": p.tech_stack,
+            "live_link": p.live_link
+        } for p in projects if p.is_featured],
+        "certifications": [{
+            "name": c.name,
+            "issuer": c.issuer,
+            "year": c.year
+        } for c in certifications],
+        "social_links": [{
+            "name": sl.name,
+            "url": sl.url
+        } for sl in social_links]
+    }
+    
+    return jsonify(resume_data)
+
+@app.route('/api/resume/download', methods=['GET'])
+def download_resume():
+    profile = Profile.query.first()
+    experiences = Experience.query.order_by(Experience.order).all()
+    educations = Education.query.order_by(Education.order).all()
+    certifications = Certification.query.order_by(Certification.order).all()
+    skills = Skill.query.order_by(Skill.order).all()
+    projects = Project.query.order_by(Project.created_at.desc()).all()
+
+    doc = Document()
+    
+    # 1-inch margins
+    sections = doc.sections
+    for section in sections:
+        section.top_margin = Inches(1)
+        section.bottom_margin = Inches(1)
+        section.left_margin = Inches(1)
+        section.right_margin = Inches(1)
+
+    # Styles
+    style = doc.styles['Normal']
+    font = style.font
+    font.name = 'Arial'
+    font.size = Pt(10)
+
+    # Header
+    name = profile.name if profile else "Saad Ali"
+    p = doc.add_paragraph()
+    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    run = p.add_run(name.upper())
+    run.bold = True
+    run.font.size = Pt(14) # Name slightly larger than headings
+    run.font.name = 'Arial'
+
+    contact_info = []
+    if profile.location: contact_info.append(profile.location)
+    if profile.phone_number: contact_info.append(profile.phone_number)
+    if profile.email: contact_info.append(profile.email)
+    
+    p = doc.add_paragraph(' | '.join(contact_info))
+    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    
+    p = doc.add_paragraph()
+    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    p.add_run(f"GitHub: {profile.name.lower().replace(' ', '')} | LinkedIn: {profile.name.lower().replace(' ', '')}")
+
+    def add_section_heading(text):
+        h = doc.add_paragraph()
+        run = h.add_run(text.upper())
+        run.bold = True
+        run.font.size = Pt(12)
+        run.font.name = 'Arial'
+
+    # Summary
+    if profile.resume_summary:
+        add_section_heading("Professional Summary")
+        doc.add_paragraph(profile.resume_summary)
+
+    # Skills
+    if skills:
+        add_section_heading("Technical Skills")
+        doc.add_paragraph(', '.join([s.name for s in skills]))
+
+    # Experience
+    if experiences:
+        add_section_heading("Work Experience")
+        for exp in experiences:
+            p = doc.add_paragraph()
+            run = p.add_run(f"{exp.title} - {exp.company}")
+            run.bold = True
+            p.add_run(f"\t{exp.period}").italic = True
+            
+            p = doc.add_paragraph(exp.location)
+            p.style.font.size = Pt(9)
+            
+            # Bullets
+            for bullet in exp.description.split('\n'):
+                if bullet.strip():
+                    doc.add_paragraph(bullet.strip().replace('- ', '').replace('• ', ''), style='List Bullet')
+
+    # Education
+    if educations:
+        add_section_heading("Education")
+        for edu in educations:
+            p = doc.add_paragraph()
+            run = p.add_run(f"{edu.degree} - {edu.university}")
+            run.bold = True
+            p.add_run(f"\t{edu.year}").italic = True
+            if edu.gpa or edu.courses:
+                info = []
+                if edu.gpa: info.append(f"GPA: {edu.gpa}")
+                if edu.courses: info.append(f"Courses: {edu.courses}")
+                doc.add_paragraph('. '.join(info))
+
+    # Projects
+    featured_projects = [p for p in projects if p.is_featured]
+    if featured_projects:
+        add_section_heading("Projects")
+        for proj in featured_projects:
+            p = doc.add_paragraph()
+            run = p.add_run(proj.title)
+            run.bold = True
+            doc.add_paragraph(proj.description)
+            doc.add_paragraph(f"Tech: {proj.tech_stack}").italic = True
+
+    # Certifications
+    if certifications:
+        add_section_heading("Certifications")
+        for cert in certifications:
+            doc.add_paragraph(f"{cert.name} ({cert.issuer}) - {cert.year}")
+
+    # Save to buffer
+    target = BytesIO()
+    doc.save(target)
+    target.seek(0)
+    
+    filename = f"{name.replace(' ', '_')}_Resume.docx"
+    return send_file(target, as_attachment=True, download_name=filename, mimetype='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+
 
 @app.route('/api/contact/', methods=['POST'])
 @app.route('/api/contact', methods=['POST'])

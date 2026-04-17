@@ -65,6 +65,12 @@ const Navbar = () => {
         </li>
 
         <li>
+          <Link to="/resume" className={navItem}>
+            Resume
+          </Link>
+        </li>
+
+        <li>
           <button onClick={() => handleNavClick("#contact")} className={navItem}>
             Book
           </button>
@@ -144,6 +150,14 @@ const Navbar = () => {
             className={`${navItem} text-sm`}
           >
             About
+          </Link>
+
+          <Link
+            to="/resume"
+            onClick={() => setIsOpen(false)}
+            className={`${navItem} text-sm`}
+          >
+            Resume
           </Link>
 
           <button

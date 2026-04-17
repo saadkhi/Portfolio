@@ -13,6 +13,7 @@ class Profile(db.Model):
     location = db.Column(db.String(200), nullable=True)
     phone_number = db.Column(db.String(20), nullable=True)
     profile_pic = db.Column(db.String(255), nullable=True)
+    resume_summary = db.Column(db.Text, nullable=True)
 
     def __repr__(self):
         return f'<Profile {self.name}>'
@@ -51,3 +52,37 @@ class SocialLink(db.Model):
 
     def __repr__(self):
         return f'<SocialLink {self.name}>'
+
+class Experience(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), nullable=False)
+    company = db.Column(db.String(200), nullable=False)
+    location = db.Column(db.String(200), nullable=True)
+    period = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    order = db.Column(db.Integer, default=0)
+
+    def __repr__(self):
+        return f'<Experience {self.title} at {self.company}>'
+
+class Education(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    degree = db.Column(db.String(200), nullable=False)
+    university = db.Column(db.String(200), nullable=False)
+    year = db.Column(db.String(100), nullable=False)
+    gpa = db.Column(db.String(20), nullable=True)
+    courses = db.Column(db.Text, nullable=True)
+    order = db.Column(db.Integer, default=0)
+
+    def __repr__(self):
+        return f'<Education {self.degree}>'
+
+class Certification(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200), nullable=False)
+    issuer = db.Column(db.String(200), nullable=True)
+    year = db.Column(db.String(100), nullable=True)
+    order = db.Column(db.Integer, default=0)
+
+    def __repr__(self):
+        return f'<Certification {self.name}>'
