@@ -142,29 +142,29 @@ class SecureAdminIndexView(AdminIndexView):
 # Initialize Database
 db.init_app(app)
 
-# Create tables and handle migrations locally
-# (On Vercel, this blocks lambda initialization, adding massive delays)
-if not os.environ.get('VERCEL'):
-    with app.app_context():
+# Helper to ensure all tables and columns exist
+def run_migrations():
+    try:
+        from sqlalchemy import inspect, text
+        # Always run create_all to catch new tables
         db.create_all()
-        # Check if profile_pic column exists in Profile table
-        try:
-            from sqlalchemy import inspect, text
-            inspector = inspect(db.engine)
-            if 'profile' in inspector.get_table_names():
-                columns = [c['name'] for c in inspector.get_columns('profile')]
-                if 'profile_pic' not in columns:
-                    with db.engine.connect() as conn:
-                        conn.execute(text('ALTER TABLE profile ADD COLUMN profile_pic VARCHAR(255)'))
-                        conn.commit()
-                        logger.info("Added profile_pic column to profile table")
-                if 'resume_summary' not in columns:
-                    with db.engine.connect() as conn:
-                        conn.execute(text('ALTER TABLE profile ADD COLUMN resume_summary TEXT'))
-                        conn.commit()
-                        logger.info("Added resume_summary column to profile table")
-        except Exception as e:
-            logger.error(f"Migration error: {e}")
+        
+        inspector = inspect(db.engine)
+        if 'profile' in inspector.get_table_names():
+            columns = [c['name'] for c in inspector.get_columns('profile')]
+            if 'profile_pic' not in columns:
+                with db.engine.connect() as conn:
+                    conn.execute(text('ALTER TABLE profile ADD COLUMN profile_pic VARCHAR(255)'))
+                    conn.commit()
+                    logger.info("Added profile_pic column to profile table")
+            if 'resume_summary' not in columns:
+                with db.engine.connect() as conn:
+                    conn.execute(text('ALTER TABLE profile ADD COLUMN resume_summary TEXT'))
+                    conn.commit()
+                    logger.info("Added resume_summary column to profile table")
+    except Exception as e:
+        logger.error(f"Migration error: {e}")
+
 
 # Database Seeding Logic
 def seed_database():
@@ -243,7 +243,7 @@ def seed_database():
 # Initialize Tables and Seed safely
 if not os.environ.get('VERCEL'):
     with app.app_context():
-        db.create_all()
+        run_migrations()
         seed_database()
 else:
     # On Vercel, apply a lazy initialization inside before_request to prevent halting the lambda container creation
@@ -252,12 +252,13 @@ else:
     def lazy_db_init():
         global db_initialized
         if not db_initialized:
+            run_migrations()
+            # Still check for seed if profile is missing
             try:
-                # Fast check without full schema inspection DDLs
-                Profile.query.first()
+                if not Profile.query.first():
+                    seed_database()
             except Exception:
-                db.create_all()
-                seed_database()
+                pass
             db_initialized = True
 
 # Helper for thumbnail formatting
