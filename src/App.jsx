@@ -1,14 +1,15 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense, lazy } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar'
-import Home from './pages/Home'
-import Projects from './pages/Projects'
-import About from './pages/About'
-import Resume from './pages/Resume'
 import ScrollToTop from './components/ScrollToTop'
 import Footer from './components/Footer'
-
 import ConnectionBackground from './components/ConnectionBackground'
+
+// Lazy load pages for better performance
+const Home = lazy(() => import('./pages/Home'))
+const Projects = lazy(() => import('./pages/Projects'))
+const About = lazy(() => import('./pages/About'))
+const Resume = lazy(() => import('./pages/Resume'))
 
 function App() {
   const [data, setData] = useState(null)
@@ -59,12 +60,19 @@ function App() {
       <ConnectionBackground />
       <ScrollToTop />
       <Navbar />
-      <Routes>
-        <Route path="/" element={<Home data={data} />} />
-        <Route path="/about" element={<About data={data} />} />
-        <Route path="/resume" element={<Resume />} />
-        <Route path="/projects" element={<Projects />} />
-      </Routes>
+      <Suspense fallback={
+        <div className="flex flex-col justify-center items-center h-[60vh] text-white">
+          <div className="w-8 h-8 border-2 border-primary-accent border-t-transparent rounded-full animate-spin mb-4"></div>
+          <p className="text-primary-accent/80 text-[10px] font-bold uppercase tracking-widest animate-pulse">Loading Content...</p>
+        </div>
+      }>
+        <Routes>
+          <Route path="/" element={<Home data={data} />} />
+          <Route path="/about" element={<About data={data} />} />
+          <Route path="/resume" element={<Resume />} />
+          <Route path="/projects" element={<Projects />} />
+        </Routes>
+      </Suspense>
       <Footer data={data} />
     </>
   )

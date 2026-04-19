@@ -243,8 +243,11 @@ def seed_database():
 # Initialize Tables and Seed safely
 if not os.environ.get('VERCEL'):
     with app.app_context():
-        run_migrations()
-        seed_database()
+        # Check if database file exists to avoid redundant migrations on local dev
+        db_file = os.path.join(BASE_DIR, 'portfolio.db')
+        if not os.path.exists(db_file):
+            run_migrations()
+            seed_database()
 else:
     # On Vercel, apply a lazy initialization inside before_request to prevent halting the lambda container creation
     db_initialized = False
@@ -252,13 +255,14 @@ else:
     def lazy_db_init():
         global db_initialized
         if not db_initialized:
-            run_migrations()
-            # Still check for seed if profile is missing
+            # Check if we already have data to skip heavy seeding
             try:
                 if not Profile.query.first():
+                    run_migrations()
                     seed_database()
             except Exception:
-                pass
+                run_migrations()
+                seed_database()
             db_initialized = True
 
 # Helper for thumbnail formatting
@@ -569,13 +573,19 @@ def serve_media(filename):
         for sub in subfolders:
             target_path = os.path.join(d, sub, base_name)
             if os.path.isfile(target_path):
-                return send_from_directory(os.path.join(d, sub), base_name)
+                response = send_from_directory(os.path.join(d, sub), base_name)
+                # Cache media files for 1 day
+                response.headers["Cache-Control"] = "public, max-age=86400"
+                return response
         
         # 2. Recursive search for robustness
         import glob
         matches = glob.glob(os.path.join(d, '**', base_name), recursive=True)
         if matches:
-            return send_from_directory(os.path.dirname(matches[0]), base_name)
+            response = send_from_directory(os.path.dirname(matches[0]), base_name)
+            # Cache media files for 1 day
+            response.headers["Cache-Control"] = "public, max-age=86400"
+            return response
 
     return jsonify({"error": "Media file not found", "attempted": filename}), 404
 
@@ -783,7 +793,11 @@ def get_resume():
         } for sl in social_links]
     }
     
-    return jsonify(resume_data)
+    response = jsonify(resume_data)
+    # Enable edge caching for resume data (1 hour max-age, 1 day stale-while-revalidate)
+    response.headers["Cache-Control"] = "public, s-maxage=3600, stale-while-revalidate=86400"
+    
+    return response
 
 @app.route('/api/resume/download', methods=['GET'])
 def download_resume():

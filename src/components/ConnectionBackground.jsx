@@ -9,7 +9,8 @@ const ConnectionBackground = () => {
         let animationFrameId;
 
         let particles = [];
-        const particleCount = 60;
+        // Reduce particle count on smaller screens for better performance
+        const particleCount = window.innerWidth < 768 ? 30 : 60;
         const connectionDistance = 120;
         const mouseConnectionDistance = 200;
 
