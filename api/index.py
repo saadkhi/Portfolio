@@ -31,7 +31,24 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
-CORS(app)
+
+# Configure CORS to be more explicit and allow the specific domain
+# This ensures that requests from saadkhi.engineer are never blocked
+CORS(app, resources={
+    r"/*": {
+        "origins": [
+            "http://localhost:5173",
+            "http://127.0.0.1:5173",
+            "https://saadkhi.engineer",
+            "http://saadkhi.engineer",
+            "https://www.saadkhi.engineer",
+            "*.vercel.app"
+        ],
+        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization", "X-CSRFToken", "X-Requested-With"],
+        "supports_credentials": True
+    }
+})
 
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'a-very-secret-key-12345')
 
