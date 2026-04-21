@@ -142,6 +142,7 @@ class SecureAdminIndexView(AdminIndexView):
         profiles = Profile.query.all()
         projects = Project.query.all()
         skills = Skill.query.all()
+        social_links = SocialLink.query.all()
         experiences = Experience.query.all()
         educations = Education.query.all()
         certifications = Certification.query.all()
