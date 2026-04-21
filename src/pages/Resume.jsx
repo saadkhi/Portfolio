@@ -232,7 +232,12 @@ const Resume = () => {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 {projects.map((proj, index) => (
                                     <div key={index} className="bg-white/5 border border-white/10 p-8 rounded-2xl hover:bg-white/10 transition-all duration-300 group">
-                                        <h3 className="text-xl font-bold mb-3 group-hover:text-primary-accent transition-colors">{proj.title}</h3>
+                                        <div className="flex justify-between items-start mb-2">
+                                            <h3 className="text-xl font-bold group-hover:text-primary-accent transition-colors">{proj.title}</h3>
+                                            <span className="text-[10px] text-white/40 uppercase tracking-widest bg-white/5 px-2 py-1 rounded border border-white/10">
+                                                {proj.category}
+                                            </span>
+                                        </div>
                                         <p className="text-sm text-white/50 mb-4 line-clamp-3">{proj.description}</p>
                                         <div className="flex flex-wrap gap-2 mb-4">
                                             {proj.tech_stack.split(',').map((tech, i) => (
@@ -250,7 +255,7 @@ const Resume = () => {
                                 ))}
                             </div>
                         ) : (
-                            <p className="text-sm text-white/30 italic">No featured projects found.</p>
+                            <p className="text-sm text-white/30 italic">No projects found.</p>
                         )}
                     </section>
 
@@ -386,12 +391,20 @@ const Resume = () => {
                     </div>
 
                     <div className="mb-4">
-                        <h2 className="section-title text-sm border-b font-bold mb-2 pb-1 uppercase">Featured Projects</h2>
+                        <h2 className="section-title text-sm border-b font-bold mb-2 pb-1 uppercase">Technical Projects</h2>
                         {projects.map((proj, i) => (
-                            <div key={i} className="mb-2">
-                                <div className="font-bold text-xs uppercase">{proj.title}</div>
+                            <div key={i} className="mb-3">
+                                <div className="flex justify-between font-bold text-[11px] uppercase">
+                                    <span>{proj.title}</span>
+                                    {proj.category && <span>{proj.category}</span>}
+                                </div>
                                 <div className="text-[10px] mb-1 leading-snug">{proj.description}</div>
-                                <div className="text-[10px] font-bold">Tech: {proj.tech_stack}</div>
+                                <div className="flex justify-between text-[10px]">
+                                    <span className="font-bold">Tech: {proj.tech_stack}</span>
+                                    {proj.live_link && proj.live_link !== "#" && (
+                                        <span className="italic">{proj.live_link.replace('https://', '').replace('http://', '')}</span>
+                                    )}
+                                </div>
                             </div>
                         ))}
                     </div>

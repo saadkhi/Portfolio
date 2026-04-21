@@ -782,8 +782,9 @@ def get_resume():
             "title": p.title,
             "description": p.description,
             "tech_stack": p.tech_stack,
-            "live_link": p.live_link
-        } for p in projects if p.is_featured],
+            "live_link": p.live_link,
+            "category": p.category or "Development"
+        } for p in projects],
         "certifications": [{
             "name": c.name,
             "issuer": c.issuer,
@@ -896,15 +897,24 @@ def download_resume():
                 doc.add_paragraph('. '.join(info))
 
     # Projects
-    featured_projects = [p for p in projects if p.is_featured]
-    if featured_projects:
+    if projects:
         add_section_heading("Projects")
-        for proj in featured_projects:
+        for proj in projects:
             p = doc.add_paragraph()
             run = p.add_run(proj.title)
             run.bold = True
+            
+            if proj.category:
+                p.add_run(f" ({proj.category})").italic = True
+                
             doc.add_paragraph(proj.description)
-            doc.add_paragraph(f"Tech: {proj.tech_stack}").italic = True
+            
+            p_details = []
+            if proj.tech_stack: p_details.append(f"Tech: {proj.tech_stack}")
+            if proj.live_link and proj.live_link != "#": p_details.append(f"Link: {proj.live_link}")
+            
+            if p_details:
+                doc.add_paragraph(' | '.join(p_details)).italic = True
 
     # Certifications
     if certifications:

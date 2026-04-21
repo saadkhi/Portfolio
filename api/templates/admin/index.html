@@ -21,9 +21,11 @@
                 <ol style="margin-bottom: 0;">
                     <li>Create a free database on <strong><a href="https://neon.tech" target="_blank"
                                 style="color: #a94442; text-decoration: underline;">Neon.tech</a></strong> or
-                        <strong>Supabase</strong>.</li>
+                        <strong>Supabase</strong>.
+                    </li>
                     <li>Copy your <strong>Database Connection String</strong> (e.g.,
-                        <code>postgres://user:pass@host/db</code>).</li>
+                        <code>postgres://user:pass@host/db</code>).
+                    </li>
                     <li>Go to your <strong>Vercel Dashboard</strong> > Settings > Environment Variables.</li>
                     <li>Add a new variable named <code>DATABASE_URL</code> and paste your connection string.</li>
                     <li><strong>Redeploy</strong> your application.</li>
@@ -63,7 +65,7 @@
                             <th>Name</th>
                             <th>Title</th>
                             <th>Email</th>
-                            <th>Location</th>
+                            <th>Resume Summary</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -72,7 +74,13 @@
                             <td>{{ p.name }}</td>
                             <td>{{ p.title }}</td>
                             <td>{{ p.email }}</td>
-                            <td>{{ p.location }}</td>
+                            <td style="max-width: 300px; font-style: italic; color: #666;">
+                                {% if p.resume_summary %}
+                                {{ p.resume_summary[:100] }}...
+                                {% else %}
+                                <span class="text-danger">Not set</span>
+                                {% endif %}
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -81,6 +89,106 @@
             {% else %}
             <p class="text-muted">No profile data found. <a
                     href="{{ url_for('profile.create_view', next=request.url) }}">Create your profile now.</a></p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Resume Data Section -->
+    <div class="col-md-12">
+        <h2 class="page-header" style="margin-top: 10px; border-bottom: 2px solid #eee; padding-bottom: 10px;">
+            <i class="fa fa-file-text-o"></i> Resume Data
+        </h2>
+    </div>
+
+    <!-- Experience Section -->
+    <div class="col-md-12">
+        <div class="well">
+            <h3>
+                <i class="fa fa-briefcase"></i> Professional Experience
+                <div class="pull-right">
+                    <a href="{{ url_for('experience.create_view', next=request.url) }}"
+                        class="btn btn-xs btn-success"><i class="fa fa-plus"></i> Add New</a>
+                    <a href="{{ url_for('experience.index_view') }}" class="btn btn-xs btn-default">Manage</a>
+                </div>
+            </h3>
+            {% if experiences %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Company</th>
+                            <th>Period</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for exp in experiences %}
+                        <tr>
+                            <td>{{ exp.title }}</td>
+                            <td>{{ exp.company }}</td>
+                            <td>{{ exp.period }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted">No experience found. <a
+                    href="{{ url_for('experience.create_view', next=request.url) }}">Add your work experience.</a></p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Education Section -->
+    <div class="col-md-6">
+        <div class="well">
+            <h3>
+                <i class="fa fa-graduation-cap"></i> Education
+                <div class="pull-right">
+                    <a href="{{ url_for('education.create_view', next=request.url) }}" class="btn btn-xs btn-success"><i
+                            class="fa fa-plus"></i> Add New</a>
+                    <a href="{{ url_for('education.index_view') }}" class="btn btn-xs btn-default">Manage</a>
+                </div>
+            </h3>
+            {% if educations %}
+            <ul class="list-group">
+                {% for edu in educations %}
+                <li class="list-group-item">
+                    <strong>{{ edu.degree }}</strong> at {{ edu.university }} ({{ edu.year }})
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p class="text-muted">No education found. <a
+                    href="{{ url_for('education.create_view', next=request.url) }}">Add education.</a></p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Certification Section -->
+    <div class="col-md-6">
+        <div class="well">
+            <h3>
+                <i class="fa fa-certificate"></i> Certifications
+                <div class="pull-right">
+                    <a href="{{ url_for('certification.create_view', next=request.url) }}"
+                        class="btn btn-xs btn-success"><i class="fa fa-plus"></i> Add New</a>
+                    <a href="{{ url_for('certification.index_view') }}" class="btn btn-xs btn-default">Manage</a>
+                </div>
+            </h3>
+            {% if certifications %}
+            <ul class="list-group">
+                {% for cert in certifications %}
+                <li class="list-group-item">
+                    <strong>{{ cert.name }}</strong> ({{ cert.issuer }}) - {{ cert.year }}
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p class="text-muted">No certifications found. <a
+                    href="{{ url_for('certification.create_view', next=request.url) }}">Add certification.</a></p>
             {% endif %}
         </div>
     </div>
