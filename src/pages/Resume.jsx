@@ -121,14 +121,14 @@ const Resume = () => {
 
                 {/* On-Screen Resume Header */}
                 <div className="resume-content space-y-12">
-                    <header className="text-center md:text-left border-b border-white/10 pb-10">
+                    <header className="text-center border-b border-white/10 pb-10">
                         <h1 className="text-5xl md:text-7xl font-bold mb-4 tracking-tighter">
                             {header.name}<span className="text-primary-accent">.</span>
                         </h1>
                         <p className="text-xl text-white/70 mb-6 font-medium uppercase tracking-[0.2em]">
                             {header.title}
                         </p>
-                        <div className="flex flex-wrap justify-center md:justify-start gap-4 text-sm text-white/50">
+                        <div className="flex flex-wrap justify-center gap-4 text-sm text-white/50">
                             {header.email && (
                                 <a href={`mailto:${header.email}`} className="hover:text-primary-accent transition-colors flex items-center gap-2">
                                     <i className="fa-solid fa-envelope"></i> {header.email}
@@ -145,7 +145,7 @@ const Resume = () => {
                                 </span>
                             )}
                         </div>
-                        <div className="flex flex-wrap justify-center md:justify-start gap-6 mt-6">
+                        <div className="flex flex-wrap justify-center gap-6 mt-6">
                             <a href={header.github} target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-primary-accent text-xl transition-all">
                                 <i className="fa-brands fa-github"></i>
                             </a>

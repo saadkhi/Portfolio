@@ -6,11 +6,11 @@ const Footer = ({ data }) => {
 
     return (
         <footer className="py-12 md:py-20 px-6 md:px-8 border-t border-glass-border">
-            <div className="max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-3 items-center text-center md:text-left gap-10">
+            <div className="max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-3 items-center text-center gap-10">
 
                 {/* Column 1: Logo & Title */}
-                <div className="flex justify-center md:justify-start">
-                    <div className="flex flex-col items-center md:items-start gap-4">
+                <div className="flex justify-center">
+                    <div className="flex flex-col items-center gap-4">
                         <img src={logo} alt="Saad Ali" className="h-8 md:h-10 w-auto" />
                         <div className="text-[10px] md:text-xs font-bold opacity-70 uppercase tracking-widest text-text-secondary">
                             SWE & AI Engineer
@@ -45,7 +45,7 @@ const Footer = ({ data }) => {
                 </div>
 
                 {/* Column 3: Copyright */}
-                <div className="flex justify-center md:justify-end">
+                <div className="flex justify-center">
                     <p className="text-text-secondary text-[10px] md:text-xs uppercase tracking-widest font-bold opacity-30">
                         © {new Date().getFullYear()} All Rights Reserved
                     </p>

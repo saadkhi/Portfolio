@@ -19,7 +19,7 @@ const About = ({ data }) => {
                 <section className="animate-fade-in">
                     <span className="text-primary-accent uppercase tracking-[0.3em] text-[10px] md:text-xs font-bold block text-center mb-4">The Story Behind The Code</span>
                     <h1 className='text-4xl sm:text-6xl md:text-8xl font-bold leading-tight mb-8 tracking-tighter text-center'>About Me</h1>
-                    <div className="text-md md:text-xl text-text-secondary font-medium max-w-[1000px] mx-auto leading-relaxed text-justify sm:text-center space-y-6">
+                    <div className="text-md md:text-xl text-text-secondary font-medium max-w-[1000px] mx-auto leading-relaxed text-center space-y-6">
                         <p>
                             I’m Saad Ali, a Software Engineering graduate from NED University of Engineering and Technology, with hands-on experience in AI/ML, LLM-based applications, and backend development. I’ve worked on building RAG chatbots, machine learning pipelines, and API-driven systems with a strong focus on practical, production-ready solutions.
                         </p>
@@ -45,7 +45,7 @@ const About = ({ data }) => {
                         </div>
 
                         <div className="glass-card p-8 md:p-12 bg-gradient-to-br from-primary-accent/10 to-transparent flex flex-col justify-center">
-                            <h3 className="text-2xl md:text-3xl font-bold mb-8 text-center md:text-left">What I Value</h3>
+                            <h3 className="text-2xl md:text-3xl font-bold mb-8 text-center">What I Value</h3>
                             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 gap-6 md:gap-8">
                                 <div className="flex items-start gap-4">
                                     <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-primary-accent flex-shrink-0">
@@ -115,7 +115,7 @@ const About = ({ data }) => {
                                 </div>
 
                                 {/* Text */}
-                                <div className="md:text-center pt-1 md:pt-0">
+                                <div className="text-center pt-1 md:pt-0">
                                     <h3 className="text-lg md:text-xl font-semibold">MERL LAB</h3>
                                     <p className="text-[11px] md:text-sm text-text-secondary mt-1">
                                         RISC-V & AI Research Intern
@@ -130,7 +130,7 @@ const About = ({ data }) => {
                             {/* Landmark 2 */}
                             <div className="relative flex md:block items-start gap-6 md:gap-0">
                                 <div className="relative z-10 w-6 h-6 bg-primary-accent rounded-full shadow-[0_0_15px_rgba(255,138,0,0.5)] md:mx-auto md:mb-6 flex-shrink-0 border-4 border-black"></div>
-                                <div className="md:text-center pt-1 md:pt-0">
+                                <div className="text-center pt-1 md:pt-0">
                                     <h3 className="text-lg md:text-xl font-semibold">360 Xpert Solutions</h3>
                                     <p className="text-[11px] md:text-sm text-text-secondary mt-1">
                                         AI Engineer Intern
@@ -144,7 +144,7 @@ const About = ({ data }) => {
                             {/* Landmark 3 */}
                             <div className="relative flex md:block items-start gap-6 md:gap-0">
                                 <div className="relative z-10 w-6 h-6 bg-primary-accent rounded-full shadow-[0_0_15px_rgba(255,138,0,0.5)] md:mx-auto md:mb-6 flex-shrink-0 border-4 border-black"></div>
-                                <div className="md:text-center pt-1 md:pt-0">
+                                <div className="text-center pt-1 md:pt-0">
                                     <h3 className="text-lg md:text-xl font-semibold">Avennex Solutions</h3>
                                     <p className="text-[11px] md:text-sm text-text-secondary mt-1">
                                         AI Engineer
@@ -158,7 +158,7 @@ const About = ({ data }) => {
                             {/* Landmark 4 */}
                             <div className="relative flex md:block items-start gap-6 md:gap-0">
                                 <div className="relative z-10 w-6 h-6 bg-primary-accent rounded-full shadow-[0_0_15px_rgba(255,138,0,0.5)] md:mx-auto md:mb-6 flex-shrink-0 border-4 border-black"></div>
-                                <div className="md:text-center pt-1 md:pt-0">
+                                <div className="text-center pt-1 md:pt-0">
                                     <h3 className="text-lg md:text-xl font-semibold">Convex Consulting</h3>
                                     <p className="text-[11px] md:text-sm text-text-secondary mt-1">
                                         AI Engineer
