@@ -37,6 +37,10 @@ html {
   .font-heading {
     @apply font-heading tracking-tight;
   }
+
+  p {
+    @apply text-center;
+  }
 }
 
 @layer components {
