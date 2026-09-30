@@ -48,9 +48,11 @@ logger.info(f"DEBUG: ADMIN_PASSWORD is {'SET (length: ' + str(len(ADMIN_PASSWORD
 DATABASE_URL = os.environ.get('DATABASE_URL')
 
 if DATABASE_URL:
-    # Handle SQLAlchemy 1.4+ compatibility for 'postgres://' vs 'postgresql://'
+    # Force psycopg2 driver explicitly to avoid SQLAlchemy trying psycopg (v3)
     if DATABASE_URL.startswith("postgres://"):
-        DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+        DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql+psycopg2://", 1)
+    elif DATABASE_URL.startswith("postgresql://"):
+        DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+psycopg2://", 1)
     
     # Ensure SSL for Neon/Postgres if not specified
     if "sslmode=" not in DATABASE_URL:
