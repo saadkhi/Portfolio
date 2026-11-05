@@ -1,33 +1,34 @@
 @import "tailwindcss";
 
+@theme {
+  /* Ground and ink */
+  --color-cream: #f7f2ea;
+  --color-paper: #fffdf9;
+  --color-ink: #17110c;
+  --color-ink-soft: #5d5349;
+  --color-line: rgba(23, 17, 12, 0.12);
+
+  /* One accent, warm orange */
+  --color-primary-accent: #ff6a13;
+  --color-accent-deep: #d9480f;
+
+  /* Legacy tokens still used by the resume page */
+  --color-bg-dark: #000000;
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #a1a1aa;
+  --color-glass-border: rgba(255, 255, 255, 0.15);
+
+  --font-heading: "Bricolage Grotesque", "Inter", sans-serif;
+  --font-body: "Inter", sans-serif;
+}
+
 html {
   scroll-behavior: smooth;
 }
 
-@theme {
-  --color-bg-dark: #000000;
-  --color-bg-card: rgba(10, 10, 10, 0.8);
-  --color-primary-accent: #ff8a00;
-  /* Warm orange glow */
-  --color-secondary-accent: #7a3e00;
-  --color-text-primary: #ffffff;
-  --color-text-secondary: #a1a1aa;
-  --color-glass-border: rgba(255, 255, 255, 0.15);
-  --color-glass-highlight: rgba(255, 255, 255, 0.3);
-
-  --font-heading: "Space Grotesk", sans-serif;
-  --font-body: "Inter", sans-serif;
-
-  --shadow-primary-glow: 0 0 20px rgba(255, 138, 0, 0.3);
-  --shadow-glass-hover: 0 0 30px rgba(255, 255, 255, 0.05);
-}
-
 @layer base {
   body {
-    @apply bg-bg-dark font-body text-text-primary overflow-x-hidden min-h-screen selection:bg-primary-accent selection:text-black;
-    background-image:
-      radial-gradient(circle at 15% 50%, rgba(255, 138, 0, 0.05), transparent 30%),
-      radial-gradient(circle at 85% 30%, rgba(255, 138, 0, 0.03), transparent 30%);
+    @apply bg-cream font-body text-ink overflow-x-hidden min-h-screen selection:bg-primary-accent selection:text-white;
   }
 
   h1,
@@ -35,36 +36,110 @@ html {
   h3,
   h4,
   .font-heading {
-    @apply font-heading tracking-tight;
-  }
-
-  p {
-    @apply text-center;
+    @apply font-heading;
+    letter-spacing: -0.035em;
   }
 }
 
 @layer components {
-  .glass-card {
-    @apply bg-bg-card border border-glass-border backdrop-blur-md rounded-3xl transition-all duration-300 hover:border-glass-highlight hover:shadow-glass-hover;
-  }
-
-  .glow-text {
-    text-shadow: 0 0 20px rgba(255, 138, 0, 0.3);
-  }
-
+  /* One button pair */
+  .btn,
   .btn-primary {
-    @apply inline-flex items-center justify-center px-8 py-3 rounded-full font-semibold text-base transition-all duration-300 cursor-pointer bg-white/10 backdrop-blur-xl border border-primary-accent/40 text-white hover:bg-primary-accent/20 hover:border-primary-accent hover:shadow-primary-glow active:scale-95;
+    @apply inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full font-semibold text-[15px] cursor-pointer bg-ink text-cream border border-ink transition-all duration-200 hover:bg-accent-deep hover:border-accent-deep hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.97];
   }
 
+  .btn-ghost,
   .btn-secondary {
-    @apply inline-flex items-center justify-center px-8 py-3 rounded-full font-semibold text-base transition-all duration-300 cursor-pointer bg-white/10 backdrop-blur-xl border border-white/20 text-white hover:bg-white/20 hover:border-white/40 active:scale-95;
+    @apply inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full font-semibold text-[15px] cursor-pointer bg-transparent text-ink border border-ink/25 transition-all duration-200 hover:border-ink hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.97];
+  }
+
+  .btn-light {
+    @apply inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full font-semibold text-[15px] cursor-pointer bg-white text-ink border border-white transition-all duration-200 hover:bg-ink hover:text-white hover:border-ink hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.97];
+  }
+
+  /* One card style */
+  .card {
+    @apply bg-paper border border-line rounded-3xl transition-all duration-300;
+  }
+
+  a.card:hover,
+  .card-link:hover {
+    @apply -translate-y-0.5 border-ink/30;
+  }
+
+  .eyebrow {
+    @apply text-[11px] font-semibold uppercase tracking-[0.22em] text-accent-deep;
+  }
+
+  /* Underline that draws on hover */
+  .link-draw {
+    background: linear-gradient(currentColor, currentColor) 0 100% / 0 1.5px no-repeat;
+    transition: background-size 0.3s ease;
+  }
+
+  .link-draw:hover {
+    background-size: 100% 1.5px;
+  }
+
+  .field {
+    @apply w-full bg-paper border border-line rounded-2xl px-5 py-4 text-ink placeholder:text-ink-soft/60 focus:outline-none focus:border-ink transition-colors;
+  }
+
+  .wrap {
+    @apply mx-auto w-full max-w-[1200px] px-6 md:px-8;
   }
 }
 
-@keyframes fadeIn {
+/* Hero ground: dark to orange to cream, so the page opens like a sunrise */
+.sunrise {
+  background:
+    linear-gradient(
+      180deg,
+      #140a04 0%,
+      #2a1105 28%,
+      #7a2a08 52%,
+      #e8590c 78%,
+      #ff8a3d 92%,
+      var(--color-cream) 100%
+    );
+}
+
+/* Route transition curtain */
+.curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  background: linear-gradient(180deg, #17110c 0%, #d9480f 100%);
+  transform: translateY(100%);
+  will-change: transform;
+}
+
+.curtain[data-phase="cover"] {
+  pointer-events: all;
+  transform: translateY(0);
+  transition: transform 0.45s cubic-bezier(0.7, 0, 0.2, 1);
+}
+
+.curtain[data-phase="reveal"] {
+  transform: translateY(-100%);
+  transition: transform 0.55s cubic-bezier(0.7, 0, 0.2, 1);
+}
+
+.curtain[data-phase="idle"] {
+  transform: translateY(100%);
+  transition: none;
+}
+
+/* Page arrives */
+.page-in {
+  animation: pageIn 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@keyframes pageIn {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(24px);
   }
 
   to {
@@ -73,6 +148,21 @@ html {
   }
 }
 
-.animate-fade-in {
-  animation: fadeIn 0.8s ease-out forwards;
+/* Spinner */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .curtain,
+  .page-in {
+    animation: none !important;
+    transition: none !important;
+  }
 }

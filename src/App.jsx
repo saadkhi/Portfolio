@@ -1,9 +1,7 @@
-import { useState, useEffect, Suspense, lazy } from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { useState, useEffect, useRef, Suspense, lazy } from 'react'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import Navbar from './components/Navbar'
-import ScrollToTop from './components/ScrollToTop'
 import Footer from './components/Footer'
-import ConnectionBackground from './components/ConnectionBackground'
 
 // Lazy load pages for better performance
 const Home = lazy(() => import('./pages/Home'))
@@ -11,16 +9,26 @@ const Projects = lazy(() => import('./pages/Projects'))
 const About = lazy(() => import('./pages/About'))
 const Resume = lazy(() => import('./pages/Resume'))
 
+const Spinner = ({ label }) => (
+  <div className="flex flex-col justify-center items-center h-screen bg-cream">
+    <div className="w-10 h-10 border-2 border-primary-accent border-t-transparent rounded-full" style={{ animation: 'spin 1s linear infinite' }}></div>
+    <p className="mt-5 text-[11px] font-semibold uppercase tracking-[0.25em] text-ink-soft">{label}</p>
+  </div>
+)
+
 function App() {
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
 
+  const location = useLocation()
+  const [shown, setShown] = useState(location)
+  const [phase, setPhase] = useState('idle') // idle | cover | reveal
+  const timers = useRef([])
+
   useEffect(() => {
     const controller = new AbortController()
 
-    fetch(`/api/portfolio/`, {
-      signal: controller.signal
-    })
+    fetch(`/api/portfolio/`, { signal: controller.signal })
       .then(response => {
         if (!response.ok) throw new Error('Network response was not ok')
         return response.json()
@@ -38,40 +46,47 @@ function App() {
     return () => controller.abort()
   }, [])
 
-  if (loading) {
-    return (
-      <>
-        <ConnectionBackground />
-        <Navbar />
-        <div className="flex flex-col justify-center items-center h-screen text-white">
-          <div className="w-12 h-12 border-2 border-primary-accent border-t-transparent rounded-full animate-spin mb-6"></div>
-          <p className="text-primary-accent/80 text-xs font-bold uppercase tracking-[0.3em] animate-pulse">Initializing Layout...</p>
-        </div>
-      </>
-    )
-  }
+  // Route change: curtain rises, page swaps underneath, curtain leaves.
+  useEffect(() => {
+    if (location.pathname === shown.pathname) return undefined
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    timers.current.forEach(clearTimeout)
+    if (reduced) {
+      setShown(location)
+      window.scrollTo(0, 0)
+      return undefined
+    }
+    setPhase('cover')
+    timers.current = [
+      setTimeout(() => {
+        setShown(location)
+        window.scrollTo({ top: 0, behavior: 'instant' })
+        setPhase('reveal')
+      }, 460),
+      setTimeout(() => setPhase('idle'), 1060),
+    ]
+    return () => timers.current.forEach(clearTimeout)
+  }, [location, shown.pathname])
+
+  if (loading) return <Spinner label="Loading" />
 
   if (!data) {
-    return <div className="flex justify-center items-center h-screen text-white">Error loading data</div>
+    return <div className="flex justify-center items-center h-screen text-ink">Error loading data</div>
   }
 
   return (
     <>
-      <ConnectionBackground />
-      <ScrollToTop />
+      <div className="curtain" data-phase={phase} aria-hidden="true"></div>
       <Navbar />
-      <Suspense fallback={
-        <div className="flex flex-col justify-center items-center h-[60vh] text-white">
-          <div className="w-8 h-8 border-2 border-primary-accent border-t-transparent rounded-full animate-spin mb-4"></div>
-          <p className="text-primary-accent/80 text-[10px] font-bold uppercase tracking-widest animate-pulse">Loading Content...</p>
+      <Suspense fallback={<Spinner label="Loading" />}>
+        <div key={shown.pathname} className="page-in">
+          <Routes location={shown}>
+            <Route path="/" element={<Home data={data} />} />
+            <Route path="/about" element={<About data={data} />} />
+            <Route path="/resume" element={<Resume />} />
+            <Route path="/projects" element={<Projects />} />
+          </Routes>
         </div>
-      }>
-        <Routes>
-          <Route path="/" element={<Home data={data} />} />
-          <Route path="/about" element={<About data={data} />} />
-          <Route path="/resume" element={<Resume />} />
-          <Route path="/projects" element={<Projects />} />
-        </Routes>
       </Suspense>
       <Footer data={data} />
     </>

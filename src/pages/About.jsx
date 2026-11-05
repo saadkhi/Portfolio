@@ -1,218 +1,118 @@
 import React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { scrollToSection } from '../utils/scrollTo';
+import { Link } from 'react-router-dom';
+
+const journey = [
+    { company: 'MERL Lab', role: 'RISC-V & AI Research Intern', period: 'Sep 2022 to Dec 2023' },
+    { company: '360 Xpert Solutions', role: 'AI Engineer Intern', period: 'Jul 2024 to Aug 2025' },
+    { company: 'Avennex Solutions', role: 'AI Engineer', period: 'Sep 2025' },
+    { company: 'Convex Consulting', role: 'AI Engineer', period: 'Oct 2025 to present' },
+];
+
+const values = [
+    { icon: 'fa-solid fa-bolt', title: 'Efficiency', text: 'Optimizing every line of code for maximum performance.' },
+    { icon: 'fa-solid fa-gem', title: 'Quality', text: 'Building durable systems with attention to every detail.' },
+    { icon: 'fa-solid fa-users', title: 'Collaboration', text: 'Working closely with partners to turn vision into reality.' },
+    { icon: 'fa-solid fa-brain', title: 'Innovation', text: 'Leveraging cutting-edge AI technologies to build forward-thinking solutions.' },
+];
 
 const About = ({ data }) => {
-    const navigate = useNavigate();
-    const location = useLocation();
-
     if (!data) return null;
 
-    const handleNavClick = (id) => {
-        scrollToSection(id, navigate, location.pathname);
-    };
-
     return (
-        <main className="pt-24 md:pt-32 pb-16 md:pb-20 px-6 md:px-8">
-            <div className="max-w-[1000px] mx-auto">
-                {/* Hero Section */}
-                <section className="animate-fade-in">
-                    <span className="text-primary-accent uppercase tracking-[0.3em] text-[10px] md:text-xs font-bold block text-center mb-4">The Story Behind The Code</span>
-                    <h1 className='text-4xl sm:text-6xl md:text-8xl font-bold leading-tight mb-8 tracking-tighter text-center'>About Me</h1>
-                    <div className="text-md md:text-xl text-text-secondary font-medium max-w-[1000px] mx-auto leading-relaxed text-center space-y-6">
-                        <p>
-                            I’m Saad Ali, a Software Engineering graduate from NED University of Engineering and Technology, with hands-on experience in AI/ML, LLM-based applications, and backend development. I’ve worked on building RAG chatbots, machine learning pipelines, and API-driven systems with a strong focus on practical, production-ready solutions.
-                        </p>
-                        <p>
-                            I’m deeply interested in Generative AI, intelligent automation, scalable SaaS products, and solving real-world problems through data and systems design. I enjoy clean architecture, continuous learning, and experimenting with new AI frameworks.
-                        </p>
-                        <p>
-                            I like working in growth-oriented environments with strong engineering culture and clear impact. I dislike unnecessary complexity, poor code practices, and stagnation — I prefer building things that are efficient, meaningful, and scalable.
+        <main>
+            {/* Dark opening chapter */}
+            <section className="sunrise pt-40 md:pt-52 pb-32 md:pb-44">
+                <div className="wrap">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-white/60 mb-5">About</p>
+                    <h1 className="text-5xl sm:text-6xl md:text-8xl font-semibold leading-[1] text-white max-w-4xl">
+                        Software engineer, focused on AI.
+                    </h1>
+                </div>
+            </section>
+
+            <section className="wrap py-20 md:py-28 grid md:grid-cols-[0.6fr_1.4fr] gap-10 md:gap-16">
+                <p className="eyebrow">The story</p>
+                <div className="space-y-6 text-xl md:text-2xl text-ink-soft leading-relaxed">
+                    <p>
+                        I'm Saad Ali, a Software Engineering graduate from NED University of Engineering and Technology, with hands-on experience in AI/ML, LLM-based applications, and backend development. I've worked on building RAG chatbots, machine learning pipelines, and API-driven systems with a strong focus on practical, production-ready solutions.
+                    </p>
+                    <p>
+                        I'm deeply interested in Generative AI, intelligent automation, scalable SaaS products, and solving real-world problems through data and systems design. I enjoy clean architecture, continuous learning, and experimenting with new AI frameworks.
+                    </p>
+                    <p>
+                        I like working in growth-oriented environments with strong engineering culture and clear impact. I dislike unnecessary complexity, poor code practices, and stagnation. I prefer building things that are efficient, meaningful, and built to last.
+                    </p>
+                </div>
+            </section>
+
+            <section className="wrap pb-20 md:pb-28">
+                <div className="grid md:grid-cols-2 gap-6">
+                    <div className="card p-8 md:p-12">
+                        <h2 className="text-3xl md:text-4xl font-semibold mb-6">My goal</h2>
+                        <p className="text-ink-soft leading-relaxed text-lg mb-5">{data.about.description}</p>
+                        <p className="text-ink-soft leading-relaxed text-lg">
+                            Over the years, I've honed my skills in the Python ecosystem and modern frontend frameworks. My approach is rooted in clean code, scalability, and a relentless focus on performance.
                         </p>
                     </div>
-
-
-                    {/* About Content Grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 py-8 md:py-12">
-                        <div className="glass-card p-8 md:p-12 space-y-6">
-                            <h3 className="text-2xl md:text-3xl font-bold">My Goal</h3>
-                            <p className="text-text-secondary leading-relaxed text-sm md:text-lg">
-                                {data.about.description}
-                            </p>
-                            <p className="text-text-secondary leading-relaxed text-sm md:text-lg">
-                                Over the years, I've honed my skills in the Python ecosystem and modern frontend frameworks. My approach is rooted in clean code, scalability, and a relentless focus on performance.
-                            </p>
-                        </div>
-
-                        <div className="glass-card p-8 md:p-12 bg-gradient-to-br from-primary-accent/10 to-transparent flex flex-col justify-center">
-                            <h3 className="text-2xl md:text-3xl font-bold mb-8 text-center">What I Value</h3>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 gap-6 md:gap-8">
-                                <div className="flex items-start gap-4">
-                                    <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-primary-accent flex-shrink-0">
-                                        <i className="fa-solid fa-bolt"></i>
+                    <div className="card p-8 md:p-12">
+                        <h2 className="text-3xl md:text-4xl font-semibold mb-8">What I value</h2>
+                        <div className="space-y-6">
+                            {values.map((v) => (
+                                <div key={v.title} className="flex items-start gap-4">
+                                    <div className="w-10 h-10 rounded-xl bg-cream flex items-center justify-center text-accent-deep shrink-0">
+                                        <i className={v.icon}></i>
                                     </div>
                                     <div>
-                                        <h4 className="font-bold text-base md:text-lg mb-1">Efficiency</h4>
-                                        <p className="text-text-secondary text-[11px] md:text-sm">Optimizing every line of code for maximum performance.</p>
+                                        <h3 className="font-semibold text-lg">{v.title}</h3>
+                                        <p className="text-ink-soft text-sm mt-0.5">{v.text}</p>
                                     </div>
                                 </div>
-                                <div className="flex items-start gap-4">
-                                    <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-primary-accent flex-shrink-0">
-                                        <i className="fa-solid fa-gem"></i>
-                                    </div>
-                                    <div>
-                                        <h4 className="font-bold text-base md:text-lg mb-1">Quality</h4>
-                                        <p className="text-text-secondary text-[11px] md:text-sm">Building durable systems with attention to every detail.</p>
-                                    </div>
-                                </div>
-                                <div className="flex items-start gap-4">
-                                    <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-primary-accent flex-shrink-0">
-                                        <i className="fa-solid fa-users"></i>
-                                    </div>
-                                    <div>
-                                        <h4 className="font-bold text-base md:text-lg mb-1">Collaboration</h4>
-                                        <p className="text-text-secondary text-[11px] md:text-sm">Working closely with partners to turn vision into reality.</p>
-                                    </div>
-                                </div>
-                                <div className="flex items-start gap-4">
-                                    <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-primary-accent flex-shrink-0">
-                                        <i className="fa-solid fa-brain"></i>
-                                    </div>
-                                    <div>
-                                        <h4 className="font-bold text-base md:text-lg mb-1">Innovation</h4>
-                                        <p className="text-text-secondary text-[11px] md:text-sm">
-                                            Leveraging cutting-edge AI technologies to build forward-thinking solutions.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
+                            ))}
                         </div>
                     </div>
-                </section>
+                </div>
+            </section>
 
-                <section className="relative bg-white/5 border border-white/20 rounded-3xl p-6 md:p-20 py-12 md:py-20">
-
-                    <h2 className="text-2xl md:text-5xl font-bold text-center mb-12 md:mb-16 tracking-tight">
-                        My Journey
-                    </h2>
-
-                    <div className="relative max-w-5xl mx-auto">
-
-                        {/* Desktop Horizontal Line */}
-                        <div className="hidden md:block absolute top-[11px] left-0 w-full h-[2px] bg-white/20"></div>
-
-                        {/* Mobile Vertical Line (LEFT SIDE) */}
-                        <div className="md:hidden absolute left-[11px] top-0 w-[2px] h-full bg-white/20"></div>
-
-                        <div className="relative grid grid-cols-1 md:grid-cols-4 gap-10 md:gap-16">
-
-                            {/* Landmark 1 */}
-                            <div className="relative flex md:block items-start gap-6 md:gap-0">
-
-                                {/* Dot */}
-                                <div className="relative z-10 w-6 h-6 bg-primary-accent rounded-full shadow-[0_0_15px_rgba(255,138,0,0.5)] 
-                        md:mx-auto md:mb-6 flex-shrink-0 border-4 border-black">
-                                </div>
-
-                                {/* Text */}
-                                <div className="text-center pt-1 md:pt-0">
-                                    <h3 className="text-lg md:text-xl font-semibold">MERL LAB</h3>
-                                    <p className="text-[11px] md:text-sm text-text-secondary mt-1">
-                                        RISC-V & AI Research Intern
-                                    </p>
-                                    <p className="text-[10px] md:text-xs text-text-secondary opacity-60">
-                                        Sep 2022 — Dec 2023
-                                    </p>
-                                </div>
-
-                            </div>
-
-                            {/* Landmark 2 */}
-                            <div className="relative flex md:block items-start gap-6 md:gap-0">
-                                <div className="relative z-10 w-6 h-6 bg-primary-accent rounded-full shadow-[0_0_15px_rgba(255,138,0,0.5)] md:mx-auto md:mb-6 flex-shrink-0 border-4 border-black"></div>
-                                <div className="text-center pt-1 md:pt-0">
-                                    <h3 className="text-lg md:text-xl font-semibold">360 Xpert Solutions</h3>
-                                    <p className="text-[11px] md:text-sm text-text-secondary mt-1">
-                                        AI Engineer Intern
-                                    </p>
-                                    <p className="text-[10px] md:text-xs text-text-secondary opacity-60">
-                                        July 2024 — Aug 2025
-                                    </p>
-                                </div>
-                            </div>
-
-                            {/* Landmark 3 */}
-                            <div className="relative flex md:block items-start gap-6 md:gap-0">
-                                <div className="relative z-10 w-6 h-6 bg-primary-accent rounded-full shadow-[0_0_15px_rgba(255,138,0,0.5)] md:mx-auto md:mb-6 flex-shrink-0 border-4 border-black"></div>
-                                <div className="text-center pt-1 md:pt-0">
-                                    <h3 className="text-lg md:text-xl font-semibold">Avennex Solutions</h3>
-                                    <p className="text-[11px] md:text-sm text-text-secondary mt-1">
-                                        AI Engineer
-                                    </p>
-                                    <p className="text-[10px] md:text-xs text-text-secondary opacity-60">
-                                        Sep 2025 — Sep 2025
-                                    </p>
-                                </div>
-                            </div>
-
-                            {/* Landmark 4 */}
-                            <div className="relative flex md:block items-start gap-6 md:gap-0">
-                                <div className="relative z-10 w-6 h-6 bg-primary-accent rounded-full shadow-[0_0_15px_rgba(255,138,0,0.5)] md:mx-auto md:mb-6 flex-shrink-0 border-4 border-black"></div>
-                                <div className="text-center pt-1 md:pt-0">
-                                    <h3 className="text-lg md:text-xl font-semibold">Convex Consulting</h3>
-                                    <p className="text-[11px] md:text-sm text-text-secondary mt-1">
-                                        AI Engineer
-                                    </p>
-                                    <p className="text-[10px] md:text-xs text-text-secondary opacity-60">
-                                        Oct 2025 — Present
-                                    </p>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-
-                </section>
-
-                {/* Toolkit/Expertise section */}
-                <section className="py-12 md:py-16">
-                    <div className="text-center mb-10 md:mb-16">
-                        <h2 className="text-3xl md:text-6xl font-bold mb-4">My Toolkit</h2>
-                        <p className="text-text-secondary text-sm md:text-base">The technologies I use to bring ideas to life.</p>
-                    </div>
-                    <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4 md:gap-6">
-                        {data.skills.map((skill, index) => (
-                            <div key={index} className="glass-card p-6 md:p-8 flex flex-col items-center gap-3 md:gap-4 group hover:bg-white/5 transition-all">
-                                <div className="flex w-10 h-10 md:w-16 md:h-16 rounded-lg md:rounded-2xl bg-white/5 items-center justify-center text-xl md:text-3xl group-hover:bg-primary-accent group-hover:text-black transition-all duration-300">
-                                    {skill.icon && (skill.icon.startsWith('http') || skill.icon.startsWith('/media/')) ? (
-                                        <img src={skill.icon} alt={skill.name} className="w-6 h-6 md:w-10 md:h-10 object-contain" />
-                                    ) : (
-                                        <i className={`${skill.icon} text-base md:text-3xl`}></i>
-                                    )}
-                                </div>
-                                <span className="font-bold text-[10px] md:text-xs tracking-[0.2em] uppercase text-text-secondary group-hover:text-white text-center">{skill.name}</span>
-                            </div>
+            {/* Journey: dark chapter */}
+            <section className="bg-ink text-white py-24 md:py-32">
+                <div className="wrap">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-primary-accent mb-4">Journey</p>
+                    <h2 className="text-4xl md:text-6xl font-semibold mb-14">Where I have worked.</h2>
+                    <ol className="border-t border-white/15">
+                        {journey.map((j) => (
+                            <li key={j.company} className="grid md:grid-cols-[1.2fr_1fr_0.8fr] gap-2 md:gap-8 py-7 border-b border-white/15 transition-colors hover:bg-white/[0.03]">
+                                <h3 className="text-2xl md:text-3xl font-semibold">{j.company}</h3>
+                                <p className="text-white/70 md:pt-1.5">{j.role}</p>
+                                <p className="text-white/45 text-sm md:pt-2 md:text-right">{j.period}</p>
+                            </li>
                         ))}
-                    </div>
-                </section>
+                    </ol>
+                </div>
+            </section>
 
-                {/* Closing Statement */}
-                <section className="text-center bg-white/5 border border-white/20 rounded-3xl p-8 md:p-20 py-12 md:py-20 mb-8">
-                    <h2 className="text-2xl md:text-5xl font-bold mb-8 md:mb-10 tracking-tight leading-tight">Ready to build something extraordinary?</h2>
-                    <div className="flex flex-col sm:flex-row justify-center gap-4 md:gap-6">
-                        <a href="/projects" className="btn-primary w-full sm:w-auto">
-                            {data.hero.cta_primary}
-                        </a>
-                        <button onClick={() => handleNavClick("#contact")} className="btn-secondary w-full sm:w-auto">
-                            Book a Session
-                        </button>
-                        <button onClick={() => handleNavClick("#contact-form")} className="btn-secondary w-full sm:w-auto">
-                            {data.hero.cta_secondary}
-                        </button>
-                    </div>
-                </section>
-            </div>
-        </main >
+            <section className="wrap py-24 md:py-32">
+                <p className="eyebrow mb-4">Toolkit</p>
+                <h2 className="text-4xl md:text-6xl font-semibold mb-12">Technologies I use.</h2>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+                    {data.skills.map((skill, index) => (
+                        <div key={index} className="card p-6 flex flex-col items-center gap-3 transition-all duration-200 hover:-translate-y-0.5 hover:border-ink/30">
+                            <div className="w-12 h-12 rounded-2xl bg-cream flex items-center justify-center text-2xl">
+                                {skill.icon && (skill.icon.startsWith('http') || skill.icon.startsWith('/media/')) ? (
+                                    <img src={skill.icon} alt="" className="w-7 h-7 object-contain" />
+                                ) : (
+                                    <i className={skill.icon}></i>
+                                )}
+                            </div>
+                            <span className="text-sm font-semibold text-center">{skill.name}</span>
+                        </div>
+                    ))}
+                </div>
+                <div className="mt-14 flex flex-wrap gap-3">
+                    <Link to="/projects" className="btn">See my projects</Link>
+                    <Link to="/resume" className="btn-ghost">View resume</Link>
+                </div>
+            </section>
+        </main>
     );
 };
 

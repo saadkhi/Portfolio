@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
 
+const Arrow = () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+);
+
 const Projects = () => {
     const [projects, setProjects] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -18,48 +22,53 @@ const Projects = () => {
     }, []);
 
     if (loading) {
-        return <div className="flex justify-center items-center h-screen text-white uppercase tracking-[0.2em] animate-pulse">Loading Collection...</div>;
+        return <div className="flex justify-center items-center h-screen text-ink-soft text-xs font-semibold uppercase tracking-[0.25em]">Loading projects</div>;
     }
 
     return (
-        <main className="pt-24 md:pt-32 pb-20 md:pb-32 px-6 md:px-8 max-w-[1400px] mx-auto min-h-screen">
-            <header className="mb-10 md:mb-16">
-                <span className="text-primary-accent uppercase tracking-widest text-[10px] md:text-xs font-bold mb-3 md:mb-4 block animate-fade-in">Archive</span>
-                <h1 className="text-4xl sm:text-6xl md:text-8xl font-bold tracking-tighter animate-fade-in leading-[1.1]">All Projects.</h1>
+        <main className="pt-36 md:pt-44 pb-24 md:pb-32 wrap min-h-screen">
+            <header className="mb-14 md:mb-20 max-w-3xl">
+                <p className="eyebrow mb-4">Projects</p>
+                <h1 className="text-5xl sm:text-6xl md:text-8xl font-semibold leading-[1]">Things I have built.</h1>
             </header>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
                 {projects.map((project) => (
-                    <div key={project.id} className="glass-card group flex flex-col overflow-hidden animate-fade-in">
-                        <div className="w-full aspect-video overflow-hidden">
+                    <a
+                        key={project.id}
+                        href={project.live_link || '#'}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="card card-link group flex flex-col overflow-hidden"
+                    >
+                        <div className="w-full aspect-video overflow-hidden bg-ink/5">
                             {project.video ? (
                                 <video
                                     src={project.video}
-                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                                    muted loop playsInline preload="none" onMouseOver={e => e.target.play()} onMouseOut={e => e.target.pause()}
+                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                                    muted loop playsInline preload="none"
+                                    onMouseOver={e => e.target.play()} onMouseOut={e => e.target.pause()}
                                 />
                             ) : (
-                                <img src={project.image} alt={project.title} loading="lazy" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                                <img src={project.image} alt={project.title} loading="lazy" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
                             )}
                         </div>
-                        <div className="p-6 md:p-8 flex-grow flex flex-col justify-between">
-                            <div>
-                                <span className="text-[9px] md:text-[10px] font-bold uppercase tracking-widest text-primary-accent mb-2 block">{project.category}</span>
-                                <h2 className="text-xl md:text-2xl font-bold mb-3 md:mb-4 tracking-tight leading-tight">{project.title}</h2>
-                                <p className="text-text-secondary text-xs md:text-sm mb-6 line-clamp-3 leading-relaxed">{project.description}</p>
+                        <div className="p-7 md:p-9 flex-grow flex flex-col">
+                            <p className="eyebrow mb-3">{project.category}</p>
+                            <div className="flex items-start justify-between gap-4">
+                                <h2 className="text-2xl md:text-3xl font-semibold leading-tight">{project.title}</h2>
+                                <span className="w-10 h-10 rounded-full border border-line flex items-center justify-center shrink-0 transition-colors group-hover:bg-ink group-hover:text-white group-hover:border-ink">
+                                    <Arrow />
+                                </span>
                             </div>
-                            <div className="flex justify-between items-center mt-auto gap-4">
-                                <div className="flex flex-wrap gap-1.5">
-                                    {project.tech_stack.split(',').slice(0, 4).map((tech, i) => (
-                                        <span key={i} className="px-2 py-0.5 bg-white/5 border border-grey/10 rounded text-[8px] md:text-[9px] font-bold uppercase tracking-wider">{tech.trim()}</span>
-                                    ))}
-                                </div>
-                                <a href={project.live_link} target="_blank" rel="noopener noreferrer" className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-grey/10 backdrop-blur-xl border border-white/20 flex items-center justify-center hover:bg-white/20 hover:border-white/40 transition-all shrink-0">
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
-                                </a>
+                            <p className="mt-3 text-ink-soft leading-relaxed line-clamp-3">{project.description}</p>
+                            <div className="mt-6 flex flex-wrap gap-2 mt-auto pt-6">
+                                {(project.tech_stack || '').split(',').filter(Boolean).slice(0, 5).map((tech, i) => (
+                                    <span key={i} className="px-3 py-1 rounded-full border border-line text-[11px] font-semibold text-ink-soft">{tech.trim()}</span>
+                                ))}
                             </div>
                         </div>
-                    </div>
+                    </a>
                 ))}
             </div>
         </main>

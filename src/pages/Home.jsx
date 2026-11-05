@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import myPic from '../assets/my_pic.png';
-import logo from '../assets/portfolio_logo.png';
+import TitleWheel from '../components/TitleWheel';
 import { scrollToSection } from '../utils/scrollTo';
 import { getCookie } from '../utils/csrf';
 
@@ -9,15 +9,8 @@ const Home = ({ data }) => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const [formData, setFormData] = useState({
-        email: '',
-        purpose: '',
-        message: ''
-    });
-    const [status, setStatus] = useState({
-        type: '', // 'success', 'error'
-        message: ''
-    });
+    const [formData, setFormData] = useState({ email: '', purpose: '', message: '' });
+    const [status, setStatus] = useState({ type: '', message: '' });
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     if (!data) return null;
@@ -27,21 +20,14 @@ const Home = ({ data }) => {
     };
 
     const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.id]: e.target.id === 'purpose' ? e.target.value : e.target.value
-        });
+        setFormData({ ...formData, [e.target.id]: e.target.value });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Validation
         if (!formData.email || !formData.purpose || !formData.message) {
-            setStatus({
-                type: 'error',
-                message: 'Please fill all the fields'
-            });
+            setStatus({ type: 'error', message: 'Please fill all the fields' });
             return;
         }
 
@@ -52,13 +38,11 @@ const Home = ({ data }) => {
 
         try {
             const systemDate = new Date().toLocaleString();
-            const CONTACT_API_URL = `/api/contact/`;
-
-            const response = await fetch(CONTACT_API_URL, {
-                method: "POST",
+            const response = await fetch(`/api/contact/`, {
+                method: 'POST',
                 headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": getCookie('csrftoken'),
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken'),
                 },
                 signal: controller.signal,
                 body: JSON.stringify({
@@ -75,262 +59,140 @@ const Home = ({ data }) => {
                 throw new Error(result.message || 'Submission failed');
             }
 
-            setStatus({ type: "success", message: result.message || "Message sent successfully!" });
-            setFormData({ email: "", purpose: "", message: "" });
-
+            setStatus({ type: 'success', message: result.message || 'Message sent successfully!' });
+            setFormData({ email: '', purpose: '', message: '' });
         } catch (error) {
             if (error.name === 'AbortError') return;
             console.error('Submission error:', error);
             setStatus({
-                type: "error",
-                message: error.message || "Something went wrong! Please try again later."
+                type: 'error',
+                message: error.message || 'Something went wrong! Please try again later.',
             });
         } finally {
             setIsSubmitting(false);
         }
     };
 
+    const allProjects = [...(data.featured_projects || []), ...(data.latest_projects || [])];
+    const firstName = data.hero.name.split(' ')[0];
+    const tel = (data.contact.phone || '').replace(/\s/g, '');
+
+    const contactRows = [
+        { label: 'Phone', value: data.contact.phone, href: tel ? `tel:${tel}` : null, icon: 'fa-solid fa-phone' },
+        { label: 'Email', value: data.contact.email, href: `mailto:${data.contact.email}`, icon: 'fa-solid fa-envelope' },
+        { label: 'Location', value: data.contact.location, href: null, icon: 'fa-solid fa-location-dot' },
+    ].filter((r) => r.value);
+
     return (
-        <main className="pt-20">
-            {/* Hero Section */}
-            <section
-                id="home"
-                className="min-h-[90vh] flex items-center relative px-8 overflow-hidden"
-            >
-                {/* Background Glow Name */}
-                {/* <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -z-10 select-none opacity-[0.04]">
-                    <h1 className="md:text-[50vw] lg:text-[40vw] xl:text-[40vw] font-bold leading-none uppercase tracking-tighter">
-                        {data.hero.name}
-                    </h1>
-                </div> */}
-
-                <div className="max-w-[1200px] mx-auto w-full grid md:grid-cols-2 items-center gap-6">
-
-                    {/* LEFT SIDE — TEXT */}
-                    <div className="animate-fade-in text-center order-2 md:order-1 pt-8 md:pt-0">
-                        <h2 className="text-4xl sm:text-6xl md:text-8xl font-bold leading-[1.1] mb-6 md:mb-8 tracking-tighter">
-                            {data.hero.name}
-                        </h2>
-
-                        <p className="text-lg md:text-2xl text-text-secondary font-medium mb-10 md:mb-12 max-w-[1000px] leading-relaxed">
-                            {data.hero.title} <br className="hidden md:block"></br>
-                            Open to new opportunities and freelance projects, <br className="hidden md:block"></br>
-                            <button onClick={() => handleNavClick("#contact")} className="text-primary-accent font-bold hover:underline">let's connect!</button>
+        <main>
+            {/* Hero: dark to orange to cream */}
+            <section id="home" className="sunrise relative min-h-screen flex items-center overflow-hidden">
+                <div className="wrap grid md:grid-cols-[1.15fr_0.85fr] items-center gap-10 pt-32 pb-28">
+                    <div>
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-white/60 mb-6 !text-left">
+                            {data.hero.subtitle}
                         </p>
-
-                        <div className="flex flex-wrap justify-center gap-4 md:gap-6">
-                            <a href="/projects" className="btn-primary w-full sm:w-auto">
-                                {data.hero.cta_primary}
-                            </a>
-                            <button onClick={() => handleNavClick("#contact")} className="btn-secondary w-full sm:w-auto">
-                                Book a Session
-                            </button>
-                            <button onClick={() => handleNavClick("#contact-form")} className="btn-secondary w-full sm:w-auto">
-                                {data.hero.cta_secondary}
+                        <h1 className="text-[44px] sm:text-6xl lg:text-7xl xl:text-[84px] font-semibold leading-[1.02] text-white">
+                            {data.hero.name} builds AI products that work.
+                        </h1>
+                        <p className="mt-7 text-lg md:text-xl text-white/75 max-w-xl leading-relaxed !text-left">
+                            {data.hero.title}. Open to new roles and freelance projects, from RAG chatbots to full backends.
+                        </p>
+                        <div className="mt-10 flex flex-wrap gap-3">
+                            <Link to="/projects" className="btn-light w-full sm:w-auto">{data.hero.cta_primary}</Link>
+                            <button
+                                onClick={() => handleNavClick('#contact')}
+                                className="inline-flex items-center justify-center px-7 py-3 rounded-full font-semibold text-[15px] text-white border border-white/35 transition-all duration-200 hover:bg-white/10 hover:border-white hover:-translate-y-0.5 active:scale-[0.97] w-full sm:w-auto"
+                            >
+                                Book a session
                             </button>
                         </div>
                     </div>
 
-                    {/* RIGHT SIDE — IMAGE */}
-                    <div className="flex justify-center md:justify-end order-1 md:order-2">
-                        <div className="relative w-[240px] sm:w-[320px] md:w-[400px] aspect-square rounded-3xl overflow-hidden shadow-2xl">
+                    <div className="flex justify-center md:justify-end">
+                        <div className="relative w-[240px] sm:w-[300px] md:w-[360px] aspect-[4/5] rounded-[2rem] overflow-hidden border border-white/20 shadow-[0_30px_80px_rgba(0,0,0,0.45)] group">
                             <img
                                 src={data.hero.profile_pic || myPic}
                                 alt={data.hero.name}
-                                className="w-full h-full object-cover"
+                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                             />
                         </div>
                     </div>
                 </div>
             </section>
 
-            {/* Featured Projects Section */}
-            <section id="intro" className="py-16 md:py-26 px-6 md:px-8 max-w-[1400px] mx-auto">
-                <div className="flex flex-col md:flex-row justify-between items-end gap-8">
-                    <div className="max-w-[1800px] text-center w-full transition-all">
-                        {/* <span className="text-primary-accent uppercase tracking-widest text-xs font-bold mb-4 block">Selected Projects</span> */}
-                        <h2 className="text-3xl sm:text-5xl md:text-6xl font-bold py-4 md:py-6 mt-8 md:mt-4">Hi, I'm {data.hero.name.split(' ')[0]}</h2>
-                        <div className="text-md md:text-xl text-text-secondary font-medium space-y-6 leading-relaxed">
-                            <p className="whitespace-pre-wrap">{data.about.description}</p>
-                        </div>
-                    </div>
+            {/* Intro */}
+            <section id="intro" className="wrap py-24 md:py-32 grid md:grid-cols-[0.6fr_1.4fr] gap-8 md:gap-16">
+                <div>
+                    <p className="eyebrow mb-4 !text-left">Hello</p>
+                    <h2 className="text-4xl md:text-5xl font-semibold leading-tight">Hi, I'm {firstName}.</h2>
                 </div>
+                <p className="text-xl md:text-2xl text-ink-soft leading-relaxed whitespace-pre-wrap !text-left">
+                    {data.about.description}
+                </p>
+            </section>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-12">
-                    {data.featured_projects && data.featured_projects.map((project, index) => (
-                        <div key={project.id} className={`glass-card group flex flex-col overflow-hidden ${index === 0 ? 'md:col-span-2' : ''}`}>
-                            <div className={`w-full ${index === 0 ? 'aspect-video md:aspect-[21/9]' : 'aspect-video'} overflow-hidden relative`}>
-                                {project.video ? (
-                                    <video
-                                        src={project.video}
-                                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                                        muted loop playsInline preload="none" onMouseOver={e => e.target.play()} onMouseOut={e => e.target.pause()}
-                                    />
-                                ) : (
-                                    <img
-                                        src={project.image || 'https://via.placeholder.com/800x450?text=No+Image'}
-                                        alt={project.title}
-                                        loading="lazy"
-                                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                                    />
-                                )}
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                            </div>
-                            <div className="p-6 md:p-12 relative">
-                                <span className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-primary-accent mb-3 md:mb-4 block">{project.category}</span>
-                                <div className="flex justify-between items-start gap-4">
-                                    <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 md:mb-4">{project.title}</h3>
-                                    <a href={project.live_link || '#'} target="_blank" rel="noopener noreferrer" className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-grey/10 backdrop-blur-xl border border-white/20 flex items-center justify-center hover:bg-white/20 hover:border-white/20 transition-all">
-                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
-                                    </a>
-                                </div>
-                                <p className="text-text-secondary text-sm md:text-lg mb-6 md:mb-8 max-w-[600px] leading-relaxed">{project.description}</p>
-                                <div className="flex flex-wrap gap-2">
-                                    {project.tech_stack && project.tech_stack.split(',').map((tech, i) => (
-                                        <span key={i} className="px-2 md:px-3 py-1 bg-white/5 border border-white/20 rounded-full text-[9px] md:text-[10px] font-bold uppercase tracking-wider">{tech.trim()}</span>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
+            {/* Pinned wheel of projects */}
+            <TitleWheel projects={allProjects} />
 
-                {/* Latest Projects Section
-                {data.latest_projects && data.latest_projects.length > 0 && (
-                    <div className="mt-24">
-                        <div className="flex items-center gap-4 mb-12">
-                            <h2 className="text-3xl md:text-5xl font-bold tracking-tighter">Latest Projects</h2>
-                            <div className="h-[1px] flex-grow bg-white/10"></div>
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                            {data.latest_projects.map((project) => (
-                                <div key={project.id} className="glass-card group flex flex-col overflow-hidden">
-                                    <div className="w-full aspect-video overflow-hidden relative">
-                                        {project.video ? (
-                                            <video
-                                                src={project.video}
-                                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                                                muted loop playsInline onMouseOver={e => e.target.play()} onMouseOut={e => e.target.pause()}
-                                            />
-                                        ) : (
-                                            <img
-                                                src={project.image || 'https://via.placeholder.com/400x225?text=No+Image'}
-                                                alt={project.title}
-                                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                                            />
-                                        )}
-                                    </div>
-                                    <div className="p-6 flex-grow flex flex-col">
-                                        <span className="text-[10px] font-bold uppercase tracking-widest text-primary-accent mb-2 block">{project.category}</span>
-                                        <div className="flex justify-between items-start gap-2 mb-4">
-                                            <h3 className="text-xl font-bold leading-tight">{project.title}</h3>
-                                            <a href={project.live_link || '#'} target="_blank" rel="noopener noreferrer" className="text-white/50 hover:text-white transition-colors">
-                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
-                                            </a>
-                                        </div>
-                                        <p className="text-text-secondary text-sm mb-6 line-clamp-2">{project.description}</p>
-                                        <div className="mt-auto flex flex-wrap gap-2">
-                                            {project.tech_stack && project.tech_stack.split(',').slice(0, 3).map((tech, i) => (
-                                                <span key={i} className="px-2 py-0.5 bg-white/5 border border-white/10 rounded text-[9px] font-bold uppercase tracking-wider">{tech.trim()}</span>
-                                            ))}
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                        <div className="mt-12 text-center">
-                            <a href="/projects" className="inline-flex items-center gap-2 text-primary-accent font-bold hover:underline">
-                                View Archive <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                            </a>
-                        </div>
-                    </div>
-                )} */}
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mt-8 md:mt-4">
-                    <div className="glass-card p-8 md:p-12 col-span-1 md:col-span-2 flex flex-col justify-center">
-                        <h3 className="text-2xl md:text-4xl font-bold mb-6 md:mb-8 text-center">My Expertise</h3>
-                        <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4 md:gap-6">
+            {/* Expertise */}
+            <section className="wrap py-24 md:py-32">
+                <div className="grid lg:grid-cols-[1.6fr_1fr] gap-6">
+                    <div className="card p-8 md:p-12">
+                        <p className="eyebrow mb-3 !text-left">Toolkit</p>
+                        <h2 className="text-3xl md:text-5xl font-semibold mb-10">What I work with</h2>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                             {data.skills.map((skill, index) => (
-                                <div key={index} className="flex items-center gap-3 md:gap-4 group justify-center">
-                                    <div className="flex w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl bg-white/5 items-center justify-center group-hover:bg-primary-accent group-hover:text-black transition-all">
+                                <div key={index} className="flex items-center gap-3 rounded-2xl border border-line px-4 py-3 transition-all duration-200 hover:-translate-y-0.5 hover:border-ink/30">
+                                    <div className="w-9 h-9 rounded-xl bg-cream flex items-center justify-center shrink-0">
                                         {skill.icon && (skill.icon.startsWith('http') || skill.icon.startsWith('/media/')) ? (
-                                            <img src={skill.icon} alt={skill.name} className="w-4 h-4 md:w-6 md:h-6 object-contain" />
+                                            <img src={skill.icon} alt="" className="w-5 h-5 object-contain" />
                                         ) : (
-                                            <i className={`${skill.icon} text-xs md:text-base`}></i>
+                                            <i className={`${skill.icon} text-sm`}></i>
                                         )}
                                     </div>
-                                    <span className="font-bold text-[10px] md:text-sm tracking-widest uppercase">{skill.name}</span>
+                                    <span className="text-sm font-semibold">{skill.name}</span>
                                 </div>
                             ))}
                         </div>
                     </div>
-                    <div className="glass-card p-8 md:p-12 bg-gradient-to-br from-primary-accent/20 to-transparent flex flex-col justify-between text-center">
-                        <h3 className="text-2xl md:text-3xl font-bold mb-4 md:mb-0">Looking for an AI Engineer?</h3>
-                        <p className="text-text-secondary my-6 md:my-8 text-sm md:text-base">Let's build something extraordinary together.</p>
-                        {/* <a href="#contact" className="btn-primary w-full">Start a Conversation</a> */}
-                        {data.hero.resume_url && (
-                            <a
-                                href={data.hero.resume_url}
-                                target="_blank"
-                                // download={data.hero.resume_url}
-                                rel="noopener noreferrer"
-                                className="btn-secondary flex items-center justify-center gap-2 w-full"
-                            >
-                                <i className="fa-solid fa-file-pdf"></i> Resume
-                            </a>
-                        )}
+                    <div className="rounded-3xl p-8 md:p-12 bg-ink text-white flex flex-col justify-between gap-10">
+                        <div>
+                            <h3 className="text-3xl md:text-4xl font-semibold leading-tight !text-left">Looking for an AI engineer?</h3>
+                            <p className="mt-4 text-white/65 !text-left">Send a message or book a call and we can scope it together.</p>
+                        </div>
+                        <div className="flex flex-col gap-3">
+                            <button onClick={() => handleNavClick('#contact-form')} className="btn-light w-full">Send a message</button>
+                            {data.hero.resume_url && (
+                                <a
+                                    href={data.hero.resume_url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center justify-center gap-2 w-full px-7 py-3 rounded-full font-semibold text-[15px] text-white border border-white/30 transition-all duration-200 hover:border-white hover:-translate-y-0.5 active:scale-[0.97]"
+                                >
+                                    <i className="fa-solid fa-file-pdf"></i> Download resume
+                                </a>
+                            )}
+                        </div>
                     </div>
                 </div>
             </section>
 
-            {/* Bento Grid / Tech Stack */}
-            {/* <section id="tech-stack" className="py-24 px-8 max-w-[1400px] mx-auto">
-
-                
-            </section> */}
-
-            {/* Contact / Booking Section */}
-            <section id="contact" className="py-16 md:py-24 px-6 md:px-8">
-                <div className="max-w-[1400px] mx-auto glass-card overflow-hidden">
-                    <div className="grid grid-cols-1 md:grid-cols-2">
-                        {/* Left Side: Info */}
-                        <div className="p-8 md:p-16 md:py-24 border-b md:border-b-0 md:border-r border-glass-border flex flex-col justify-center text-center">
-                            <div className="flex flex-col md:flex-row items-center gap-4 mb-8">
-                                <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-primary-accent shadow-[0_0_15px_rgba(255,138,0,0.3)] bg-gray-800">
-                                    <img src={`https://ui-avatars.com/api/?name=${data.hero.name}&background=111&color=fff`} alt="Saad" className="w-full h-full object-cover" />
-                                </div>
-                                <div className="flex flex-col">
-                                    <h4 className="font-bold text-lg leading-tight">{data.hero.name}</h4>
-                                    <div className="flex flex-col">
-                                        <span className="text-text-secondary text-[10px] uppercase tracking-widest font-bold">Available for Projects</span>
-                                        <a href={`tel:${data.contact.phone.replace(/\s/g, '')}`} className="text-primary-accent text-xs font-bold hover:underline">{data.contact.phone}</a>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <h2 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-6 md:mb-8 tracking-tighter leading-tight">
-                                Let's Chat About <br className="hidden md:block" /> Your Next Big Idea.
-                            </h2>
-
-                            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/20 rounded-full mb-8 w-fit mx-auto">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary-accent"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                                <span className="text-xs font-bold uppercase tracking-widest">60 Minute Session</span>
-                            </div>
-
-                            <p className="text-text-secondary text-sm md:text-lg mb-10 md:mb-12 leading-relaxed">
-                                Whether you have a fully-fledged design or just a rough idea, I'm here to help you bring it to life. Let's discuss your business goals, tech stack, and how we can build something exceptional.
+            {/* Booking */}
+            <section id="contact" className="wrap pb-24 md:pb-32">
+                <div className="card overflow-hidden">
+                    <div className="grid md:grid-cols-2">
+                        <div className="p-8 md:p-14 flex flex-col justify-center border-b md:border-b-0 md:border-r border-line">
+                            <p className="eyebrow mb-4 !text-left">60 minute session</p>
+                            <h2 className="text-4xl md:text-5xl font-semibold leading-tight !text-left">Book a call about your idea.</h2>
+                            <p className="mt-6 text-ink-soft text-lg leading-relaxed !text-left">
+                                Bring a full design or a rough idea. We will go through your goals and tech stack, and what it takes to build it.
                             </p>
-
-                            <div className="p-6 bg-red-500/5 border border-red-500/10 rounded-2xl mt-auto max-w-[500px] mx-auto">
-                                <p className="text-[11px] md:text-sm text-red-200/60 leading-relaxed italic">
-                                    ⚠️ Please note: These sessions are for serious business inquiries only. Incomplete or vague bookings will be automatically canceled.
-                                </p>
-                            </div>
+                            <p className="mt-8 text-sm text-ink-soft border-l-2 border-primary-accent pl-4 !text-left">
+                                Sessions are for serious business inquiries. Incomplete or vague bookings are cancelled.
+                            </p>
                         </div>
-
-                        {/* Right Side: TidyCal Embed */}
-                        <div className="bg-white/5 min-h-[600px] md:min-h-[950px] relative">
-                            {/* We use an iframe for TidyCal to ensure it loads correctly in React */}
+                        <div className="bg-cream min-h-[600px] md:min-h-[900px] relative">
                             <iframe
                                 src="https://tidycal.com/saadalioffic/initial-discovery-session?embed=1"
                                 width="100%"
@@ -344,150 +206,118 @@ const Home = ({ data }) => {
                 </div>
             </section>
 
-            {/* Contact Form Section */}
-            <section id="contact-form" className="py-16 md:py-24 px-6 md:px-8 max-w-[1400px] mx-auto">
-                <h2 className="text-4xl sm:text-5xl md:text-7xl font-bold leading-[1.1] mb-8 md:mb-12 tracking-tighter text-center mt-8 md:mt-4"> Let's Connect </h2>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-16 items-start">
-                    {/* Left Column: Contact Form */}
-                    <div className="glass-card p-6 md:p-12 order-2 lg:order-1">
-                        <div className="mb-8 md:mb-10 text-center lg:text-left">
-                            <span className="text-primary-accent uppercase tracking-widest text-[10px] md:text-xs font-bold mb-2 md:mb-4 block">Quick Connect</span>
-                            <h2 className="text-2xl md:text-5xl font-bold mb-4">Let's stay in touch.</h2>
-                            <p className="text-sm md:text-base text-text-secondary italic">Drop your details below and I'll get back to you as soon as possible.</p>
-                        </div>
-
-                        <form className="space-y-6" onSubmit={handleSubmit}>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="space-y-2">
-                                    <label htmlFor="email" className="text-xs font-bold uppercase tracking-widest text-text-secondary ml-1">Email Address</label>
-                                    <input
-                                        type="email"
-                                        id="email"
-                                        value={formData.email}
-                                        onChange={handleChange}
-                                        placeholder="your@email.com"
-                                        className="w-full bg-white/5 border border-white/20 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-primary-accent transition-colors"
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <label htmlFor="purpose" className="text-xs font-bold uppercase tracking-widest text-text-secondary ml-1">Purpose</label>
-                                    <select
-                                        id="purpose"
-                                        value={formData.purpose}
-                                        onChange={handleChange}
-                                        className="w-full bg-white/5 border border-white/20 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-primary-accent transition-colors appearance-none"
-                                    >
-                                        <option value="" className="bg-bg-dark">Select a purpose</option>
-                                        <option value="project" className="bg-bg-dark">New Project</option>
-                                        <option value="collaboration" className="bg-bg-dark">Collaboration</option>
-                                        <option value="inquiry" className="bg-bg-dark">General Inquiry</option>
-                                        <option value="other" className="bg-bg-dark">Something Else</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div className="space-y-2">
-                                <label htmlFor="message" className="text-xs font-bold uppercase tracking-widest text-text-secondary ml-1">Message</label>
-                                <textarea
-                                    id="message"
-                                    value={formData.message}
-                                    onChange={handleChange}
-                                    placeholder="Your message"
-                                    rows="4"
-                                    className="w-full bg-white/5 border border-white/20 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-primary-accent transition-colors"
-                                ></textarea>
-                            </div>
-
-                            {status.message && (
-                                <div className={`p-4 rounded-xl text-sm font-bold text-center ${status.type === 'success' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
-                                    {status.message}
-                                </div>
-                            )}
-
-                            <button
-                                type="submit"
-                                disabled={isSubmitting}
-                                className={`btn-primary w-full shadow-[0_0_20px_rgba(255,255,255,0.1)] ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
-                            >
-                                {isSubmitting ? 'Sending...' : 'Send Message'}
-                            </button>
-                        </form>
-                    </div>
-
-                    {/* Right Column: Contact info */}
-                    <div className="glass-card p-8 md:p-12 space-y-8 md:space-y-10 order-1 lg:order-2 text-center">
-                        <div>
-                            <h2 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-4 md:mb-6 tracking-tighter">Get in touch with me.</h2>
-                            <p className="text-sm md:text-lg text-text-secondary max-w-[450px] leading-relaxed italic mx-auto">
-                                I'm always open to new projects, collaborations, or even just a friendly chat about AI and software development.
-                            </p>
-                        </div>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-6 md:gap-8">
-                            <div className="flex flex-col lg:flex-row items-center gap-4 md:gap-6 group">
-                                <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-white/5 border border-white/20 flex items-center justify-center text-primary-accent group-hover:bg-primary-accent group-hover:text-black transition-all duration-300 shadow-lg shrink-0">
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-                                </div>
-                                <div>
-                                    <span className="text-[10px] font-bold uppercase tracking-widest text-text-secondary block mb-1">Phone Number</span>
-                                    <a href={`tel:${data.contact.phone.replace(/\s/g, '')}`} className="text-lg md:text-xl font-bold hover:text-primary-accent transition-colors">{data.contact.phone}</a>
-                                </div>
-                            </div>
-
-                            <div className="flex flex-col lg:flex-row items-center gap-4 md:gap-6 group">
-                                <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-white/5 border border-white/20 flex items-center justify-center text-primary-accent group-hover:bg-primary-accent group-hover:text-black transition-all duration-300 shadow-lg shrink-0">
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                                </div>
-                                <div>
-                                    <span className="text-[10px] font-bold uppercase tracking-widest text-text-secondary block mb-1">Email Address</span>
-                                    <a href={`mailto:${data.contact.email}`} className="text-lg md:text-xl font-bold hover:text-primary-accent transition-colors break-all shrink-0">{data.contact.email}</a>
-                                </div>
-                            </div>
-
-                            <div className="flex flex-col lg:flex-row items-center gap-4 md:gap-6 group">
-                                <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-white/5 border border-white/20 flex items-center justify-center text-primary-accent group-hover:bg-primary-accent group-hover:text-black transition-all duration-300 shadow-lg shrink-0">
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-                                </div>
-                                <div>
-                                    <span className="text-[10px] font-bold uppercase tracking-widest text-text-secondary block mb-1">Current Location</span>
-                                    <p className="text-lg md:text-xl font-bold">{data.contact.location}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* Social Media Section */}
-            <section className="py-16 md:py-24 px-6 md:px-8 bg-black/20">
-                <h2 className="py-8 md:py-10 text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-center tracking-tighter">Let's Connect on social handles</h2>
-                <div className="max-w-[1200px] mx-auto">
-                    <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:flex md:flex-wrap justify-center gap-6 md:gap-8">
-                        {data.social_links && data.social_links.map((link, index) => {
-                            const getHoverColor = (name) => {
-                                return 'group-hover:bg-primary-accent group-hover:text-black';
-                            };
-
-                            return (
-                                <a key={index} href={link.url} target="_blank" rel="noopener noreferrer" className="group flex flex-col items-center gap-3">
-                                    <div className={`w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-white/5 border border-white/20 flex items-center justify-center text-xl md:text-2xl group-hover:scale-110 group-hover:-translate-y-2 transition-all duration-300 ${getHoverColor(link.name)} overflow-hidden shadow-lg`}>
-                                        {link.icon_image ? (
-                                            <img
-                                                src={link.icon_image}
-                                                alt={link.name}
-                                                className="w-7 h-7 md:w-8 md:h-8 object-contain"
-                                            />
+            {/* Contact form: a dark chapter */}
+            <section id="contact-form" className="bg-ink text-white py-24 md:py-32">
+                <div className="wrap grid lg:grid-cols-2 gap-14 lg:gap-20 items-start">
+                    <div>
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-primary-accent mb-4 !text-left">Contact</p>
+                        <h2 className="text-5xl md:text-7xl font-semibold leading-[1.02] !text-left">Let's talk.</h2>
+                        <p className="mt-6 text-lg text-white/65 max-w-md leading-relaxed !text-left">
+                            New projects, collaborations, or a chat about AI and software. I reply as soon as I can.
+                        </p>
+                        <div className="mt-10 space-y-6">
+                            {contactRows.map((r) => (
+                                <div key={r.label} className="flex items-center gap-4">
+                                    <div className="w-11 h-11 rounded-full border border-white/20 flex items-center justify-center text-primary-accent shrink-0">
+                                        <i className={`${r.icon} text-sm`}></i>
+                                    </div>
+                                    <div>
+                                        <p className="text-[11px] uppercase tracking-[0.2em] text-white/45 !text-left">{r.label}</p>
+                                        {r.href ? (
+                                            <a href={r.href} className="text-lg font-semibold hover:text-primary-accent transition-colors break-all">{r.value}</a>
                                         ) : (
-                                            <i className={link.icon_class || 'fa-solid fa-link'}></i>
+                                            <p className="text-lg font-semibold !text-left">{r.value}</p>
                                         )}
                                     </div>
-                                    <span className="text-[9px] md:text-[10px] font-bold uppercase tracking-widest text-text-secondary group-hover:text-white transition-colors text-center">{link.name}</span>
-                                </a>
-                            );
-                        })}
+                                </div>
+                            ))}
+                        </div>
                     </div>
+
+                    <form className="space-y-5" onSubmit={handleSubmit}>
+                        <div className="grid md:grid-cols-2 gap-5">
+                            <div className="space-y-2">
+                                <label htmlFor="email" className="text-xs font-semibold uppercase tracking-[0.18em] text-white/55">Email</label>
+                                <input
+                                    type="email"
+                                    id="email"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    placeholder="you@email.com"
+                                    className="w-full bg-white/5 border border-white/15 rounded-2xl px-5 py-4 text-white placeholder:text-white/35 focus:outline-none focus:border-primary-accent transition-colors"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label htmlFor="purpose" className="text-xs font-semibold uppercase tracking-[0.18em] text-white/55">Purpose</label>
+                                <select
+                                    id="purpose"
+                                    value={formData.purpose}
+                                    onChange={handleChange}
+                                    className="w-full bg-white/5 border border-white/15 rounded-2xl px-5 py-4 text-white focus:outline-none focus:border-primary-accent transition-colors appearance-none"
+                                >
+                                    <option value="" className="bg-ink">Select a purpose</option>
+                                    <option value="project" className="bg-ink">New project</option>
+                                    <option value="collaboration" className="bg-ink">Collaboration</option>
+                                    <option value="inquiry" className="bg-ink">General inquiry</option>
+                                    <option value="other" className="bg-ink">Something else</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div className="space-y-2">
+                            <label htmlFor="message" className="text-xs font-semibold uppercase tracking-[0.18em] text-white/55">Message</label>
+                            <textarea
+                                id="message"
+                                value={formData.message}
+                                onChange={handleChange}
+                                placeholder="Tell me about your project"
+                                rows="5"
+                                className="w-full bg-white/5 border border-white/15 rounded-2xl px-5 py-4 text-white placeholder:text-white/35 focus:outline-none focus:border-primary-accent transition-colors"
+                            ></textarea>
+                        </div>
+
+                        {status.message && (
+                            <div className={`p-4 rounded-2xl text-sm font-semibold ${status.type === 'success' ? 'bg-green-500/15 text-green-300' : 'bg-red-500/15 text-red-300'}`}>
+                                {status.message}
+                            </div>
+                        )}
+
+                        <button
+                            type="submit"
+                            disabled={isSubmitting}
+                            className={`btn-light w-full ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        >
+                            {isSubmitting ? 'Sending...' : 'Send message'}
+                        </button>
+                    </form>
                 </div>
             </section>
 
+            {/* Social */}
+            {data.social_links && data.social_links.length > 0 && (
+                <section className="wrap py-20 md:py-24">
+                    <p className="eyebrow mb-6 !text-left">Find me online</p>
+                    <div className="flex flex-wrap gap-3">
+                        {data.social_links.map((link, index) => (
+                            <a
+                                key={index}
+                                href={link.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="card card-link inline-flex items-center gap-3 !rounded-full pl-3 pr-6 py-2.5"
+                            >
+                                <span className="w-9 h-9 rounded-full bg-cream flex items-center justify-center overflow-hidden">
+                                    {link.icon_image ? (
+                                        <img src={link.icon_image} alt="" className="w-5 h-5 object-contain" />
+                                    ) : (
+                                        <i className={`${link.icon_class || 'fa-solid fa-link'} text-sm`}></i>
+                                    )}
+                                </span>
+                                <span className="text-sm font-semibold">{link.name}</span>
+                            </a>
+                        ))}
+                    </div>
+                </section>
+            )}
         </main>
     );
 };

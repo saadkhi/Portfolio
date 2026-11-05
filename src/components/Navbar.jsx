@@ -1,181 +1,79 @@
 import React, { useState } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 import { scrollToSection } from "../utils/scrollTo";
-import logo from "../assets/portfolio_logo.png";
+
+const links = [
+  { to: "/", label: "Home", end: true },
+  { to: "/projects", label: "Projects" },
+  { to: "/about", label: "About" },
+  { to: "/resume", label: "Resume" },
+];
 
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
 
-  const navItem =
-    "text-xs font-semibold uppercase tracking-widest text-white/70 hover:text-white transition-colors duration-200";
+  const item = ({ isActive }) =>
+    `px-4 py-2 rounded-full text-[13px] font-medium transition-colors duration-200 ${isActive ? "bg-white/15 text-white" : "text-white/70 hover:text-white"}`;
 
-  const handleNavClick = (id) => {
+  const goTo = (id) => {
     scrollToSection(id, navigate, location.pathname);
     setIsOpen(false);
   };
 
-  const handleHomeClick = () => {
-    if (location.pathname === "/") {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    } else {
-      navigate("/");
-      setTimeout(() => {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }, 100);
-    }
-    setIsOpen(false);
-  };
-
   return (
-    <nav className="fixed top-6 left-1/2 -translate-x-1/2 w-[95%] max-w-5xl bg-grey/10 backdrop-blur-xl border border-white/20 px-8 py-3 rounded-full z-50 flex items-center justify-between">
+    <header className="fixed top-5 left-1/2 -translate-x-1/2 w-[92%] max-w-3xl z-50">
+      <nav className="flex items-center justify-between bg-ink/90 backdrop-blur-xl border border-white/10 pl-6 pr-2 py-2 rounded-full shadow-[0_8px_30px_rgba(0,0,0,0.25)]">
+        <Link to="/" onClick={() => setIsOpen(false)} className="font-heading font-bold text-white text-base tracking-tight">
+          Saad Ali
+        </Link>
 
-      <button
-        onClick={handleHomeClick}
-        className="font-bold text-lg tracking-tight text-white hover:opacity-80 transition-opacity duration-200"
-      >
-        Saad A.
-      </button>
+        <ul className="hidden md:flex items-center gap-1">
+          {links.map((l) => (
+            <li key={l.to}>
+              <NavLink to={l.to} end={l.end} className={item}>{l.label}</NavLink>
+            </li>
+          ))}
+        </ul>
 
-      {/* Desktop Menu */}
-      <ul className="hidden md:flex items-center gap-8">
-        <li>
-          <button onClick={handleHomeClick} className={navItem}>
-            Home
-          </button>
-        </li>
-
-        <li>
-          <button onClick={() => handleNavClick("#intro")} className={navItem}>
-            Intro
-          </button>
-        </li>
-
-        <li>
-          <Link to="/projects" className={navItem}>
-            Projects
-          </Link>
-        </li>
-
-        <li>
-          <Link to="/about" className={navItem}>
-            About
-          </Link>
-        </li>
-
-        <li>
-          <Link to="/resume" className={navItem}>
-            Resume
-          </Link>
-        </li>
-
-        <li>
-          <button onClick={() => handleNavClick("#contact")} className={navItem}>
-            Book
-          </button>
-        </li>
-
-        <li>
+        <div className="flex items-center gap-2">
           <button
-            onClick={() => handleNavClick("#contact-form")}
-            className={navItem}
-          // className="text-xs font-bold uppercase tracking-widest text-white hover:text-white/80 transition-colors duration-200"
+            onClick={() => goTo("#contact-form")}
+            className="hidden md:inline-flex bg-primary-accent text-white text-[13px] font-semibold px-5 py-2 rounded-full transition-all duration-200 hover:bg-white hover:text-ink hover:-translate-y-0.5 active:scale-[0.97]"
           >
-            Connect
+            Contact
           </button>
-        </li>
-      </ul>
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="md:hidden w-10 h-10 flex items-center justify-center text-white"
+            aria-label="Toggle menu"
+            aria-expanded={isOpen}
+          >
+            <span className="relative w-5 h-3.5 block">
+              <span className={`absolute left-0 w-5 h-0.5 bg-white transition-all duration-300 ${isOpen ? "top-1.5 rotate-45" : "top-0"}`}></span>
+              <span className={`absolute left-0 top-1.5 w-5 h-0.5 bg-white transition-opacity duration-200 ${isOpen ? "opacity-0" : ""}`}></span>
+              <span className={`absolute left-0 w-5 h-0.5 bg-white transition-all duration-300 ${isOpen ? "top-1.5 -rotate-45" : "top-3"}`}></span>
+            </span>
+          </button>
+        </div>
+      </nav>
 
-      {/* Hamburger Button (Mobile) */}
-      <div className="md:hidden">
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          className="relative w-8 h-8 flex flex-col items-center justify-center group"
-          aria-label="Toggle Menu"
-        >
-          <span
-            className={`w-6 h-0.5 bg-white transition-all duration-300 absolute ${isOpen ? "rotate-45" : "-translate-y-2"
-              }`}
-          ></span>
-          <span
-            className={`w-6 h-0.5 bg-white transition-all duration-300 absolute ${isOpen ? "opacity-0" : ""
-              }`}
-          ></span>
-          <span
-            className={`w-6 h-0.5 bg-white transition-all duration-300 absolute ${isOpen ? "-rotate-45" : "translate-y-2"
-              }`}
-          ></span>
-        </button>
-      </div>
-
-      {/* Mobile Dropdown Menu Overlay */}
       <div
-        className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-[-1] transition-opacity duration-300 md:hidden ${isOpen ? "opacity-100 visible" : "opacity-0 invisible"
-          }`}
-        onClick={() => setIsOpen(false)}
-      ></div>
-
-      {/* Mobile Dropdown Menu */}
-      <div
-        className={`absolute top-20 left-1/2 -translate-x-1/2 w-[92%] bg-black/90 backdrop-blur-2xl border border-white/20 rounded-3xl py-10 transition-all duration-300 scale-95 origin-top md:hidden ${isOpen ? "opacity-100 translate-y-0 visible scale-100" : "opacity-0 -translate-y-4 invisible scale-95"
-          }`}
+        className={`md:hidden mt-2 bg-ink/95 backdrop-blur-xl border border-white/10 rounded-3xl p-3 transition-all duration-300 origin-top ${isOpen ? "opacity-100 scale-100 visible" : "opacity-0 scale-95 invisible"}`}
       >
-        <div className="flex flex-col items-center gap-8">
-          <button
-            onClick={handleHomeClick}
-            className={`${navItem} text-sm`}
-          >
-            Home
-          </button>
-
-          <button
-            onClick={() => handleNavClick("#intro")}
-            className={`${navItem} text-sm`}
-          >
-            Intro
-          </button>
-
-          <Link
-            to="/projects"
-            onClick={() => setIsOpen(false)}
-            className={`${navItem} text-sm`}
-          >
-            Projects
-          </Link>
-
-          <Link
-            to="/about"
-            onClick={() => setIsOpen(false)}
-            className={`${navItem} text-sm`}
-          >
-            About
-          </Link>
-
-          <Link
-            to="/resume"
-            onClick={() => setIsOpen(false)}
-            className={`${navItem} text-sm`}
-          >
-            Resume
-          </Link>
-
-          <button
-            onClick={() => handleNavClick("#contact")}
-            className={`${navItem} text-sm`}
-          >
-            Book
-          </button>
-
-          <button
-            onClick={() => handleNavClick("#contact-form")}
-            className="w-[80%] btn-primary text-xs"
-          >
-            Connect
+        <div className="flex flex-col">
+          {links.map((l) => (
+            <NavLink key={l.to} to={l.to} end={l.end} onClick={() => setIsOpen(false)} className={({ isActive }) => `px-5 py-4 rounded-2xl text-base font-medium ${isActive ? "bg-white/10 text-white" : "text-white/70"}`}>
+              {l.label}
+            </NavLink>
+          ))}
+          <button onClick={() => goTo("#contact-form")} className="mt-2 bg-primary-accent text-white font-semibold py-4 rounded-2xl">
+            Contact
           </button>
         </div>
       </div>
-    </nav>
+    </header>
   );
 };
 

@@ -1,56 +1,39 @@
 import React from 'react';
-import logo from '../assets/portfolio_logo.png';
+import { Link } from 'react-router-dom';
 
 const Footer = ({ data }) => {
     if (!data) return null;
 
+    const col = "text-sm text-white/65 hover:text-white transition-colors link-draw";
+
     return (
-        <footer className="py-12 md:py-20 px-6 md:px-8 border-t border-glass-border">
-            <div className="max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-3 items-center text-center gap-10">
-
-                {/* Column 1: Logo & Title */}
-                <div className="flex justify-center">
-                    <div className="flex flex-col items-center gap-4">
-                        <img src={logo} alt="Saad Ali" className="h-8 md:h-10 w-auto" />
-                        <div className="text-[10px] md:text-xs font-bold opacity-70 uppercase tracking-widest text-text-secondary">
-                            SWE & AI Engineer
-                        </div>
-                    </div>
-                </div>
-
-                {/* Column 2: Links */}
-                <div className="flex flex-wrap justify-center gap-6 md:gap-10">
-                    <a
-                        href="https://github.com/saadkhi"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-text-secondary hover:text-white transition-colors uppercase tracking-widest text-[10px] md:text-xs font-bold"
-                    >
-                        Github
-                    </a>
-                    <a
-                        href="https://www.linkedin.com/in/saadkhi/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-text-secondary hover:text-white transition-colors uppercase tracking-widest text-[10px] md:text-xs font-bold"
-                    >
-                        LinkedIn
-                    </a>
-                    <a
-                        href={`mailto:${data.contact.email}`}
-                        className="text-text-secondary hover:text-white transition-colors uppercase tracking-widest text-[10px] md:text-xs font-bold"
-                    >
-                        Email
-                    </a>
-                </div>
-
-                {/* Column 3: Copyright */}
-                <div className="flex justify-center">
-                    <p className="text-text-secondary text-[10px] md:text-xs uppercase tracking-widest font-bold opacity-30">
-                        © {new Date().getFullYear()} All Rights Reserved
+        <footer className="bg-ink text-white">
+            <div className="wrap py-16 md:py-20 grid gap-12 md:grid-cols-[1.4fr_1fr_1fr]">
+                <div>
+                    <p className="font-heading text-3xl md:text-4xl font-semibold leading-tight max-w-sm">
+                        AI and software, built to ship.
                     </p>
+                    <a href={`mailto:${data.contact.email}`} className="inline-block mt-6 text-primary-accent font-semibold link-draw">
+                        {data.contact.email}
+                    </a>
                 </div>
-
+                <div className="flex flex-col gap-3">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/40 mb-1">Pages</p>
+                    <Link to="/" className={col}>Home</Link>
+                    <Link to="/projects" className={col}>Projects</Link>
+                    <Link to="/about" className={col}>About</Link>
+                    <Link to="/resume" className={col}>Resume</Link>
+                </div>
+                <div className="flex flex-col gap-3">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/40 mb-1">Elsewhere</p>
+                    <a href="https://github.com/saadkhi" target="_blank" rel="noopener noreferrer" className={col}>GitHub</a>
+                    <a href="https://www.linkedin.com/in/saadkhi/" target="_blank" rel="noopener noreferrer" className={col}>LinkedIn</a>
+                </div>
+            </div>
+            <div className="wrap pb-8">
+                <p className="text-xs text-white/35 border-t border-white/10 pt-6 !text-left">
+                    © {new Date().getFullYear()} Saad Ali. All rights reserved.
+                </p>
             </div>
         </footer>
     );
