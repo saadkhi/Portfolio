@@ -4,6 +4,7 @@ import myPic from '../assets/my_pic.png';
 import TitleWheel from '../components/TitleWheel';
 import { scrollToSection } from '../utils/scrollTo';
 import { getCookie } from '../utils/csrf';
+import { journey, roles, process } from '../data/profile';
 
 const Home = ({ data }) => {
     const navigate = useNavigate();
@@ -101,10 +102,10 @@ const Home = ({ data }) => {
                         <div className="mt-10 flex flex-wrap gap-3">
                             <Link to="/projects" className="btn-light w-full sm:w-auto">{data.hero.cta_primary}</Link>
                             <button
-                                onClick={() => handleNavClick('#contact')}
+                                onClick={() => handleNavClick('#contact-form')}
                                 className="inline-flex items-center justify-center px-7 py-3 rounded-full font-semibold text-[15px] text-white border border-white/35 transition-all duration-200 hover:bg-white/10 hover:border-white hover:-translate-y-0.5 active:scale-[0.97] w-full sm:w-auto"
                             >
-                                Book a session
+                                Get in touch
                             </button>
                         </div>
                     </div>
@@ -132,8 +133,58 @@ const Home = ({ data }) => {
                 </p>
             </section>
 
+            {/* Roles */}
+            <section id="roles" className="wrap pb-24 md:pb-32">
+                <p className="eyebrow mb-4 !text-left">What I do</p>
+                <h2 className="text-4xl md:text-6xl font-semibold leading-tight max-w-3xl mb-12">Four disciplines, one engineer.</h2>
+                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                    {roles.map((r) => (
+                        <div key={r.title} className="card p-7 flex flex-col transition-all duration-200 hover:-translate-y-0.5 hover:border-ink/30">
+                            <div className="w-12 h-12 rounded-2xl bg-cream text-accent-deep flex items-center justify-center text-lg mb-6">
+                                <i className={r.icon}></i>
+                            </div>
+                            <h3 className="text-2xl font-semibold mb-3">{r.title}</h3>
+                            <p className="text-ink-soft leading-relaxed flex-grow !text-left">{r.text}</p>
+                            <div className="mt-6 flex flex-wrap gap-2">
+                                {r.tags.map((t) => (
+                                    <span key={t} className="px-3 py-1 rounded-full border border-line text-[11px] font-semibold text-ink-soft">{t}</span>
+                                ))}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </section>
+
             {/* Pinned wheel of projects */}
             <TitleWheel projects={allProjects} />
+
+            {/* Experience and process */}
+            <section id="experience" className="bg-ink text-white py-24 md:py-32">
+                <div className="wrap">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-primary-accent mb-4 !text-left">Experience</p>
+                    <h2 className="text-4xl md:text-6xl font-semibold mb-12 !text-left">Where I have worked.</h2>
+                    <ol className="border-t border-white/15">
+                        {journey.map((j) => (
+                            <li key={j.company} className="grid md:grid-cols-[1.2fr_1fr_0.8fr] gap-2 md:gap-8 py-6 border-b border-white/15 transition-colors hover:bg-white/[0.03]">
+                                <h3 className="text-2xl md:text-3xl font-semibold">{j.company}</h3>
+                                <p className="text-white/70 md:pt-1.5 !text-left">{j.role}</p>
+                                <p className="text-white/45 text-sm md:pt-2 md:text-right">{j.period}</p>
+                            </li>
+                        ))}
+                    </ol>
+
+                    <h2 className="text-3xl md:text-5xl font-semibold mt-24 mb-10 !text-left">How a project runs.</h2>
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                        {process.map((st) => (
+                            <div key={st.n} className="rounded-3xl border border-white/15 p-7">
+                                <p className="text-primary-accent font-heading text-3xl font-semibold mb-5 !text-left">{st.n}</p>
+                                <h3 className="text-xl font-semibold mb-2">{st.title}</h3>
+                                <p className="text-white/60 leading-relaxed !text-left">{st.text}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
 
             {/* Expertise */}
             <section className="wrap py-24 md:py-32">
@@ -159,7 +210,7 @@ const Home = ({ data }) => {
                     <div className="rounded-3xl p-8 md:p-12 bg-ink text-white flex flex-col justify-between gap-10">
                         <div>
                             <h3 className="text-3xl md:text-4xl font-semibold leading-tight !text-left">Looking for an AI engineer?</h3>
-                            <p className="mt-4 text-white/65 !text-left">Send a message or book a call and we can scope it together.</p>
+                            <p className="mt-4 text-white/65 !text-left">Send a message and we can scope it together.</p>
                         </div>
                         <div className="flex flex-col gap-3">
                             <button onClick={() => handleNavClick('#contact-form')} className="btn-light w-full">Send a message</button>
@@ -173,34 +224,6 @@ const Home = ({ data }) => {
                                     <i className="fa-solid fa-file-pdf"></i> Download resume
                                 </a>
                             )}
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* Booking */}
-            <section id="contact" className="wrap pb-24 md:pb-32">
-                <div className="card overflow-hidden">
-                    <div className="grid md:grid-cols-2">
-                        <div className="p-8 md:p-14 flex flex-col justify-center border-b md:border-b-0 md:border-r border-line">
-                            <p className="eyebrow mb-4 !text-left">60 minute session</p>
-                            <h2 className="text-4xl md:text-5xl font-semibold leading-tight !text-left">Book a call about your idea.</h2>
-                            <p className="mt-6 text-ink-soft text-lg leading-relaxed !text-left">
-                                Bring a full design or a rough idea. We will go through your goals and tech stack, and what it takes to build it.
-                            </p>
-                            <p className="mt-8 text-sm text-ink-soft border-l-2 border-primary-accent pl-4 !text-left">
-                                Sessions are for serious business inquiries. Incomplete or vague bookings are cancelled.
-                            </p>
-                        </div>
-                        <div className="bg-cream min-h-[600px] md:min-h-[900px] relative">
-                            <iframe
-                                src="https://tidycal.com/saadalioffic/initial-discovery-session?embed=1"
-                                width="100%"
-                                height="100%"
-                                frameBorder="0"
-                                title="Schedule a meeting"
-                                className="absolute inset-0"
-                            ></iframe>
                         </div>
                     </div>
                 </div>

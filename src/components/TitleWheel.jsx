@@ -69,7 +69,7 @@ const TitleWheel = ({ projects }) => {
         <section
             id="work"
             ref={sectionRef}
-            style={{ height: `${Math.max(2, count) * 70 + 40}vh` }}
+            style={{ height: `${Math.max(2, count) * 45 + 60}vh` }}
             className="relative"
         >
             <div className="sticky top-0 h-screen overflow-hidden flex items-center">

@@ -1,12 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-
-const journey = [
-    { company: 'MERL Lab', role: 'RISC-V & AI Research Intern', period: 'Sep 2022 to Dec 2023' },
-    { company: '360 Xpert Solutions', role: 'AI Engineer Intern', period: 'Jul 2024 to Aug 2025' },
-    { company: 'Avennex Solutions', role: 'AI Engineer', period: 'Sep 2025' },
-    { company: 'Convex Consulting', role: 'AI Engineer', period: 'Oct 2025 to present' },
-];
+import { journey } from '../data/profile';
 
 const values = [
     { icon: 'fa-solid fa-bolt', title: 'Efficiency', text: 'Optimizing every line of code for maximum performance.' },
