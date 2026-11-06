@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { roleFilters, matchesRole } from '../data/profile';
 
 const Arrow = () => (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
@@ -7,6 +9,8 @@ const Arrow = () => (
 const Projects = () => {
     const [projects, setProjects] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [params, setParams] = useSearchParams();
+    const role = roleFilters.some((r) => r.id === params.get('role')) ? params.get('role') : 'all';
 
     useEffect(() => {
         fetch(`/api/projects/`)
@@ -25,6 +29,8 @@ const Projects = () => {
         return <div className="flex justify-center items-center h-screen text-ink-soft text-xs font-semibold uppercase tracking-[0.25em]">Loading projects</div>;
     }
 
+    const shown = projects.filter((p) => matchesRole(p, role));
+
     return (
         <main className="pt-36 md:pt-44 pb-24 md:pb-32 wrap min-h-screen">
             <header className="mb-14 md:mb-20 max-w-3xl">
@@ -32,8 +38,25 @@ const Projects = () => {
                 <h1 className="text-5xl sm:text-6xl md:text-8xl font-semibold leading-[1]">Things I have built.</h1>
             </header>
 
+            <div className="flex flex-wrap gap-2 mb-10" role="group" aria-label="Filter by role">
+                {roleFilters.map((r) => (
+                    <button
+                        key={r.id}
+                        onClick={() => setParams(r.id === 'all' ? {} : { role: r.id })}
+                        aria-pressed={role === r.id}
+                        className={`px-5 py-2 rounded-full text-sm font-semibold border transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.97] ${role === r.id ? 'bg-ink text-white border-ink' : 'border-line text-ink-soft hover:border-ink/40'}`}
+                    >
+                        {r.label}
+                    </button>
+                ))}
+            </div>
+
+            {shown.length === 0 && (
+                <p className="text-ink-soft text-lg !text-left">No projects in this category yet. More are on the way.</p>
+            )}
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-                {projects.map((project) => (
+                {shown.map((project) => (
                     <a
                         key={project.id}
                         href={project.live_link || '#'}

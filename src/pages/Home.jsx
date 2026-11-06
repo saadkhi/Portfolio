@@ -4,7 +4,9 @@ import myPic from '../assets/my_pic.png';
 import TitleWheel from '../components/TitleWheel';
 import { scrollToSection } from '../utils/scrollTo';
 import { getCookie } from '../utils/csrf';
-import { journey, roles, process } from '../data/profile';
+import WorkShowcase from '../components/WorkShowcase';
+import TiltBox from '../components/TiltBox';
+import { journey, roles, process, education, groupSkills } from '../data/profile';
 
 const Home = ({ data }) => {
     const navigate = useNavigate();
@@ -13,11 +15,27 @@ const Home = ({ data }) => {
     const [formData, setFormData] = useState({ email: '', purpose: '', message: '' });
     const [status, setStatus] = useState({ type: '', message: '' });
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [copied, setCopied] = useState(false);
 
     if (!data) return null;
 
     const handleNavClick = (id) => {
         scrollToSection(id, navigate, location.pathname);
+    };
+
+    const copyEmail = async () => {
+        try {
+            await navigator.clipboard.writeText(data.contact.email);
+        } catch (err) {
+            const ta = document.createElement('textarea');
+            ta.value = data.contact.email;
+            document.body.appendChild(ta);
+            ta.select();
+            try { document.execCommand('copy'); } catch (e) { /* ignore */ }
+            document.body.removeChild(ta);
+        }
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1800);
     };
 
     const handleChange = (e) => {
@@ -76,6 +94,8 @@ const Home = ({ data }) => {
 
     const allProjects = [...(data.featured_projects || []), ...(data.latest_projects || [])];
     const firstName = data.hero.name.split(' ')[0];
+    const now = journey[journey.length - 1];
+    const skillGroupsList = groupSkills(data.skills);
     const tel = (data.contact.phone || '').replace(/\s/g, '');
 
     const contactRows = [
@@ -86,26 +106,38 @@ const Home = ({ data }) => {
 
     return (
         <main>
-            {/* Hero: dark to orange to cream */}
+            {/* A. Hero */}
             <section id="home" className="sunrise relative min-h-screen flex items-center overflow-hidden">
                 <div className="wrap grid md:grid-cols-[1.15fr_0.85fr] items-center gap-10 pt-32 pb-28">
                     <div>
                         <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-white/60 mb-6 !text-left">
-                            {data.hero.subtitle}
+                            Open to work{data.contact.location ? ` · ${data.contact.location}` : ''}
                         </p>
-                        <h1 className="text-[44px] sm:text-6xl lg:text-7xl xl:text-[84px] font-semibold leading-[1.02] text-white">
-                            {data.hero.name} builds AI products that work.
+                        <h1 className="text-[42px] sm:text-6xl lg:text-7xl xl:text-[80px] font-semibold leading-[1.02] text-white !text-left">
+                            I build AI products and the software around them.
                         </h1>
                         <p className="mt-7 text-lg md:text-xl text-white/75 max-w-xl leading-relaxed !text-left">
-                            {data.hero.title}. Open to new roles and freelance projects, from RAG chatbots to full backends.
+                            {data.hero.name} is an {now.role.toLowerCase()} at {now.company}, with software, full-stack and data work behind every project.
                         </p>
+                        <div className="mt-6 flex flex-wrap gap-2">
+                            {roles.map((r) => (
+                                <Link
+                                    key={r.id}
+                                    to={`/projects?role=${r.id}`}
+                                    className="px-4 py-1.5 rounded-full border border-white/30 text-white/85 text-[13px] font-medium transition-all duration-200 hover:bg-white hover:text-ink hover:border-white hover:-translate-y-0.5"
+                                >
+                                    {r.title}
+                                </Link>
+                            ))}
+                        </div>
                         <div className="mt-10 flex flex-wrap gap-3">
                             <Link to="/projects" className="btn-light w-full sm:w-auto">{data.hero.cta_primary}</Link>
                             <button
-                                onClick={() => handleNavClick('#contact-form')}
-                                className="inline-flex items-center justify-center px-7 py-3 rounded-full font-semibold text-[15px] text-white border border-white/35 transition-all duration-200 hover:bg-white/10 hover:border-white hover:-translate-y-0.5 active:scale-[0.97] w-full sm:w-auto"
+                                onClick={copyEmail}
+                                className="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full font-semibold text-[15px] text-white border border-white/35 transition-all duration-200 hover:bg-white/10 hover:border-white hover:-translate-y-0.5 active:scale-[0.97] w-full sm:w-auto"
                             >
-                                Get in touch
+                                <i className={copied ? 'fa-solid fa-check' : 'fa-regular fa-copy'}></i>
+                                {copied ? 'Email copied' : 'Copy email'}
                             </button>
                         </div>
                     </div>
@@ -122,6 +154,16 @@ const Home = ({ data }) => {
                 </div>
             </section>
 
+            {/* B. Now strip */}
+            <section className="wrap pt-10">
+                <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-8 border-y border-line py-5 text-sm">
+                    <p className="!text-left"><span className="font-semibold">Now</span> <span className="text-ink-soft">{now.role} at {now.company}, {now.period}</span></p>
+                    {data.skills.length > 0 && (
+                        <p className="!text-left md:ml-auto"><span className="font-semibold">Stack</span> <span className="text-ink-soft">{data.skills.slice(0, 6).map((s) => s.name.charAt(0) + s.name.slice(1).toLowerCase()).join(', ')}</span></p>
+                    )}
+                </div>
+            </section>
+
             {/* Intro */}
             <section id="intro" className="wrap py-24 md:py-32 grid md:grid-cols-[0.6fr_1.4fr] gap-8 md:gap-16">
                 <div>
@@ -133,44 +175,59 @@ const Home = ({ data }) => {
                 </p>
             </section>
 
-            {/* Roles */}
-            <section id="roles" className="wrap pb-24 md:pb-32">
-                <p className="eyebrow mb-4 !text-left">What I do</p>
-                <h2 className="text-4xl md:text-6xl font-semibold leading-tight max-w-3xl mb-12">Four disciplines, one engineer.</h2>
-                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                    {roles.map((r) => (
-                        <div key={r.title} className="card p-7 flex flex-col transition-all duration-200 hover:-translate-y-0.5 hover:border-ink/30">
-                            <div className="w-12 h-12 rounded-2xl bg-cream text-accent-deep flex items-center justify-center text-lg mb-6">
-                                <i className={r.icon}></i>
-                            </div>
-                            <h3 className="text-2xl font-semibold mb-3">{r.title}</h3>
-                            <p className="text-ink-soft leading-relaxed flex-grow !text-left">{r.text}</p>
-                            <div className="mt-6 flex flex-wrap gap-2">
-                                {r.tags.map((t) => (
-                                    <span key={t} className="px-3 py-1 rounded-full border border-line text-[11px] font-semibold text-ink-soft">{t}</span>
-                                ))}
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </section>
-
-            {/* Pinned wheel of projects */}
+            {/* C. Pinned wheel of projects */}
             <TitleWheel projects={allProjects} />
 
-            {/* Experience and process */}
+            {/* D. Roles */}
+            <section id="roles" className="wrap py-24 md:py-32">
+                <p className="eyebrow mb-4 !text-left">What I do</p>
+                <h2 className="text-4xl md:text-6xl font-semibold leading-tight max-w-3xl mb-12">Four disciplines, one engineer.</h2>
+                <TiltBox>
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                        {roles.map((r) => (
+                            <Link
+                                key={r.id}
+                                to={`/projects?role=${r.id}`}
+                                className="card card-link p-7 flex flex-col"
+                            >
+                                <div className="w-12 h-12 rounded-2xl bg-cream text-accent-deep flex items-center justify-center text-lg mb-6">
+                                    <i className={r.icon}></i>
+                                </div>
+                                <h3 className="text-2xl font-semibold mb-3">{r.title}</h3>
+                                <p className="text-ink-soft leading-relaxed flex-grow !text-left">{r.text}</p>
+                                <div className="mt-6 flex flex-wrap gap-2">
+                                    {r.tags.map((t) => (
+                                        <span key={t} className="px-3 py-1 rounded-full border border-line text-[11px] font-semibold text-ink-soft">{t}</span>
+                                    ))}
+                                </div>
+                                <span className="mt-6 text-sm font-semibold link-draw self-start">See {r.title.toLowerCase()} projects</span>
+                            </Link>
+                        ))}
+                    </div>
+                </TiltBox>
+            </section>
+
+            {/* E. Work showcase: tabbed box */}
+            <WorkShowcase projects={allProjects} />
+
+            {/* F. Experience, education and process */}
             <section id="experience" className="bg-ink text-white py-24 md:py-32">
                 <div className="wrap">
                     <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-primary-accent mb-4 !text-left">Experience</p>
                     <h2 className="text-4xl md:text-6xl font-semibold mb-12 !text-left">Where I have worked.</h2>
                     <ol className="border-t border-white/15">
-                        {journey.map((j) => (
+                        {[...journey].reverse().map((j) => (
                             <li key={j.company} className="grid md:grid-cols-[1.2fr_1fr_0.8fr] gap-2 md:gap-8 py-6 border-b border-white/15 transition-colors hover:bg-white/[0.03]">
                                 <h3 className="text-2xl md:text-3xl font-semibold">{j.company}</h3>
                                 <p className="text-white/70 md:pt-1.5 !text-left">{j.role}</p>
                                 <p className="text-white/45 text-sm md:pt-2 md:text-right">{j.period}</p>
                             </li>
                         ))}
+                        <li className="grid md:grid-cols-[1.2fr_1fr_0.8fr] gap-2 md:gap-8 py-6 border-b border-white/15 transition-colors hover:bg-white/[0.03]">
+                            <h3 className="text-2xl md:text-3xl font-semibold">{education.school}</h3>
+                            <p className="text-white/70 md:pt-1.5 !text-left">{education.degree}</p>
+                            <p className="text-white/45 text-sm md:pt-2 md:text-right">Education</p>
+                        </li>
                     </ol>
 
                     <h2 className="text-3xl md:text-5xl font-semibold mt-24 mb-10 !text-left">How a project runs.</h2>
@@ -186,23 +243,30 @@ const Home = ({ data }) => {
                 </div>
             </section>
 
-            {/* Expertise */}
+            {/* G. Skills, grouped */}
             <section className="wrap py-24 md:py-32">
                 <div className="grid lg:grid-cols-[1.6fr_1fr] gap-6">
                     <div className="card p-8 md:p-12">
                         <p className="eyebrow mb-3 !text-left">Toolkit</p>
                         <h2 className="text-3xl md:text-5xl font-semibold mb-10">What I work with</h2>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                            {data.skills.map((skill, index) => (
-                                <div key={index} className="flex items-center gap-3 rounded-2xl border border-line px-4 py-3 transition-all duration-200 hover:-translate-y-0.5 hover:border-ink/30">
-                                    <div className="w-9 h-9 rounded-xl bg-cream flex items-center justify-center shrink-0">
-                                        {skill.icon && (skill.icon.startsWith('http') || skill.icon.startsWith('/media/')) ? (
-                                            <img src={skill.icon} alt="" className="w-5 h-5 object-contain" />
-                                        ) : (
-                                            <i className={`${skill.icon} text-sm`}></i>
-                                        )}
+                        <div className="space-y-8">
+                            {skillGroupsList.map((g) => (
+                                <div key={g.label}>
+                                    <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-ink-soft mb-3 !text-left">{g.label}</p>
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                                        {g.skills.map((skill) => (
+                                            <div key={skill.id || skill.name} className="flex items-center gap-3 rounded-2xl border border-line px-4 py-3 transition-all duration-200 hover:-translate-y-0.5 hover:border-ink/30">
+                                                <div className="w-9 h-9 rounded-xl bg-cream flex items-center justify-center shrink-0">
+                                                    {skill.icon && (skill.icon.startsWith('http') || skill.icon.startsWith('/media/')) ? (
+                                                        <img src={skill.icon} alt="" className="w-5 h-5 object-contain" />
+                                                    ) : (
+                                                        <i className={`${skill.icon} text-sm`}></i>
+                                                    )}
+                                                </div>
+                                                <span className="text-sm font-semibold">{skill.name}</span>
+                                            </div>
+                                        ))}
                                     </div>
-                                    <span className="text-sm font-semibold">{skill.name}</span>
                                 </div>
                             ))}
                         </div>
@@ -229,7 +293,7 @@ const Home = ({ data }) => {
                 </div>
             </section>
 
-            {/* Contact form: a dark chapter */}
+            {/* J. Contact */}
             <section id="contact-form" className="bg-ink text-white py-24 md:py-32">
                 <div className="wrap grid lg:grid-cols-2 gap-14 lg:gap-20 items-start">
                     <div>
@@ -255,63 +319,72 @@ const Home = ({ data }) => {
                                 </div>
                             ))}
                         </div>
+                        <button
+                            onClick={copyEmail}
+                            className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-white/80 hover:text-white link-draw"
+                        >
+                            <i className={copied ? 'fa-solid fa-check' : 'fa-regular fa-copy'}></i>
+                            {copied ? 'Email copied' : 'Copy email address'}
+                        </button>
                     </div>
 
-                    <form className="space-y-5" onSubmit={handleSubmit}>
-                        <div className="grid md:grid-cols-2 gap-5">
-                            <div className="space-y-2">
-                                <label htmlFor="email" className="text-xs font-semibold uppercase tracking-[0.18em] text-white/55">Email</label>
-                                <input
-                                    type="email"
-                                    id="email"
-                                    value={formData.email}
-                                    onChange={handleChange}
-                                    placeholder="you@email.com"
-                                    className="w-full bg-white/5 border border-white/15 rounded-2xl px-5 py-4 text-white placeholder:text-white/35 focus:outline-none focus:border-primary-accent transition-colors"
-                                />
+                    <TiltBox>
+                        <form className="space-y-5 rounded-3xl border border-white/10 bg-white/[0.04] p-6 md:p-8" onSubmit={handleSubmit}>
+                            <div className="grid md:grid-cols-2 gap-5">
+                                <div className="space-y-2">
+                                    <label htmlFor="email" className="text-xs font-semibold uppercase tracking-[0.18em] text-white/55">Email</label>
+                                    <input
+                                        type="email"
+                                        id="email"
+                                        value={formData.email}
+                                        onChange={handleChange}
+                                        placeholder="you@email.com"
+                                        className="w-full bg-white/5 border border-white/15 rounded-2xl px-5 py-4 text-white placeholder:text-white/35 focus:outline-none focus:border-white/60 transition-colors"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label htmlFor="purpose" className="text-xs font-semibold uppercase tracking-[0.18em] text-white/55">Purpose</label>
+                                    <select
+                                        id="purpose"
+                                        value={formData.purpose}
+                                        onChange={handleChange}
+                                        className="w-full bg-white/5 border border-white/15 rounded-2xl px-5 py-4 text-white focus:outline-none focus:border-white/60 transition-colors appearance-none"
+                                    >
+                                        <option value="" className="bg-ink">Select a purpose</option>
+                                        <option value="project" className="bg-ink">New project</option>
+                                        <option value="collaboration" className="bg-ink">Collaboration</option>
+                                        <option value="inquiry" className="bg-ink">General inquiry</option>
+                                        <option value="other" className="bg-ink">Something else</option>
+                                    </select>
+                                </div>
                             </div>
                             <div className="space-y-2">
-                                <label htmlFor="purpose" className="text-xs font-semibold uppercase tracking-[0.18em] text-white/55">Purpose</label>
-                                <select
-                                    id="purpose"
-                                    value={formData.purpose}
+                                <label htmlFor="message" className="text-xs font-semibold uppercase tracking-[0.18em] text-white/55">Message</label>
+                                <textarea
+                                    id="message"
+                                    value={formData.message}
                                     onChange={handleChange}
-                                    className="w-full bg-white/5 border border-white/15 rounded-2xl px-5 py-4 text-white focus:outline-none focus:border-primary-accent transition-colors appearance-none"
-                                >
-                                    <option value="" className="bg-ink">Select a purpose</option>
-                                    <option value="project" className="bg-ink">New project</option>
-                                    <option value="collaboration" className="bg-ink">Collaboration</option>
-                                    <option value="inquiry" className="bg-ink">General inquiry</option>
-                                    <option value="other" className="bg-ink">Something else</option>
-                                </select>
+                                    placeholder="Tell me about your project"
+                                    rows="5"
+                                    className="w-full bg-white/5 border border-white/15 rounded-2xl px-5 py-4 text-white placeholder:text-white/35 focus:outline-none focus:border-white/60 transition-colors"
+                                ></textarea>
                             </div>
-                        </div>
-                        <div className="space-y-2">
-                            <label htmlFor="message" className="text-xs font-semibold uppercase tracking-[0.18em] text-white/55">Message</label>
-                            <textarea
-                                id="message"
-                                value={formData.message}
-                                onChange={handleChange}
-                                placeholder="Tell me about your project"
-                                rows="5"
-                                className="w-full bg-white/5 border border-white/15 rounded-2xl px-5 py-4 text-white placeholder:text-white/35 focus:outline-none focus:border-primary-accent transition-colors"
-                            ></textarea>
-                        </div>
 
-                        {status.message && (
-                            <div className={`p-4 rounded-2xl text-sm font-semibold ${status.type === 'success' ? 'bg-green-500/15 text-green-300' : 'bg-red-500/15 text-red-300'}`}>
-                                {status.message}
-                            </div>
-                        )}
+                            {status.message && (
+                                <div className={`p-4 rounded-2xl text-sm font-semibold ${status.type === 'success' ? 'bg-green-500/15 text-green-300' : 'bg-red-500/15 text-red-300'}`}>
+                                    {status.message}
+                                </div>
+                            )}
 
-                        <button
-                            type="submit"
-                            disabled={isSubmitting}
-                            className={`btn-light w-full ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
-                        >
-                            {isSubmitting ? 'Sending...' : 'Send message'}
-                        </button>
-                    </form>
+                            <button
+                                type="submit"
+                                disabled={isSubmitting}
+                                className={`btn-light w-full ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            >
+                                {isSubmitting ? 'Sending...' : 'Send message'}
+                            </button>
+                        </form>
+                    </TiltBox>
                 </div>
             </section>
 

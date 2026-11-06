@@ -40,7 +40,7 @@ const Navbar = () => {
         <div className="flex items-center gap-2">
           <button
             onClick={() => goTo("#contact-form")}
-            className="hidden md:inline-flex bg-primary-accent text-white text-[13px] font-semibold px-5 py-2 rounded-full transition-all duration-200 hover:bg-white hover:text-ink hover:-translate-y-0.5 active:scale-[0.97]"
+            className="hidden md:inline-flex bg-white text-ink text-[13px] font-semibold px-5 py-2 rounded-full transition-all duration-200 hover:bg-zinc-300 hover:-translate-y-0.5 active:scale-[0.97]"
           >
             Contact
           </button>
@@ -68,7 +68,7 @@ const Navbar = () => {
               {l.label}
             </NavLink>
           ))}
-          <button onClick={() => goTo("#contact-form")} className="mt-2 bg-primary-accent text-white font-semibold py-4 rounded-2xl">
+          <button onClick={() => goTo("#contact-form")} className="mt-2 bg-white text-ink font-semibold py-4 rounded-2xl">
             Contact
           </button>
         </div>
