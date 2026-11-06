@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 import TiltBox from './TiltBox';
+import Pop from './Pop';
 
 // One framed box with a tab for each project. Switching tabs wipes the new picture in from the side
 // while the old one shrinks back and dims behind it.
@@ -38,8 +39,10 @@ const WorkShowcase = ({ projects }) => {
 
     return (
         <section id="showcase" className="wrap py-24 md:py-32">
-            <p className="eyebrow mb-4 !text-left">Work</p>
-            <h2 className="text-4xl md:text-6xl font-semibold leading-tight max-w-3xl mb-10">Pick a project, see it.</h2>
+            <Pop>
+                <p className="eyebrow mb-4 !text-left">Work</p>
+                <h2 className="text-4xl md:text-6xl font-semibold leading-tight max-w-3xl mb-10">Pick a project, see it.</h2>
+            </Pop>
 
             <TiltBox>
                 <div className="flex justify-center mb-4">
@@ -67,7 +70,8 @@ const WorkShowcase = ({ projects }) => {
                 </div>
             </TiltBox>
 
-            <div key={current.id} className="ws-info grid md:grid-cols-[1.3fr_1fr] gap-6 md:gap-12 mt-8 items-start">
+            <Pop className="mt-8">
+            <div key={current.id} className="ws-info grid md:grid-cols-[1.3fr_1fr] gap-6 md:gap-12 items-start">
                 <div>
                     <p className="eyebrow mb-2 !text-left">{current.category}</p>
                     <h3 className="text-3xl md:text-4xl font-semibold leading-tight !text-left">{current.title}</h3>
@@ -86,6 +90,7 @@ const WorkShowcase = ({ projects }) => {
                     )}
                 </div>
             </div>
+            </Pop>
         </section>
     );
 };

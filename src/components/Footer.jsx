@@ -19,9 +19,11 @@ const Footer = ({ data }) => {
                 </div>
                 <div className="flex flex-col gap-3">
                     <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/40 mb-1">Pages</p>
-                    <Link to="/" className={col}>Home</Link>
-                    <Link to="/projects" className={col}>Projects</Link>
-                    <Link to="/about" className={col}>About</Link>
+                    <Link to="/#home" className={col}>Home</Link>
+                    <Link to="/#about" className={col}>About</Link>
+                    <Link to="/#projects" className={col}>Projects</Link>
+                    <Link to="/#experience" className={col}>Experience</Link>
+                    <Link to="/#contact-form" className={col}>Contact</Link>
                     <Link to="/resume" className={col}>Resume</Link>
                 </div>
                 <div className="flex flex-col gap-3">

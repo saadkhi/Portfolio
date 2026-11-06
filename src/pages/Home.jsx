@@ -1,12 +1,24 @@
-import React, { useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import myPic from '../assets/my_pic.png';
 import TitleWheel from '../components/TitleWheel';
 import { scrollToSection } from '../utils/scrollTo';
 import { getCookie } from '../utils/csrf';
 import WorkShowcase from '../components/WorkShowcase';
 import TiltBox from '../components/TiltBox';
-import { journey, roles, process, education, groupSkills } from '../data/profile';
+import Pop from '../components/Pop';
+import { journey, roles, process, education, groupSkills, roleFilters, matchesRole } from '../data/profile';
+
+const values = [
+    { icon: 'fa-solid fa-bolt', title: 'Efficiency', text: 'Optimizing every line of code for maximum performance.' },
+    { icon: 'fa-solid fa-gem', title: 'Quality', text: 'Building durable systems with attention to every detail.' },
+    { icon: 'fa-solid fa-users', title: 'Collaboration', text: 'Working closely with partners to turn vision into reality.' },
+    { icon: 'fa-solid fa-brain', title: 'Innovation', text: 'Leveraging cutting-edge AI technologies to build forward-thinking solutions.' },
+];
+
+const Arrow = () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+);
 
 const Home = ({ data }) => {
     const navigate = useNavigate();
@@ -16,6 +28,25 @@ const Home = ({ data }) => {
     const [status, setStatus] = useState({ type: '', message: '' });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [copied, setCopied] = useState(false);
+    const [role, setRole] = useState('all');
+    const [apiProjects, setApiProjects] = useState(null);
+
+    useEffect(() => {
+        fetch('/api/projects/')
+            .then((r) => r.json())
+            .then((list) => Array.isArray(list) && setApiProjects(list))
+            .catch(() => {});
+    }, []);
+
+    // Arriving from another page (or the old /projects and /about links) with a #section.
+    useEffect(() => {
+        if (!location.hash) return;
+        const t = setTimeout(() => {
+            const el = document.getElementById(location.hash.slice(1));
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }, 120);
+        return () => clearTimeout(t);
+    }, [location.hash]);
 
     if (!data) return null;
 
@@ -93,6 +124,11 @@ const Home = ({ data }) => {
     };
 
     const allProjects = [...(data.featured_projects || []), ...(data.latest_projects || [])];
+    const gridProjects = (apiProjects || allProjects).filter((p) => matchesRole(p, role));
+    const pickRole = (id) => {
+        setRole(id);
+        handleNavClick('#projects');
+    };
     const firstName = data.hero.name.split(' ')[0];
     const now = journey[journey.length - 1];
     const skillGroupsList = groupSkills(data.skills);
@@ -109,7 +145,7 @@ const Home = ({ data }) => {
             {/* A. Hero */}
             <section id="home" className="sunrise relative min-h-screen flex items-center overflow-hidden">
                 <div className="wrap grid md:grid-cols-[1.15fr_0.85fr] items-center gap-10 pt-32 pb-28">
-                    <div>
+                    <Pop>
                         <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-white/60 mb-6 !text-left">
                             Open to work{data.contact.location ? ` · ${data.contact.location}` : ''}
                         </p>
@@ -121,17 +157,17 @@ const Home = ({ data }) => {
                         </p>
                         <div className="mt-6 flex flex-wrap gap-2">
                             {roles.map((r) => (
-                                <Link
+                                <button
                                     key={r.id}
-                                    to={`/projects?role=${r.id}`}
+                                    onClick={() => pickRole(r.id)}
                                     className="px-4 py-1.5 rounded-full border border-white/30 text-white/85 text-[13px] font-medium transition-all duration-200 hover:bg-white hover:text-ink hover:border-white hover:-translate-y-0.5"
                                 >
                                     {r.title}
-                                </Link>
+                                </button>
                             ))}
                         </div>
                         <div className="mt-10 flex flex-wrap gap-3">
-                            <Link to="/projects" className="btn-light w-full sm:w-auto">{data.hero.cta_primary}</Link>
+                            <button onClick={() => handleNavClick('#projects')} className="btn-light w-full sm:w-auto">{data.hero.cta_primary}</button>
                             <button
                                 onClick={copyEmail}
                                 className="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full font-semibold text-[15px] text-white border border-white/35 transition-all duration-200 hover:bg-white/10 hover:border-white hover:-translate-y-0.5 active:scale-[0.97] w-full sm:w-auto"
@@ -140,9 +176,9 @@ const Home = ({ data }) => {
                                 {copied ? 'Email copied' : 'Copy email'}
                             </button>
                         </div>
-                    </div>
+                    </Pop>
 
-                    <div className="flex justify-center md:justify-end">
+                    <Pop delay={150} className="flex justify-center md:justify-end">
                         <div className="relative w-[240px] sm:w-[300px] md:w-[360px] aspect-[4/5] rounded-[2rem] overflow-hidden border border-white/20 shadow-[0_30px_80px_rgba(0,0,0,0.45)] group">
                             <img
                                 src={data.hero.profile_pic || myPic}
@@ -150,29 +186,48 @@ const Home = ({ data }) => {
                                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                             />
                         </div>
-                    </div>
+                    </Pop>
                 </div>
             </section>
 
             {/* B. Now strip */}
-            <section className="wrap pt-10">
+            <Pop as="section" className="wrap pt-10">
                 <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-8 border-y border-line py-5 text-sm">
                     <p className="!text-left"><span className="font-semibold">Now</span> <span className="text-ink-soft">{now.role} at {now.company}, {now.period}</span></p>
                     {data.skills.length > 0 && (
                         <p className="!text-left md:ml-auto"><span className="font-semibold">Stack</span> <span className="text-ink-soft">{data.skills.slice(0, 6).map((s) => s.name.charAt(0) + s.name.slice(1).toLowerCase()).join(', ')}</span></p>
                     )}
                 </div>
-            </section>
+            </Pop>
 
-            {/* Intro */}
-            <section id="intro" className="wrap py-24 md:py-32 grid md:grid-cols-[0.6fr_1.4fr] gap-8 md:gap-16">
-                <div>
-                    <p className="eyebrow mb-4 !text-left">Hello</p>
-                    <h2 className="text-4xl md:text-5xl font-semibold leading-tight">Hi, I'm {firstName}.</h2>
+            {/* About */}
+            <section id="about" className="wrap py-24 md:py-32">
+                <div className="grid md:grid-cols-[0.6fr_1.4fr] gap-8 md:gap-16">
+                    <Pop>
+                        <p className="eyebrow mb-4 !text-left">About</p>
+                        <h2 className="text-4xl md:text-5xl font-semibold leading-tight">Hi, I am {firstName}.</h2>
+                    </Pop>
+                    <Pop delay={120} className="space-y-6 text-xl md:text-2xl text-ink-soft leading-relaxed !text-left">
+                        <p className="whitespace-pre-wrap">{data.about.description}</p>
+                        <p>
+                            I am a Software Engineering graduate from NED University of Engineering and Technology, with hands-on experience in AI/ML, LLM-based applications and backend development. I have built RAG chatbots, machine learning pipelines and API-driven systems, with a focus on practical, production-ready solutions.
+                        </p>
+                        <p>
+                            I am interested in Generative AI, intelligent automation, scalable SaaS products and solving real-world problems through data and systems design. I like clean architecture and growth-oriented teams with a strong engineering culture, and I dislike unnecessary complexity and poor code practices.
+                        </p>
+                    </Pop>
                 </div>
-                <p className="text-xl md:text-2xl text-ink-soft leading-relaxed whitespace-pre-wrap !text-left">
-                    {data.about.description}
-                </p>
+                <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                    {values.map((v, i) => (
+                        <Pop key={v.title} delay={i * 90} className="card p-7">
+                            <div className="w-11 h-11 rounded-2xl bg-cream flex items-center justify-center text-accent-deep mb-5">
+                                <i className={v.icon}></i>
+                            </div>
+                            <h3 className="font-semibold text-xl">{v.title}</h3>
+                            <p className="text-ink-soft text-sm mt-2 leading-relaxed !text-left">{v.text}</p>
+                        </Pop>
+                    ))}
+                </div>
             </section>
 
             {/* C. Pinned wheel of projects */}
@@ -180,15 +235,19 @@ const Home = ({ data }) => {
 
             {/* D. Roles */}
             <section id="roles" className="wrap py-24 md:py-32">
-                <p className="eyebrow mb-4 !text-left">What I do</p>
-                <h2 className="text-4xl md:text-6xl font-semibold leading-tight max-w-3xl mb-12">Four disciplines, one engineer.</h2>
+                <Pop>
+                    <p className="eyebrow mb-4 !text-left">What I do</p>
+                    <h2 className="text-4xl md:text-6xl font-semibold leading-tight max-w-3xl mb-12">Four disciplines, one engineer.</h2>
+                </Pop>
                 <TiltBox>
                     <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                        {roles.map((r) => (
-                            <Link
+                        {roles.map((r, i) => (
+                            <Pop
+                                as="button"
                                 key={r.id}
-                                to={`/projects?role=${r.id}`}
-                                className="card card-link p-7 flex flex-col"
+                                delay={i * 90}
+                                onClick={() => pickRole(r.id)}
+                                className="card card-link p-7 flex flex-col text-left"
                             >
                                 <div className="w-12 h-12 rounded-2xl bg-cream text-accent-deep flex items-center justify-center text-lg mb-6">
                                     <i className={r.icon}></i>
@@ -201,7 +260,7 @@ const Home = ({ data }) => {
                                     ))}
                                 </div>
                                 <span className="mt-6 text-sm font-semibold link-draw self-start">See {r.title.toLowerCase()} projects</span>
-                            </Link>
+                            </Pop>
                         ))}
                     </div>
                 </TiltBox>
@@ -210,43 +269,111 @@ const Home = ({ data }) => {
             {/* E. Work showcase: tabbed box */}
             <WorkShowcase projects={allProjects} />
 
+            {/* All projects, filterable by role */}
+            <section id="projects" className="wrap pb-24 md:pb-32">
+                <Pop>
+                    <p className="eyebrow mb-4 !text-left">Projects</p>
+                    <h2 className="text-4xl md:text-6xl font-semibold leading-tight max-w-3xl mb-10">Things I have built.</h2>
+                    <div className="flex flex-wrap gap-2 mb-10" role="group" aria-label="Filter by role">
+                        {roleFilters.map((r) => (
+                            <button
+                                key={r.id}
+                                onClick={() => setRole(r.id)}
+                                aria-pressed={role === r.id}
+                                className={`px-5 py-2 rounded-full text-sm font-semibold border transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.97] ${role === r.id ? 'bg-ink text-white border-ink' : 'border-line text-ink-soft hover:border-ink/40'}`}
+                            >
+                                {r.label}
+                            </button>
+                        ))}
+                    </div>
+                </Pop>
+
+                {gridProjects.length === 0 && (
+                    <p className="text-ink-soft text-lg !text-left">No projects in this category yet. More are on the way.</p>
+                )}
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+                    {gridProjects.map((project, i) => (
+                        <Pop
+                            as="a"
+                            key={project.id}
+                            delay={(i % 2) * 110}
+                            href={project.live_link || '#'}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="card card-link group flex flex-col overflow-hidden"
+                        >
+                            <div className="w-full aspect-video overflow-hidden bg-ink/5">
+                                {project.video ? (
+                                    <video
+                                        src={project.video}
+                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                                        muted loop playsInline preload="none"
+                                        onMouseOver={(e) => e.target.play()} onMouseOut={(e) => e.target.pause()}
+                                    />
+                                ) : (
+                                    <img src={project.image} alt={project.title} loading="lazy" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
+                                )}
+                            </div>
+                            <div className="p-7 md:p-9 flex-grow flex flex-col">
+                                <p className="eyebrow mb-3 !text-left">{project.category}</p>
+                                <div className="flex items-start justify-between gap-4">
+                                    <h3 className="text-2xl md:text-3xl font-semibold leading-tight !text-left">{project.title}</h3>
+                                    <span className="w-10 h-10 rounded-full border border-line flex items-center justify-center shrink-0 transition-colors group-hover:bg-ink group-hover:text-white group-hover:border-ink">
+                                        <Arrow />
+                                    </span>
+                                </div>
+                                <p className="mt-3 text-ink-soft leading-relaxed line-clamp-3 !text-left">{project.description}</p>
+                                <div className="flex flex-wrap gap-2 mt-auto pt-6">
+                                    {(project.tech_stack || '').split(',').filter(Boolean).slice(0, 5).map((tech, k) => (
+                                        <span key={k} className="px-3 py-1 rounded-full border border-line text-[11px] font-semibold text-ink-soft">{tech.trim()}</span>
+                                    ))}
+                                </div>
+                            </div>
+                        </Pop>
+                    ))}
+                </div>
+            </section>
+
             {/* F. Experience, education and process */}
             <section id="experience" className="bg-ink text-white py-24 md:py-32">
                 <div className="wrap">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-primary-accent mb-4 !text-left">Experience</p>
-                    <h2 className="text-4xl md:text-6xl font-semibold mb-12 !text-left">Where I have worked.</h2>
+                    <Pop>
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-primary-accent mb-4 !text-left">Experience</p>
+                        <h2 className="text-4xl md:text-6xl font-semibold mb-12 !text-left">Where I have worked.</h2>
+                    </Pop>
                     <ol className="border-t border-white/15">
                         {[...journey].reverse().map((j) => (
-                            <li key={j.company} className="grid md:grid-cols-[1.2fr_1fr_0.8fr] gap-2 md:gap-8 py-6 border-b border-white/15 transition-colors hover:bg-white/[0.03]">
+                            <Pop as="li" key={j.company} className="grid md:grid-cols-[1.2fr_1fr_0.8fr] gap-2 md:gap-8 py-6 border-b border-white/15 transition-colors hover:bg-white/[0.03]">
                                 <h3 className="text-2xl md:text-3xl font-semibold">{j.company}</h3>
                                 <p className="text-white/70 md:pt-1.5 !text-left">{j.role}</p>
                                 <p className="text-white/45 text-sm md:pt-2 md:text-right">{j.period}</p>
-                            </li>
+                            </Pop>
                         ))}
-                        <li className="grid md:grid-cols-[1.2fr_1fr_0.8fr] gap-2 md:gap-8 py-6 border-b border-white/15 transition-colors hover:bg-white/[0.03]">
+                        <Pop as="li" className="grid md:grid-cols-[1.2fr_1fr_0.8fr] gap-2 md:gap-8 py-6 border-b border-white/15 transition-colors hover:bg-white/[0.03]">
                             <h3 className="text-2xl md:text-3xl font-semibold">{education.school}</h3>
                             <p className="text-white/70 md:pt-1.5 !text-left">{education.degree}</p>
                             <p className="text-white/45 text-sm md:pt-2 md:text-right">Education</p>
-                        </li>
+                        </Pop>
                     </ol>
 
-                    <h2 className="text-3xl md:text-5xl font-semibold mt-24 mb-10 !text-left">How a project runs.</h2>
+                    <Pop as="h2" className="text-3xl md:text-5xl font-semibold mt-24 mb-10 !text-left">How a project runs.</Pop>
                     <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                        {process.map((st) => (
-                            <div key={st.n} className="rounded-3xl border border-white/15 p-7">
+                        {process.map((st, i) => (
+                            <Pop key={st.n} delay={i * 90} className="rounded-3xl border border-white/15 p-7">
                                 <p className="text-primary-accent font-heading text-3xl font-semibold mb-5 !text-left">{st.n}</p>
                                 <h3 className="text-xl font-semibold mb-2">{st.title}</h3>
                                 <p className="text-white/60 leading-relaxed !text-left">{st.text}</p>
-                            </div>
+                            </Pop>
                         ))}
                     </div>
                 </div>
             </section>
 
             {/* G. Skills, grouped */}
-            <section className="wrap py-24 md:py-32">
+            <section id="skills" className="wrap py-24 md:py-32">
                 <div className="grid lg:grid-cols-[1.6fr_1fr] gap-6">
-                    <div className="card p-8 md:p-12">
+                    <Pop className="card p-8 md:p-12">
                         <p className="eyebrow mb-3 !text-left">Toolkit</p>
                         <h2 className="text-3xl md:text-5xl font-semibold mb-10">What I work with</h2>
                         <div className="space-y-8">
@@ -270,8 +397,8 @@ const Home = ({ data }) => {
                                 </div>
                             ))}
                         </div>
-                    </div>
-                    <div className="rounded-3xl p-8 md:p-12 bg-ink text-white flex flex-col justify-between gap-10">
+                    </Pop>
+                    <Pop delay={140} className="rounded-3xl p-8 md:p-12 bg-ink text-white flex flex-col justify-between gap-10">
                         <div>
                             <h3 className="text-3xl md:text-4xl font-semibold leading-tight !text-left">Looking for an AI engineer?</h3>
                             <p className="mt-4 text-white/65 !text-left">Send a message and we can scope it together.</p>
@@ -289,14 +416,14 @@ const Home = ({ data }) => {
                                 </a>
                             )}
                         </div>
-                    </div>
+                    </Pop>
                 </div>
             </section>
 
             {/* J. Contact */}
             <section id="contact-form" className="bg-ink text-white py-24 md:py-32">
                 <div className="wrap grid lg:grid-cols-2 gap-14 lg:gap-20 items-start">
-                    <div>
+                    <Pop>
                         <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-primary-accent mb-4 !text-left">Contact</p>
                         <h2 className="text-5xl md:text-7xl font-semibold leading-[1.02] !text-left">Let's talk.</h2>
                         <p className="mt-6 text-lg text-white/65 max-w-md leading-relaxed !text-left">
@@ -326,8 +453,9 @@ const Home = ({ data }) => {
                             <i className={copied ? 'fa-solid fa-check' : 'fa-regular fa-copy'}></i>
                             {copied ? 'Email copied' : 'Copy email address'}
                         </button>
-                    </div>
+                    </Pop>
 
+                    <Pop delay={140}>
                     <TiltBox>
                         <form className="space-y-5 rounded-3xl border border-white/10 bg-white/[0.04] p-6 md:p-8" onSubmit={handleSubmit}>
                             <div className="grid md:grid-cols-2 gap-5">
@@ -385,12 +513,13 @@ const Home = ({ data }) => {
                             </button>
                         </form>
                     </TiltBox>
+                    </Pop>
                 </div>
             </section>
 
             {/* Social */}
             {data.social_links && data.social_links.length > 0 && (
-                <section className="wrap py-20 md:py-24">
+                <Pop as="section" className="wrap py-20 md:py-24">
                     <p className="eyebrow mb-6 !text-left">Find me online</p>
                     <div className="flex flex-wrap gap-3">
                         {data.social_links.map((link, index) => (
@@ -412,7 +541,7 @@ const Home = ({ data }) => {
                             </a>
                         ))}
                     </div>
-                </section>
+                </Pop>
             )}
         </main>
     );

@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
 
 // Pinned section: scrolling turns a wheel of project titles.
 // The title nearest the centre grows, turns orange and shows its project on the right.
@@ -139,9 +138,9 @@ const TitleWheel = ({ projects }) => {
                     </a>
                 </div>
 
-                <Link to="/projects" className="absolute bottom-8 right-6 md:right-10 text-sm font-semibold link-draw">
+                <a href="#projects" className="absolute bottom-8 right-6 md:right-10 text-sm font-semibold link-draw">
                     All projects
-                </Link>
+                </a>
             </div>
         </section>
     );

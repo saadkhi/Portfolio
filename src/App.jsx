@@ -1,12 +1,10 @@
 import { useState, useEffect, useRef, Suspense, lazy } from 'react'
-import { Routes, Route, useLocation } from 'react-router-dom'
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 
 // Lazy load pages for better performance
 const Home = lazy(() => import('./pages/Home'))
-const Projects = lazy(() => import('./pages/Projects'))
-const About = lazy(() => import('./pages/About'))
 const Resume = lazy(() => import('./pages/Resume'))
 
 const Spinner = ({ label }) => (
@@ -82,9 +80,9 @@ function App() {
         <div key={shown.pathname} className="page-in">
           <Routes location={shown}>
             <Route path="/" element={<Home data={data} />} />
-            <Route path="/about" element={<About data={data} />} />
             <Route path="/resume" element={<Resume />} />
-            <Route path="/projects" element={<Projects />} />
+            <Route path="/about" element={<Navigate to="/#about" replace />} />
+            <Route path="/projects" element={<Navigate to="/#projects" replace />} />
           </Routes>
         </div>
       </Suspense>
