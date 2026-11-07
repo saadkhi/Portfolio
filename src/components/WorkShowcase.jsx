@@ -40,12 +40,12 @@ const WorkShowcase = ({ projects }) => {
     return (
         <section id="showcase" className="wrap py-24 md:py-32">
             <Pop>
-                <p className="eyebrow mb-4 !text-left">Work</p>
+                <p className="eyebrow mb-4 !text-left">03 / Work</p>
                 <h2 className="text-4xl md:text-6xl font-semibold leading-tight max-w-3xl mb-10">Pick a project, see it.</h2>
             </Pop>
 
             <TiltBox>
-                <div className="flex justify-center mb-4">
+                <div className="flex justify-start mb-4">
                     <div role="tablist" aria-label="Projects" className="ws-tabs">
                         {projects.map((p, i) => (
                             <button

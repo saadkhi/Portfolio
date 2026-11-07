@@ -143,68 +143,84 @@ const Home = ({ data }) => {
     return (
         <main>
             {/* A. Hero */}
-            <section id="home" className="sunrise relative min-h-screen flex items-center overflow-hidden">
-                <div className="wrap grid md:grid-cols-[1.15fr_0.85fr] items-center gap-10 pt-32 pb-28">
-                    <Pop>
-                        <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-white/60 mb-6 !text-left">
-                            Open to work{data.contact.location ? ` · ${data.contact.location}` : ''}
-                        </p>
-                        <h1 className="text-[42px] sm:text-6xl lg:text-7xl xl:text-[80px] font-semibold leading-[1.02] text-white !text-left">
-                            I build AI products and the software around them.
-                        </h1>
-                        <p className="mt-7 text-lg md:text-xl text-white/75 max-w-xl leading-relaxed !text-left">
-                            {data.hero.name} is an {now.role.toLowerCase()} at {now.company}, with software, full-stack and data work behind every project.
-                        </p>
-                        <div className="mt-6 flex flex-wrap gap-2">
-                            {roles.map((r) => (
-                                <button
-                                    key={r.id}
-                                    onClick={() => pickRole(r.id)}
-                                    className="px-4 py-1.5 rounded-full border border-white/30 text-white/85 text-[13px] font-medium transition-all duration-200 hover:bg-white hover:text-ink hover:border-white hover:-translate-y-0.5"
-                                >
-                                    {r.title}
-                                </button>
-                            ))}
-                        </div>
-                        <div className="mt-10 flex flex-wrap gap-3">
-                            <button onClick={() => handleNavClick('#projects')} className="btn-light w-full sm:w-auto">{data.hero.cta_primary}</button>
-                            <button
-                                onClick={copyEmail}
-                                className="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full font-semibold text-[15px] text-white border border-white/35 transition-all duration-200 hover:bg-white/10 hover:border-white hover:-translate-y-0.5 active:scale-[0.97] w-full sm:w-auto"
-                            >
-                                <i className={copied ? 'fa-solid fa-check' : 'fa-regular fa-copy'}></i>
-                                {copied ? 'Email copied' : 'Copy email'}
-                            </button>
-                        </div>
+            <section id="home" className="bg-paper pt-14">
+                <div className="wrap pb-16 md:pb-24">
+                    {/* Meta row */}
+                    <Pop className="grid grid-cols-2 md:grid-cols-12 gap-x-6 gap-y-2 py-4 border-b border-ink text-[12px] font-semibold uppercase tracking-[0.12em]">
+                        <p className="md:col-span-3">Portfolio {new Date().getFullYear()}</p>
+                        <p className="md:col-span-5 text-ink-soft">Software / Full-stack / Data / AI</p>
+                        <p className="md:col-span-4 md:text-right text-ink-soft">Open to work{data.contact.location ? `, ${data.contact.location}` : ''}</p>
                     </Pop>
 
-                    <Pop delay={150} className="flex justify-center md:justify-end">
-                        <div className="relative w-[240px] sm:w-[300px] md:w-[360px] aspect-[4/5] rounded-[2rem] overflow-hidden border border-white/20 shadow-[0_30px_80px_rgba(0,0,0,0.45)] group">
-                            <img
-                                src={data.hero.profile_pic || myPic}
-                                alt={data.hero.name}
-                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                            />
-                        </div>
-                    </Pop>
+                    {/* Headline and index of roles */}
+                    <div className="grid md:grid-cols-12 gap-x-6 gap-y-10 pt-12 md:pt-20">
+                        <Pop className="md:col-span-9">
+                            <h1 className="text-[44px] sm:text-7xl lg:text-[112px] tracking-[-0.055em]">
+                                I build AI products and the software around them.
+                            </h1>
+                        </Pop>
+                        <Pop delay={120} className="md:col-span-3 md:pt-3">
+                            <p className="text-[12px] font-semibold uppercase tracking-[0.12em] pb-3 border-b border-ink">Index</p>
+                            <ul>
+                                {roles.map((r, i) => (
+                                    <li key={r.id}>
+                                        <button
+                                            onClick={() => pickRole(r.id)}
+                                            className="group w-full flex items-baseline gap-4 py-3 border-b border-line text-left text-lg font-semibold tracking-tight transition-colors hover:bg-ink hover:text-white hover:px-3"
+                                        >
+                                            <span className="text-[11px] text-ink-soft group-hover:text-white/70 w-5">{String(i + 1).padStart(2, '0')}</span>
+                                            {r.title}
+                                        </button>
+                                    </li>
+                                ))}
+                            </ul>
+                        </Pop>
+                    </div>
+
+                    {/* Picture, statement, actions */}
+                    <div className="grid md:grid-cols-12 gap-x-6 gap-y-10 mt-14 md:mt-24">
+                        <Pop className="md:col-span-4">
+                            <div className="aspect-[4/5] border border-ink overflow-hidden bg-cream">
+                                <img
+                                    src={data.hero.profile_pic || myPic}
+                                    alt={data.hero.name}
+                                    className="w-full h-full object-cover grayscale contrast-110"
+                                />
+                            </div>
+                        </Pop>
+                        <Pop delay={120} className="md:col-span-5 md:col-start-6 flex flex-col justify-between gap-10">
+                            <p className="text-2xl md:text-3xl leading-[1.15] tracking-[-0.025em] font-medium">
+                                {data.hero.name} is an {now.role.toLowerCase()} at {now.company}, with software, full-stack and data work behind every project.
+                            </p>
+                            <div>
+                                <div className="grid grid-cols-[auto_1fr] gap-x-8 gap-y-2 text-sm border-t border-ink pt-4 mb-8">
+                                    <span className="font-semibold uppercase tracking-[0.1em] text-[12px]">Now</span>
+                                    <span className="text-ink-soft">{now.role}, {now.company} ({now.period})</span>
+                                    {data.skills.length > 0 && (
+                                        <>
+                                            <span className="font-semibold uppercase tracking-[0.1em] text-[12px]">Stack</span>
+                                            <span className="text-ink-soft">{data.skills.slice(0, 6).map((s) => s.name.charAt(0) + s.name.slice(1).toLowerCase()).join(', ')}</span>
+                                        </>
+                                    )}
+                                </div>
+                                <div className="flex flex-wrap gap-3">
+                                    <button onClick={() => handleNavClick('#projects')} className="btn">{data.hero.cta_primary}</button>
+                                    <button onClick={copyEmail} className="btn-ghost">
+                                        <i className={copied ? 'fa-solid fa-check' : 'fa-regular fa-copy'}></i>
+                                        {copied ? 'Email copied' : 'Copy email'}
+                                    </button>
+                                </div>
+                            </div>
+                        </Pop>
+                    </div>
                 </div>
             </section>
-
-            {/* B. Now strip */}
-            <Pop as="section" className="wrap pt-10">
-                <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-8 border-y border-line py-5 text-sm">
-                    <p className="!text-left"><span className="font-semibold">Now</span> <span className="text-ink-soft">{now.role} at {now.company}, {now.period}</span></p>
-                    {data.skills.length > 0 && (
-                        <p className="!text-left md:ml-auto"><span className="font-semibold">Stack</span> <span className="text-ink-soft">{data.skills.slice(0, 6).map((s) => s.name.charAt(0) + s.name.slice(1).toLowerCase()).join(', ')}</span></p>
-                    )}
-                </div>
-            </Pop>
 
             {/* About */}
             <section id="about" className="wrap py-24 md:py-32">
                 <div className="grid md:grid-cols-[0.6fr_1.4fr] gap-8 md:gap-16">
                     <Pop>
-                        <p className="eyebrow mb-4 !text-left">About</p>
+                        <p className="eyebrow mb-4 !text-left">01 / About</p>
                         <h2 className="text-4xl md:text-5xl font-semibold leading-tight">Hi, I am {firstName}.</h2>
                     </Pop>
                     <Pop delay={120} className="space-y-6 text-xl md:text-2xl text-ink-soft leading-relaxed !text-left">
@@ -236,7 +252,7 @@ const Home = ({ data }) => {
             {/* D. Roles */}
             <section id="roles" className="wrap py-24 md:py-32">
                 <Pop>
-                    <p className="eyebrow mb-4 !text-left">What I do</p>
+                    <p className="eyebrow mb-4 !text-left">02 / Disciplines</p>
                     <h2 className="text-4xl md:text-6xl font-semibold leading-tight max-w-3xl mb-12">Four disciplines, one engineer.</h2>
                 </Pop>
                 <TiltBox>
@@ -272,7 +288,7 @@ const Home = ({ data }) => {
             {/* All projects, filterable by role */}
             <section id="projects" className="wrap pb-24 md:pb-32">
                 <Pop>
-                    <p className="eyebrow mb-4 !text-left">Projects</p>
+                    <p className="eyebrow mb-4 !text-left">04 / Projects</p>
                     <h2 className="text-4xl md:text-6xl font-semibold leading-tight max-w-3xl mb-10">Things I have built.</h2>
                     <div className="flex flex-wrap gap-2 mb-10" role="group" aria-label="Filter by role">
                         {roleFilters.map((r) => (
@@ -339,7 +355,7 @@ const Home = ({ data }) => {
             <section id="experience" className="bg-ink text-white py-24 md:py-32">
                 <div className="wrap">
                     <Pop>
-                        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-primary-accent mb-4 !text-left">Experience</p>
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-primary-accent mb-4 !text-left">05 / Experience</p>
                         <h2 className="text-4xl md:text-6xl font-semibold mb-12 !text-left">Where I have worked.</h2>
                     </Pop>
                     <ol className="border-t border-white/15">
@@ -374,7 +390,7 @@ const Home = ({ data }) => {
             <section id="skills" className="wrap py-24 md:py-32">
                 <div className="grid lg:grid-cols-[1.6fr_1fr] gap-6">
                     <Pop className="card p-8 md:p-12">
-                        <p className="eyebrow mb-3 !text-left">Toolkit</p>
+                        <p className="eyebrow mb-3 !text-left">06 / Skills</p>
                         <h2 className="text-3xl md:text-5xl font-semibold mb-10">What I work with</h2>
                         <div className="space-y-8">
                             {skillGroupsList.map((g) => (
@@ -424,7 +440,7 @@ const Home = ({ data }) => {
             <section id="contact-form" className="bg-ink text-white py-24 md:py-32">
                 <div className="wrap grid lg:grid-cols-2 gap-14 lg:gap-20 items-start">
                     <Pop>
-                        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-primary-accent mb-4 !text-left">Contact</p>
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-primary-accent mb-4 !text-left">07 / Contact</p>
                         <h2 className="text-5xl md:text-7xl font-semibold leading-[1.02] !text-left">Let's talk.</h2>
                         <p className="mt-6 text-lg text-white/65 max-w-md leading-relaxed !text-left">
                             New projects, collaborations, or a chat about AI and software. I reply as soon as I can.

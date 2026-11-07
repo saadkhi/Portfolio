@@ -4,25 +4,23 @@ import { scrollToSection } from "../utils/scrollTo";
 
 // Everything lives on one page, so these scroll to a section. Resume is its own page.
 const sections = [
-  { id: "home", label: "Home" },
-  { id: "about", label: "About" },
-  { id: "projects", label: "Projects" },
-  { id: "experience", label: "Experience" },
-  { id: "skills", label: "Skills" },
+  { id: "about", n: "01", label: "About" },
+  { id: "projects", n: "04", label: "Projects" },
+  { id: "experience", n: "05", label: "Experience" },
+  { id: "skills", n: "06", label: "Skills" },
 ];
 
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
-
   const [active, setActive] = useState("home");
   const onResume = location.pathname === "/resume";
 
-  // Highlight the section that is under the middle of the screen.
+  // Mark the section that is under the upper part of the screen.
   useEffect(() => {
     if (location.pathname !== "/") return undefined;
-    const ids = [...sections.map((x) => x.id), "contact-form"];
+    const ids = ["about", "roles", "showcase", "projects", "experience", "skills", "contact-form"];
     const spy = () => {
       const mid = window.innerHeight * 0.4;
       let cur = "home";
@@ -30,6 +28,8 @@ const Navbar = () => {
         const el = document.getElementById(id);
         if (el && el.getBoundingClientRect().top <= mid) cur = id;
       });
+      // Roles and showcase belong to the Projects group in the nav
+      if (cur === "roles" || cur === "showcase") cur = "projects";
       setActive(cur);
     };
     spy();
@@ -37,67 +37,70 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", spy);
   }, [location.pathname]);
 
-  const cls = (on) =>
-    `px-4 py-2 rounded-full text-[13px] font-medium transition-colors duration-200 ${on ? "bg-white/15 text-white" : "text-white/70 hover:text-white"}`;
-
   const goTo = (id) => {
     scrollToSection(id, navigate, location.pathname);
     setIsOpen(false);
   };
 
+  const link = (on) =>
+    `relative py-1 text-[12px] font-semibold uppercase tracking-[0.12em] transition-colors ${on ? "text-ink" : "text-ink-soft hover:text-ink"} ${on ? "after:absolute after:left-0 after:right-0 after:-bottom-[1px] after:h-[2px] after:bg-ink" : ""}`;
+
   return (
-    <header className="fixed top-5 left-1/2 -translate-x-1/2 w-[92%] max-w-3xl z-50">
-      <nav className="flex items-center justify-between bg-ink/90 backdrop-blur-xl border border-white/10 pl-6 pr-2 py-2 rounded-full shadow-[0_8px_30px_rgba(0,0,0,0.25)]">
-        <Link to="/#home" onClick={() => setIsOpen(false)} className="font-heading font-bold text-white text-base tracking-tight">
+    <header className="fixed top-0 inset-x-0 z-50 bg-paper border-b border-ink">
+      <nav className="wrap flex items-center justify-between h-14">
+        <Link to="/#home" onClick={() => setIsOpen(false)} className="text-[15px] font-bold tracking-tight">
           Saad Ali
         </Link>
 
-        <ul className="hidden md:flex items-center gap-1">
+        <ul className="hidden md:flex items-center gap-8">
           {sections.map((l) => (
             <li key={l.id}>
-              <button onClick={() => goTo(l.id)} className={cls(!onResume && active === l.id)}>{l.label}</button>
+              <button onClick={() => goTo(l.id)} className={link(!onResume && active === l.id)}>{l.label}</button>
             </li>
           ))}
           <li>
-            <NavLink to="/resume" className={({ isActive }) => cls(isActive)}>Resume</NavLink>
+            <NavLink to="/resume" className={({ isActive }) => link(isActive)}>Resume</NavLink>
           </li>
         </ul>
 
         <div className="flex items-center gap-2">
           <button
             onClick={() => goTo("contact-form")}
-            className="hidden md:inline-flex bg-white text-ink text-[13px] font-semibold px-5 py-2 rounded-full transition-all duration-200 hover:bg-zinc-300 hover:-translate-y-0.5 active:scale-[0.97]"
+            className="hidden md:inline-flex bg-ink text-white border border-ink text-[12px] font-semibold uppercase tracking-[0.12em] px-5 py-2.5 transition-colors hover:bg-white hover:text-ink"
           >
             Contact
           </button>
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden w-10 h-10 flex items-center justify-center text-white"
+            className="md:hidden w-10 h-10 flex items-center justify-center"
             aria-label="Toggle menu"
             aria-expanded={isOpen}
           >
             <span className="relative w-5 h-3.5 block">
-              <span className={`absolute left-0 w-5 h-0.5 bg-white transition-all duration-300 ${isOpen ? "top-1.5 rotate-45" : "top-0"}`}></span>
-              <span className={`absolute left-0 top-1.5 w-5 h-0.5 bg-white transition-opacity duration-200 ${isOpen ? "opacity-0" : ""}`}></span>
-              <span className={`absolute left-0 w-5 h-0.5 bg-white transition-all duration-300 ${isOpen ? "top-1.5 -rotate-45" : "top-3"}`}></span>
+              <span className={`absolute left-0 w-5 h-0.5 bg-ink transition-all duration-300 ${isOpen ? "top-1.5 rotate-45" : "top-0"}`}></span>
+              <span className={`absolute left-0 top-1.5 w-5 h-0.5 bg-ink transition-opacity duration-200 ${isOpen ? "opacity-0" : ""}`}></span>
+              <span className={`absolute left-0 w-5 h-0.5 bg-ink transition-all duration-300 ${isOpen ? "top-1.5 -rotate-45" : "top-3"}`}></span>
             </span>
           </button>
         </div>
       </nav>
 
-      <div
-        className={`md:hidden mt-2 bg-ink/95 backdrop-blur-xl border border-white/10 rounded-3xl p-3 transition-all duration-300 origin-top ${isOpen ? "opacity-100 scale-100 visible" : "opacity-0 scale-95 invisible"}`}
-      >
-        <div className="flex flex-col">
+      <div className={`md:hidden border-t border-ink bg-paper ${isOpen ? "block" : "hidden"}`}>
+        <div className="wrap flex flex-col">
           {sections.map((l) => (
-            <button key={l.id} onClick={() => goTo(l.id)} className={`px-5 py-4 rounded-2xl text-base font-medium text-left ${!onResume && active === l.id ? "bg-white/10 text-white" : "text-white/70"}`}>
+            <button
+              key={l.id}
+              onClick={() => goTo(l.id)}
+              className="flex items-baseline gap-4 py-4 border-b border-line text-left text-2xl font-bold tracking-tight"
+            >
+              <span className="text-[11px] font-semibold text-ink-soft w-6">{l.n}</span>
               {l.label}
             </button>
           ))}
-          <NavLink to="/resume" onClick={() => setIsOpen(false)} className={({ isActive }) => `px-5 py-4 rounded-2xl text-base font-medium ${isActive ? "bg-white/10 text-white" : "text-white/70"}`}>
-            Resume
+          <NavLink to="/resume" onClick={() => setIsOpen(false)} className="flex items-baseline gap-4 py-4 border-b border-line text-2xl font-bold tracking-tight">
+            <span className="text-[11px] font-semibold text-ink-soft w-6">&rarr;</span>Resume
           </NavLink>
-          <button onClick={() => goTo("contact-form")} className="mt-2 bg-white text-ink font-semibold py-4 rounded-2xl">
+          <button onClick={() => goTo("contact-form")} className="my-4 bg-ink text-white py-4 text-[13px] font-semibold uppercase tracking-[0.12em]">
             Contact
           </button>
         </div>
