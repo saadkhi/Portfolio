@@ -46,7 +46,7 @@ const Navbar = () => {
     `relative py-1 text-[12px] font-semibold uppercase tracking-[0.12em] transition-colors ${on ? "text-ink" : "text-ink-soft hover:text-ink"} ${on ? "after:absolute after:left-0 after:right-0 after:-bottom-[1px] after:h-[2px] after:bg-ink" : ""}`;
 
   return (
-    <header className="fixed top-0 inset-x-0 z-50 bg-paper border-b border-ink">
+    <header className="fixed top-0 inset-x-0 z-50 bg-white/60 backdrop-blur-xl backdrop-saturate-150 border-b border-ink/70">
       <nav className="wrap flex items-center justify-between h-14">
         <Link to="/#home" onClick={() => setIsOpen(false)} className="text-[15px] font-bold tracking-tight">
           Saad Ali
@@ -85,7 +85,7 @@ const Navbar = () => {
         </div>
       </nav>
 
-      <div className={`md:hidden border-t border-ink bg-paper ${isOpen ? "block" : "hidden"}`}>
+      <div className={`md:hidden border-t border-ink/40 bg-white/80 backdrop-blur-xl ${isOpen ? "block" : "hidden"}`}>
         <div className="wrap flex flex-col">
           {sections.map((l) => (
             <button

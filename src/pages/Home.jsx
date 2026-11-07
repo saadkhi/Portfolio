@@ -159,7 +159,7 @@ const Home = ({ data }) => {
                                 I build AI products and the software around them.
                             </h1>
                         </Pop>
-                        <Pop delay={120} className="md:col-span-3 md:pt-3">
+                        <Pop delay={120} className="md:col-span-3 glass p-5 self-start">
                             <p className="text-[12px] font-semibold uppercase tracking-[0.12em] pb-3 border-b border-ink">Index</p>
                             <ul>
                                 {roles.map((r, i) => (
@@ -180,13 +180,13 @@ const Home = ({ data }) => {
                     {/* Picture, statement, actions */}
                     <div className="grid md:grid-cols-12 gap-x-6 gap-y-10 mt-14 md:mt-24">
                         <Pop className="md:col-span-4">
-                            <div className="aspect-[4/5] border border-ink overflow-hidden bg-cream">
+                            <div className="aspect-[4/5] glass p-2 overflow-hidden"><div className="w-full h-full overflow-hidden">
                                 <img
                                     src={data.hero.profile_pic || myPic}
                                     alt={data.hero.name}
                                     className="w-full h-full object-cover grayscale contrast-110"
                                 />
-                            </div>
+                            </div></div>
                         </Pop>
                         <Pop delay={120} className="md:col-span-5 md:col-start-6 flex flex-col justify-between gap-10">
                             <p className="text-2xl md:text-3xl leading-[1.15] tracking-[-0.025em] font-medium">
@@ -376,7 +376,7 @@ const Home = ({ data }) => {
                     <Pop as="h2" className="text-3xl md:text-5xl font-semibold mt-24 mb-10 !text-left">How a project runs.</Pop>
                     <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
                         {process.map((st, i) => (
-                            <Pop key={st.n} delay={i * 90} className="rounded-3xl border border-white/15 p-7">
+                            <Pop key={st.n} delay={i * 90} className="glass-dark p-7">
                                 <p className="text-primary-accent font-heading text-3xl font-semibold mb-5 !text-left">{st.n}</p>
                                 <h3 className="text-xl font-semibold mb-2">{st.title}</h3>
                                 <p className="text-white/60 leading-relaxed !text-left">{st.text}</p>
@@ -473,7 +473,7 @@ const Home = ({ data }) => {
 
                     <Pop delay={140}>
                     <TiltBox>
-                        <form className="space-y-5 rounded-3xl border border-white/10 bg-white/[0.04] p-6 md:p-8" onSubmit={handleSubmit}>
+                        <form className="space-y-5 glass-dark p-6 md:p-8" onSubmit={handleSubmit}>
                             <div className="grid md:grid-cols-2 gap-5">
                                 <div className="space-y-2">
                                     <label htmlFor="email" className="text-xs font-semibold uppercase tracking-[0.18em] text-white/55">Email</label>
