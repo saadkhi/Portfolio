@@ -1,4 +1,5 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { roleFilters } from '../data/profile';
 import TiltBox from './TiltBox';
 import Pop from './Pop';
 
@@ -6,13 +7,19 @@ import Pop from './Pop';
 // while the old one shrinks back and dims behind it.
 const WIPE_MS = 760;
 
-const WorkShowcase = ({ projects }) => {
+const WorkShowcase = ({ projects, role = 'all', onRole }) => {
     const [index, setIndex] = useState(0);
     const [prev, setPrev] = useState(null); // { i, dir }
     const [dir, setDir] = useState('next');
     const timer = useRef(null);
 
-    if (!projects || projects.length === 0) return null;
+    // A new filter starts again from the first project
+    useEffect(() => {
+        setIndex(0);
+        setPrev(null);
+    }, [role]);
+
+    const empty = !projects || projects.length === 0;
 
     const select = (i) => {
         if (i === index) return;
@@ -24,8 +31,8 @@ const WorkShowcase = ({ projects }) => {
         timer.current = setTimeout(() => setPrev(null), WIPE_MS + 40);
     };
 
-    const current = projects[index];
-    const tags = (current.tech_stack || '').split(',').map((t) => t.trim()).filter(Boolean);
+    const current = empty ? null : projects[Math.min(index, projects.length - 1)];
+    const tags = (current ? current.tech_stack || '' : '').split(',').map((t) => t.trim()).filter(Boolean);
 
     const shot = (p, cls) => (
         <div key={`${p.id}-${cls}`} className={`ws-shot ${cls}`}>
@@ -38,12 +45,30 @@ const WorkShowcase = ({ projects }) => {
     );
 
     return (
-        <section id="showcase" className="wrap py-24 md:py-32">
+        <section id="projects" className="wrap py-24 md:py-32">
             <Pop>
                 <p className="eyebrow mb-4 !text-left">03 / Work</p>
-                <h2 className="text-4xl md:text-6xl font-semibold leading-tight max-w-3xl mb-10">Pick a project, see it.</h2>
+                <h2 className="text-4xl md:text-6xl font-semibold leading-tight max-w-3xl mb-10">Things I have built.</h2>
+                {onRole && (
+                    <div className="flex flex-wrap gap-2 mb-8" role="group" aria-label="Filter by role">
+                        {roleFilters.map((r) => (
+                            <button
+                                key={r.id}
+                                onClick={() => onRole(r.id)}
+                                aria-pressed={role === r.id}
+                                className={`px-5 py-2 text-sm font-semibold border transition-colors ${role === r.id ? 'bg-ink text-white border-ink' : 'border-ink/30 text-ink-soft hover:border-ink hover:text-ink'}`}
+                            >
+                                {r.label}
+                            </button>
+                        ))}
+                    </div>
+                )}
             </Pop>
 
+            {empty ? (
+                <p className="text-ink-soft text-lg !text-left">No projects in this category yet. More are on the way.</p>
+            ) : (
+            <>
             <TiltBox>
                 <div className="flex justify-start mb-4">
                     <div role="tablist" aria-label="Projects" className="ws-tabs">
@@ -91,6 +116,8 @@ const WorkShowcase = ({ projects }) => {
                 </div>
             </div>
             </Pop>
+            </>
+            )}
         </section>
     );
 };

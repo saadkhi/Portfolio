@@ -5,9 +5,9 @@ import { scrollToSection } from "../utils/scrollTo";
 // Everything lives on one page, so these scroll to a section. Resume is its own page.
 const sections = [
   { id: "about", n: "01", label: "About" },
-  { id: "projects", n: "04", label: "Projects" },
-  { id: "experience", n: "05", label: "Experience" },
-  { id: "skills", n: "06", label: "Skills" },
+  { id: "projects", n: "03", label: "Work" },
+  { id: "experience", n: "04", label: "Experience" },
+  { id: "skills", n: "05", label: "Skills" },
 ];
 
 const Navbar = () => {
@@ -20,7 +20,7 @@ const Navbar = () => {
   // Mark the section that is under the upper part of the screen.
   useEffect(() => {
     if (location.pathname !== "/") return undefined;
-    const ids = ["about", "roles", "showcase", "projects", "experience", "skills", "contact-form"];
+    const ids = ["about", "roles", "projects", "experience", "skills", "contact-form"];
     const spy = () => {
       const mid = window.innerHeight * 0.4;
       let cur = "home";
@@ -28,8 +28,8 @@ const Navbar = () => {
         const el = document.getElementById(id);
         if (el && el.getBoundingClientRect().top <= mid) cur = id;
       });
-      // Roles and showcase belong to the Projects group in the nav
-      if (cur === "roles" || cur === "showcase") cur = "projects";
+      // The disciplines cards sit between About and Work, so they count as About
+      if (cur === "roles") cur = "about";
       setActive(cur);
     };
     spy();

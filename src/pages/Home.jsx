@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import myPic from '../assets/my_pic.png';
-import TitleWheel from '../components/TitleWheel';
 import { scrollToSection } from '../utils/scrollTo';
 import { getCookie } from '../utils/csrf';
 import WorkShowcase from '../components/WorkShowcase';
 import TiltBox from '../components/TiltBox';
 import Pop from '../components/Pop';
-import { journey, roles, process, education, groupSkills, roleFilters, matchesRole } from '../data/profile';
+import { journey, roles, process, education, groupSkills, matchesRole } from '../data/profile';
 
 const values = [
     { icon: 'fa-solid fa-bolt', title: 'Efficiency', text: 'Optimizing every line of code for maximum performance.' },
@@ -15,10 +14,6 @@ const values = [
     { icon: 'fa-solid fa-users', title: 'Collaboration', text: 'Working closely with partners to turn vision into reality.' },
     { icon: 'fa-solid fa-brain', title: 'Innovation', text: 'Leveraging cutting-edge AI technologies to build forward-thinking solutions.' },
 ];
-
-const Arrow = () => (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
-);
 
 const Home = ({ data }) => {
     const navigate = useNavigate();
@@ -160,20 +155,16 @@ const Home = ({ data }) => {
                             </h1>
                         </Pop>
                         <Pop delay={120} className="md:col-span-3 glass p-5 self-start">
-                            <p className="text-[12px] font-semibold uppercase tracking-[0.12em] pb-3 border-b border-ink">Index</p>
-                            <ul>
-                                {roles.map((r, i) => (
-                                    <li key={r.id}>
-                                        <button
-                                            onClick={() => pickRole(r.id)}
-                                            className="group w-full flex items-baseline gap-4 py-3 border-b border-line text-left text-lg font-semibold tracking-tight transition-colors hover:bg-ink hover:text-white hover:px-3"
-                                        >
-                                            <span className="text-[11px] text-ink-soft group-hover:text-white/70 w-5">{String(i + 1).padStart(2, '0')}</span>
-                                            {r.title}
-                                        </button>
-                                    </li>
-                                ))}
-                            </ul>
+                            <p className="text-[12px] font-semibold uppercase tracking-[0.12em] pb-3 border-b border-ink">Now</p>
+                            <p className="pt-3 text-lg font-semibold tracking-tight leading-snug !text-left">{now.role}</p>
+                            <p className="text-ink-soft !text-left">{now.company}</p>
+                            <p className="text-ink-soft text-sm !text-left">{now.period}</p>
+                            {data.skills.length > 0 && (
+                                <>
+                                    <p className="mt-6 text-[12px] font-semibold uppercase tracking-[0.12em] pb-3 border-b border-ink">Stack</p>
+                                    <p className="pt-3 text-ink-soft !text-left">{data.skills.slice(0, 6).map((sk) => sk.name.charAt(0) + sk.name.slice(1).toLowerCase()).join(', ')}</p>
+                                </>
+                            )}
                         </Pop>
                     </div>
 
@@ -193,16 +184,6 @@ const Home = ({ data }) => {
                                 {data.hero.name} is an {now.role.toLowerCase()} at {now.company}, with software, full-stack and data work behind every project.
                             </p>
                             <div>
-                                <div className="grid grid-cols-[auto_1fr] gap-x-8 gap-y-2 text-sm border-t border-ink pt-4 mb-8">
-                                    <span className="font-semibold uppercase tracking-[0.1em] text-[12px]">Now</span>
-                                    <span className="text-ink-soft">{now.role}, {now.company} ({now.period})</span>
-                                    {data.skills.length > 0 && (
-                                        <>
-                                            <span className="font-semibold uppercase tracking-[0.1em] text-[12px]">Stack</span>
-                                            <span className="text-ink-soft">{data.skills.slice(0, 6).map((s) => s.name.charAt(0) + s.name.slice(1).toLowerCase()).join(', ')}</span>
-                                        </>
-                                    )}
-                                </div>
                                 <div className="flex flex-wrap gap-3">
                                     <button onClick={() => handleNavClick('#projects')} className="btn">{data.hero.cta_primary}</button>
                                     <button onClick={copyEmail} className="btn-ghost">
@@ -246,9 +227,6 @@ const Home = ({ data }) => {
                 </div>
             </section>
 
-            {/* C. Pinned wheel of projects */}
-            <TitleWheel projects={allProjects} />
-
             {/* D. Roles */}
             <section id="roles" className="wrap py-24 md:py-32">
                 <Pop>
@@ -283,79 +261,13 @@ const Home = ({ data }) => {
             </section>
 
             {/* E. Work showcase: tabbed box */}
-            <WorkShowcase projects={allProjects} />
-
-            {/* All projects, filterable by role */}
-            <section id="projects" className="wrap pb-24 md:pb-32">
-                <Pop>
-                    <p className="eyebrow mb-4 !text-left">04 / Projects</p>
-                    <h2 className="text-4xl md:text-6xl font-semibold leading-tight max-w-3xl mb-10">Things I have built.</h2>
-                    <div className="flex flex-wrap gap-2 mb-10" role="group" aria-label="Filter by role">
-                        {roleFilters.map((r) => (
-                            <button
-                                key={r.id}
-                                onClick={() => setRole(r.id)}
-                                aria-pressed={role === r.id}
-                                className={`px-5 py-2 rounded-full text-sm font-semibold border transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.97] ${role === r.id ? 'bg-ink text-white border-ink' : 'border-line text-ink-soft hover:border-ink/40'}`}
-                            >
-                                {r.label}
-                            </button>
-                        ))}
-                    </div>
-                </Pop>
-
-                {gridProjects.length === 0 && (
-                    <p className="text-ink-soft text-lg !text-left">No projects in this category yet. More are on the way.</p>
-                )}
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-                    {gridProjects.map((project, i) => (
-                        <Pop
-                            as="a"
-                            key={project.id}
-                            delay={(i % 2) * 110}
-                            href={project.live_link || '#'}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="card card-link group flex flex-col overflow-hidden"
-                        >
-                            <div className="w-full aspect-video overflow-hidden bg-ink/5">
-                                {project.video ? (
-                                    <video
-                                        src={project.video}
-                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                                        muted loop playsInline preload="none"
-                                        onMouseOver={(e) => e.target.play()} onMouseOut={(e) => e.target.pause()}
-                                    />
-                                ) : (
-                                    <img src={project.image} alt={project.title} loading="lazy" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
-                                )}
-                            </div>
-                            <div className="p-7 md:p-9 flex-grow flex flex-col">
-                                <p className="eyebrow mb-3 !text-left">{project.category}</p>
-                                <div className="flex items-start justify-between gap-4">
-                                    <h3 className="text-2xl md:text-3xl font-semibold leading-tight !text-left">{project.title}</h3>
-                                    <span className="w-10 h-10 rounded-full border border-line flex items-center justify-center shrink-0 transition-colors group-hover:bg-ink group-hover:text-white group-hover:border-ink">
-                                        <Arrow />
-                                    </span>
-                                </div>
-                                <p className="mt-3 text-ink-soft leading-relaxed line-clamp-3 !text-left">{project.description}</p>
-                                <div className="flex flex-wrap gap-2 mt-auto pt-6">
-                                    {(project.tech_stack || '').split(',').filter(Boolean).slice(0, 5).map((tech, k) => (
-                                        <span key={k} className="px-3 py-1 rounded-full border border-line text-[11px] font-semibold text-ink-soft">{tech.trim()}</span>
-                                    ))}
-                                </div>
-                            </div>
-                        </Pop>
-                    ))}
-                </div>
-            </section>
+            <WorkShowcase projects={gridProjects} role={role} onRole={setRole} />
 
             {/* F. Experience, education and process */}
             <section id="experience" className="bg-ink text-white py-24 md:py-32">
                 <div className="wrap">
                     <Pop>
-                        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-primary-accent mb-4 !text-left">05 / Experience</p>
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-primary-accent mb-4 !text-left">04 / Experience</p>
                         <h2 className="text-4xl md:text-6xl font-semibold mb-12 !text-left">Where I have worked.</h2>
                     </Pop>
                     <ol className="border-t border-white/15">
@@ -390,7 +302,7 @@ const Home = ({ data }) => {
             <section id="skills" className="wrap py-24 md:py-32">
                 <div className="grid lg:grid-cols-[1.6fr_1fr] gap-6">
                     <Pop className="card p-8 md:p-12">
-                        <p className="eyebrow mb-3 !text-left">06 / Skills</p>
+                        <p className="eyebrow mb-3 !text-left">05 / Skills</p>
                         <h2 className="text-3xl md:text-5xl font-semibold mb-10">What I work with</h2>
                         <div className="space-y-8">
                             {skillGroupsList.map((g) => (
@@ -440,7 +352,7 @@ const Home = ({ data }) => {
             <section id="contact-form" className="bg-ink text-white py-24 md:py-32">
                 <div className="wrap grid lg:grid-cols-2 gap-14 lg:gap-20 items-start">
                     <Pop>
-                        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-primary-accent mb-4 !text-left">07 / Contact</p>
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-primary-accent mb-4 !text-left">06 / Contact</p>
                         <h2 className="text-5xl md:text-7xl font-semibold leading-[1.02] !text-left">Let's talk.</h2>
                         <p className="mt-6 text-lg text-white/65 max-w-md leading-relaxed !text-left">
                             New projects, collaborations, or a chat about AI and software. I reply as soon as I can.
