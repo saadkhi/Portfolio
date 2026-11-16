@@ -8,7 +8,7 @@ const Home = lazy(() => import('./pages/Home'))
 const Resume = lazy(() => import('./pages/Resume'))
 
 const Spinner = ({ label }) => (
-  <div className="flex flex-col justify-center items-center h-screen bg-cream">
+  <div className="flex flex-col justify-center items-center h-screen bg-paper">
     <div className="w-10 h-10 border-2 border-primary-accent border-t-transparent rounded-full" style={{ animation: 'spin 1s linear infinite' }}></div>
     <p className="mt-5 text-[11px] font-semibold uppercase tracking-[0.25em] text-ink-soft">{label}</p>
   </div>

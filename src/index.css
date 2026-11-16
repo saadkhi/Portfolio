@@ -1,15 +1,15 @@
 @import "tailwindcss";
 
 @theme {
-  /* Swiss: white ground, near-black ink, grey for secondary text and rules */
-  --color-cream: #f0f0f0;
-  --color-paper: #ffffff;
-  --color-ink: #0a0a0a;
-  --color-ink-soft: #55555b;
-  --color-line: rgba(10, 10, 10, 0.22);
+  /* Newsprint: warm off-white paper, black ink, grey for secondary text and rules */
+  --color-cream: #e9e5da;
+  --color-paper: #f4f1e8;
+  --color-ink: #151412;
+  --color-ink-soft: #55514a;
+  --color-line: rgba(21, 20, 18, 0.3);
 
-  --color-primary-accent: #a1a1a8;
-  --color-accent-deep: #0a0a0a;
+  --color-primary-accent: #a8a397;
+  --color-accent-deep: #151412;
 
   /* Legacy tokens still used by the resume page */
   --color-bg-dark: #000000;
@@ -17,15 +17,16 @@
   --color-text-secondary: #a1a1aa;
   --color-glass-border: rgba(255, 255, 255, 0.15);
 
-  --font-heading: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --font-body: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-heading: "Playfair Display", "Times New Roman", Georgia, serif;
+  --font-body: "Newsreader", Georgia, "Times New Roman", serif;
+  --font-label: "Libre Franklin", "Helvetica Neue", Arial, sans-serif;
 }
 
 html {
   scroll-behavior: smooth;
 }
 
-/* Square corners, no shadows: everything sits on the grid */
+/* Print has square corners and no shadows */
 *,
 *::before,
 *::after {
@@ -48,8 +49,9 @@ html {
 
 @layer base {
   body {
-    @apply bg-paper font-body text-ink overflow-x-hidden min-h-screen selection:bg-ink selection:text-white;
-    font-feature-settings: "ss01", "cv11";
+    @apply bg-paper font-body text-ink overflow-x-hidden min-h-screen selection:bg-ink selection:text-paper;
+    font-size: 18px;
+    line-height: 1.55;
     -webkit-font-smoothing: antialiased;
   }
 
@@ -59,13 +61,13 @@ html {
   h4,
   .font-heading {
     @apply font-heading;
-    font-weight: 700 !important;
-    letter-spacing: -0.045em;
+    font-weight: 800 !important;
+    letter-spacing: -0.015em;
   }
 
   h1,
   h2 {
-    line-height: 0.98 !important;
+    line-height: 1.02 !important;
   }
 
   p {
@@ -74,121 +76,173 @@ html {
 }
 
 @layer components {
-  /* One button pair: flat rectangles that invert */
+  /* Small sans capitals: kickers, bylines, datelines, buttons */
+  .label,
+  .eyebrow {
+    font-family: var(--font-label);
+    @apply text-[11px] font-bold uppercase tracking-[0.16em] text-ink;
+  }
+
   .btn,
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 px-7 py-3.5 font-semibold text-[13px] uppercase tracking-[0.1em] cursor-pointer bg-ink text-white border border-ink transition-colors duration-150 hover:bg-white hover:text-ink;
+    font-family: var(--font-label);
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 font-bold text-[12px] uppercase tracking-[0.14em] cursor-pointer bg-ink text-paper border border-ink transition-colors duration-200 hover:bg-transparent hover:text-ink;
   }
 
   .btn-ghost,
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 px-7 py-3.5 font-semibold text-[13px] uppercase tracking-[0.1em] cursor-pointer text-ink border border-ink transition-colors duration-150 hover:bg-ink hover:text-white;
-    background: rgba(255, 255, 255, 0.45);
-    -webkit-backdrop-filter: blur(14px);
-    backdrop-filter: blur(14px);
+    font-family: var(--font-label);
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 font-bold text-[12px] uppercase tracking-[0.14em] cursor-pointer bg-transparent text-ink border border-ink transition-colors duration-200 hover:bg-ink hover:text-paper;
   }
 
   .btn-light {
-    @apply inline-flex items-center justify-center gap-2 px-7 py-3.5 font-semibold text-[13px] uppercase tracking-[0.1em] cursor-pointer bg-white text-ink border border-white transition-colors duration-150 hover:bg-transparent hover:text-white;
+    font-family: var(--font-label);
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 font-bold text-[12px] uppercase tracking-[0.14em] cursor-pointer bg-paper text-ink border border-paper transition-colors duration-200 hover:bg-transparent hover:text-paper;
   }
 
-  /* One card style: a ruled box */
+  /* A ruled box, like a boxed notice */
   .card {
-    @apply transition-colors duration-150;
-    background: rgba(255, 255, 255, 0.5);
-    border: 1px solid rgba(10, 10, 10, 0.22);
-    -webkit-backdrop-filter: blur(18px) saturate(170%);
-    backdrop-filter: blur(18px) saturate(170%);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85), 0 10px 30px -12px rgba(10, 10, 10, 0.18) !important;
+    @apply bg-paper border border-ink transition-colors duration-200;
   }
 
   a.card:hover,
   button.card:hover,
   .card-link:hover {
-    background: rgba(255, 255, 255, 0.78);
-    border-color: var(--color-ink);
-  }
-
-  /* Frosted panel, for anything that sits over the background */
-  .glass {
-    background: rgba(255, 255, 255, 0.5);
-    border: 1px solid rgba(10, 10, 10, 0.22);
-    -webkit-backdrop-filter: blur(18px) saturate(170%);
-    backdrop-filter: blur(18px) saturate(170%);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85), 0 10px 30px -12px rgba(10, 10, 10, 0.18) !important;
-  }
-
-  /* Frosted panel on the dark sections */
-  .glass-dark {
-    background: rgba(255, 255, 255, 0.07);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    -webkit-backdrop-filter: blur(20px) saturate(140%);
-    backdrop-filter: blur(20px) saturate(140%);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
-  }
-
-  .eyebrow {
-    @apply text-[12px] font-semibold uppercase tracking-[0.14em] text-ink;
+    @apply bg-cream;
   }
 
   /* Underline that draws on hover */
   .link-draw {
-    background: linear-gradient(currentColor, currentColor) 0 100% / 0 2px no-repeat;
-    transition: background-size 0.25s ease;
+    background: linear-gradient(currentColor, currentColor) 0 100% / 0 1.5px no-repeat;
+    transition: background-size 0.3s ease;
   }
 
   .link-draw:hover {
-    background-size: 100% 2px;
+    background-size: 100% 1.5px;
   }
 
   .field {
-    @apply w-full border border-ink px-5 py-4 text-ink placeholder:text-ink-soft/60 focus:outline-none transition-colors;
-    background: rgba(255, 255, 255, 0.5);
-    -webkit-backdrop-filter: blur(14px);
-    backdrop-filter: blur(14px);
+    @apply w-full bg-transparent border-0 border-b border-ink px-0 py-3 text-ink placeholder:text-ink-soft/70 focus:outline-none transition-colors;
   }
 
   .wrap {
-    @apply mx-auto w-full max-w-[1320px] px-5 md:px-10;
+    @apply mx-auto w-full max-w-[1280px] px-5 md:px-10;
   }
 }
 
-/* Soft grey light behind the page, so the frosted panels have something to blur */
+/* Paper grain */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background:
-    radial-gradient(42vw 42vw at 8% 6%, rgba(120, 120, 128, 0.6), transparent 70%),
-    radial-gradient(38vw 38vw at 92% 22%, rgba(90, 90, 98, 0.5), transparent 70%),
-    radial-gradient(46vw 46vw at 30% 70%, rgba(212, 212, 216, 0.9), transparent 70%),
-    radial-gradient(36vw 36vw at 96% 92%, rgba(161, 161, 170, 0.5), transparent 70%),
-    #f7f7f8;
+  opacity: 0.5;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.08  0 0 0 0 0.08  0 0 0 0 0.07  0 0 0 0.09 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
 }
 
-/* Dark sections get the same light, so their glass reads too */
-#experience,
-#contact-form {
-  background-image:
-    radial-gradient(40vw 40vw at 85% 10%, rgba(255, 255, 255, 0.16), transparent 70%),
-    radial-gradient(34vw 34vw at 5% 90%, rgba(161, 161, 170, 0.2), transparent 70%);
+/* Nameplate */
+.nameplate {
+  font-family: var(--font-heading);
+  font-weight: 900 !important;
+  letter-spacing: -0.02em;
+  line-height: 0.9 !important;
 }
 
-/* Each numbered section opens with a heavy rule across the grid */
-main > section.wrap[id]:not(#home),
-main > section.wrap#about {
-  border-top: 3px solid var(--color-ink);
+/* Double rule that opens a section; it draws across when the section arrives */
+.sec-rule {
+  height: 7px;
+  border-top: 3px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  transform-origin: left center;
 }
 
-/* Route transition curtain */
+/* Columns of running text */
+.news-text p {
+  text-align: justify;
+  hyphens: auto;
+}
+
+.news-text p + p {
+  text-indent: 1.4em;
+}
+
+@media (min-width: 768px) {
+  .cols-2 {
+    column-count: 2;
+    column-gap: 2.5rem;
+    column-rule: 1px solid var(--color-line);
+  }
+
+  .cols-3 {
+    column-count: 2;
+    column-gap: 2.5rem;
+    column-rule: 1px solid var(--color-line);
+  }
+}
+
+@media (min-width: 1024px) {
+  .cols-3 {
+    column-count: 3;
+  }
+}
+
+.dropcap::first-letter {
+  float: left;
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: 4.9em;
+  line-height: 0.74;
+  padding: 0.09em 0.1em 0 0;
+}
+
+/* Press photo: black and white with a faint dot screen */
+.press-photo {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--color-ink);
+  background: var(--color-cream);
+}
+
+.press-photo img {
+  filter: grayscale(1) contrast(1.12);
+  mix-blend-mode: multiply;
+  transition: transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.press-photo:hover img {
+  transform: scale(1.03);
+}
+
+.press-photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(rgba(21, 20, 18, 0.28) 0.7px, transparent 0.9px);
+  background-size: 4px 4px;
+  mix-blend-mode: multiply;
+}
+
+/* Columns divided by hairlines */
+.ruled-cols > * + * {
+  border-top: 1px solid var(--color-line);
+}
+
+@media (min-width: 1024px) {
+  .ruled-cols > * + * {
+    border-top: 0;
+    border-left: 1px solid var(--color-line);
+  }
+}
+
+/* Route transition: an ink sheet passes over the page */
 .curtain {
   position: fixed;
   inset: 0;
   z-index: 100;
   pointer-events: none;
-  background: #0a0a0a;
+  background: var(--color-ink);
   transform: translateY(100%);
   will-change: transform;
 }
@@ -236,18 +290,40 @@ main > section.wrap#about {
 /* Pop: rises in when scrolled to from below, drops back down when scrolled up past it */
 .pop {
   opacity: 0;
-  transform: translateY(40px);
-  transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.4, 0, 0.6, 1);
+  transform: translateY(36px);
+  transition: opacity 0.35s ease, transform 0.45s cubic-bezier(0.4, 0, 0.6, 1);
 }
 
 .pop.is-in {
   opacity: 1;
   transform: none;
-  transition: opacity 0.5s ease var(--pop-d, 0ms), transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) var(--pop-d, 0ms);
+  transition: opacity 0.7s ease var(--pop-d, 0ms), transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) var(--pop-d, 0ms);
+}
+
+.pop .sec-rule {
+  transform: scaleX(0);
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.6, 1);
+}
+
+.pop.is-in .sec-rule {
+  transform: scaleX(1);
+  transition: transform 1.1s cubic-bezier(0.2, 0.8, 0.2, 1) 0.1s;
+}
+
+/* The nameplate settles into place on load */
+@keyframes plateIn {
+  from {
+    opacity: 0;
+    letter-spacing: 0.12em;
+  }
+}
+
+.nameplate {
+  animation: plateIn 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
 section[id] {
-  scroll-margin-top: 0;
+  scroll-margin-top: 48px;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -255,14 +331,16 @@ section[id] {
     scroll-behavior: auto;
   }
 
-  .pop {
+  .pop,
+  .pop .sec-rule {
     opacity: 1 !important;
     transform: none !important;
     transition: none !important;
   }
 
   .curtain,
-  .page-in {
+  .page-in,
+  .nameplate {
     animation: none !important;
     transition: none !important;
   }
@@ -274,9 +352,7 @@ section[id] {
   max-width: 100%;
   overflow-x: auto;
   border: 1px solid var(--color-ink);
-  background: rgba(255, 255, 255, 0.5);
-  -webkit-backdrop-filter: blur(14px);
-  backdrop-filter: blur(14px);
+  background: var(--color-paper);
   scrollbar-width: none;
 }
 
@@ -287,15 +363,16 @@ section[id] {
 .ws-tab {
   flex: none;
   padding: 10px 18px;
-  font-size: 12px;
-  font-weight: 600;
+  font-family: var(--font-label);
+  font-size: 11px;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.14em;
   color: var(--color-ink);
   cursor: pointer;
   white-space: nowrap;
   border-right: 1px solid var(--color-ink);
-  transition: background-color 0.15s, color 0.15s;
+  transition: background-color 0.2s, color 0.2s;
 }
 
 .ws-tab:last-child {
@@ -308,16 +385,13 @@ section[id] {
 
 .ws-tab.is-on {
   background: var(--color-ink);
-  color: #fff;
+  color: var(--color-paper);
 }
 
 .ws-frame {
   padding: 8px;
-  border: 1px solid rgba(10, 10, 10, 0.22);
-  background: rgba(255, 255, 255, 0.5);
-  -webkit-backdrop-filter: blur(18px) saturate(170%);
-  backdrop-filter: blur(18px) saturate(170%);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85), 0 24px 60px -24px rgba(10, 10, 10, 0.3);
+  border: 1px solid var(--color-ink);
+  background: var(--color-paper);
 }
 
 .ws-stage {

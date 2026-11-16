@@ -4,7 +4,7 @@ import { scrollToSection } from "../utils/scrollTo";
 
 // Everything lives on one page, so these scroll to a section. Resume is its own page.
 const sections = [
-  { id: "about", n: "01", label: "About" },
+  { id: "about", n: "01", label: "Profile" },
   { id: "projects", n: "03", label: "Work" },
   { id: "experience", n: "04", label: "Experience" },
   { id: "skills", n: "05", label: "Skills" },
@@ -43,12 +43,12 @@ const Navbar = () => {
   };
 
   const link = (on) =>
-    `relative py-1 text-[12px] font-semibold uppercase tracking-[0.12em] transition-colors ${on ? "text-ink" : "text-ink-soft hover:text-ink"} ${on ? "after:absolute after:left-0 after:right-0 after:-bottom-[1px] after:h-[2px] after:bg-ink" : ""}`;
+    `label relative py-1 transition-opacity ${on ? "" : "opacity-55 hover:opacity-100"} ${on ? "after:absolute after:left-0 after:right-0 after:-bottom-[1px] after:h-[2px] after:bg-ink" : ""}`;
 
   return (
-    <header className="fixed top-0 inset-x-0 z-50 bg-white/60 backdrop-blur-xl backdrop-saturate-150 border-b border-ink/70">
-      <nav className="wrap flex items-center justify-between h-14">
-        <Link to="/#home" onClick={() => setIsOpen(false)} className="text-[15px] font-bold tracking-tight">
+    <header className="fixed top-0 inset-x-0 z-50 bg-paper border-b border-ink">
+      <nav className="wrap flex items-center justify-between h-12">
+        <Link to="/#home" onClick={() => setIsOpen(false)} className="font-heading font-black text-xl italic">
           Saad Ali
         </Link>
 
@@ -66,7 +66,7 @@ const Navbar = () => {
         <div className="flex items-center gap-2">
           <button
             onClick={() => goTo("contact-form")}
-            className="hidden md:inline-flex bg-ink text-white border border-ink text-[12px] font-semibold uppercase tracking-[0.12em] px-5 py-2.5 transition-colors hover:bg-white hover:text-ink"
+            className="label hidden md:inline-flex !text-paper bg-ink border border-ink px-4 py-2 transition-colors hover:bg-transparent hover:!text-ink"
           >
             Contact
           </button>
@@ -85,22 +85,22 @@ const Navbar = () => {
         </div>
       </nav>
 
-      <div className={`md:hidden border-t border-ink/40 bg-white/80 backdrop-blur-xl ${isOpen ? "block" : "hidden"}`}>
+      <div className={`md:hidden border-t border-ink bg-paper ${isOpen ? "block" : "hidden"}`}>
         <div className="wrap flex flex-col">
           {sections.map((l) => (
             <button
               key={l.id}
               onClick={() => goTo(l.id)}
-              className="flex items-baseline gap-4 py-4 border-b border-line text-left text-2xl font-bold tracking-tight"
+              className="flex items-baseline gap-4 py-4 border-b border-line text-left font-heading text-3xl font-bold"
             >
               <span className="text-[11px] font-semibold text-ink-soft w-6">{l.n}</span>
               {l.label}
             </button>
           ))}
-          <NavLink to="/resume" onClick={() => setIsOpen(false)} className="flex items-baseline gap-4 py-4 border-b border-line text-2xl font-bold tracking-tight">
+          <NavLink to="/resume" onClick={() => setIsOpen(false)} className="flex items-baseline gap-4 py-4 border-b border-line font-heading text-3xl font-bold">
             <span className="text-[11px] font-semibold text-ink-soft w-6">&rarr;</span>Resume
           </NavLink>
-          <button onClick={() => goTo("contact-form")} className="my-4 bg-ink text-white py-4 text-[13px] font-semibold uppercase tracking-[0.12em]">
+          <button onClick={() => goTo("contact-form")} className="btn my-4 w-full">
             Contact
           </button>
         </div>

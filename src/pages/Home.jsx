@@ -6,6 +6,7 @@ import { getCookie } from '../utils/csrf';
 import WorkShowcase from '../components/WorkShowcase';
 import TiltBox from '../components/TiltBox';
 import Pop from '../components/Pop';
+import SectionHead from '../components/SectionHead';
 import { journey, roles, process, education, groupSkills, matchesRole } from '../data/profile';
 
 const values = [
@@ -135,211 +136,239 @@ const Home = ({ data }) => {
         { label: 'Location', value: data.contact.location, href: null, icon: 'fa-solid fa-location-dot' },
     ].filter((r) => r.value);
 
+    const today = new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    const stack = data.skills.slice(0, 6).map((sk) => sk.name.charAt(0) + sk.name.slice(1).toLowerCase()).join(', ');
+    const intro = 'I am a Software Engineering graduate from NED University of Engineering and Technology, with hands-on experience in AI/ML, LLM-based applications and backend development. I have built RAG chatbots, machine learning pipelines and API-driven systems, with a focus on practical, production-ready solutions.';
+    const inside = [
+        ['01', 'Profile', '#about'],
+        ['02', 'Disciplines', '#roles'],
+        ['03', 'Work', '#projects'],
+        ['04', 'Experience', '#experience'],
+        ['05', 'Skills', '#skills'],
+        ['06', 'Letters', '#contact-form'],
+    ];
+
     return (
         <main>
-            {/* A. Hero */}
-            <section id="home" className="bg-paper pt-14">
+            {/* Front page */}
+            <section id="home" className="pt-12">
                 <div className="wrap pb-16 md:pb-24">
-                    {/* Meta row */}
-                    <Pop className="grid grid-cols-2 md:grid-cols-12 gap-x-6 gap-y-2 py-4 border-b border-ink text-[12px] font-semibold uppercase tracking-[0.12em]">
-                        <p className="md:col-span-3">Portfolio {new Date().getFullYear()}</p>
-                        <p className="md:col-span-5 text-ink-soft">Software / Full-stack / Data / AI</p>
-                        <p className="md:col-span-4 md:text-right text-ink-soft">Open to work{data.contact.location ? `, ${data.contact.location}` : ''}</p>
-                    </Pop>
+                    {/* Masthead */}
+                    <header className="pt-6 md:pt-10">
+                        <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 pb-3">
+                            <p className="label">{today}</p>
+                            <p className="label opacity-60 hidden sm:block">Software / Full-stack / Data / AI</p>
+                            <p className="label">{data.contact.location || 'Portfolio'}</p>
+                        </div>
+                        <div className="border-t border-ink"></div>
+                        <p className="nameplate text-center text-[19vw] md:text-[150px] lg:text-[190px] py-3 md:py-5">{data.hero.name}</p>
+                        <div className="sec-rule"></div>
+                        <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 py-3 border-b border-ink">
+                            <p className="label">Portfolio edition</p>
+                            <p className="font-heading italic text-base hidden md:block">AI products, and the software around them</p>
+                            <p className="label">Open to work</p>
+                        </div>
+                    </header>
 
-                    {/* Headline and index of roles */}
-                    <div className="grid md:grid-cols-12 gap-x-6 gap-y-10 pt-12 md:pt-20">
-                        <Pop className="md:col-span-9">
-                            <h1 className="text-[44px] sm:text-7xl lg:text-[112px] tracking-[-0.055em]">
-                                I build AI products and the software around them.
-                            </h1>
-                        </Pop>
-                        <Pop delay={120} className="md:col-span-3 glass p-5 self-start">
-                            <p className="text-[12px] font-semibold uppercase tracking-[0.12em] pb-3 border-b border-ink">Now</p>
-                            <p className="pt-3 text-lg font-semibold tracking-tight leading-snug !text-left">{now.role}</p>
-                            <p className="text-ink-soft !text-left">{now.company}</p>
-                            <p className="text-ink-soft text-sm !text-left">{now.period}</p>
-                            {data.skills.length > 0 && (
-                                <>
-                                    <p className="mt-6 text-[12px] font-semibold uppercase tracking-[0.12em] pb-3 border-b border-ink">Stack</p>
-                                    <p className="pt-3 text-ink-soft !text-left">{data.skills.slice(0, 6).map((sk) => sk.name.charAt(0) + sk.name.slice(1).toLowerCase()).join(', ')}</p>
-                                </>
-                            )}
-                        </Pop>
-                    </div>
-
-                    {/* Picture, statement, actions */}
-                    <div className="grid md:grid-cols-12 gap-x-6 gap-y-10 mt-14 md:mt-24">
-                        <Pop className="md:col-span-4">
-                            <div className="aspect-[4/5] glass p-2 overflow-hidden"><div className="w-full h-full overflow-hidden">
-                                <img
-                                    src={data.hero.profile_pic || myPic}
-                                    alt={data.hero.name}
-                                    className="w-full h-full object-cover grayscale contrast-110"
-                                />
-                            </div></div>
-                        </Pop>
-                        <Pop delay={120} className="md:col-span-5 md:col-start-6 flex flex-col justify-between gap-10">
-                            <p className="text-2xl md:text-3xl leading-[1.15] tracking-[-0.025em] font-medium">
-                                {data.hero.name} is an {now.role.toLowerCase()} at {now.company}, with software, full-stack and data work behind every project.
-                            </p>
-                            <div>
-                                <div className="flex flex-wrap gap-3">
+                    <div className="grid lg:grid-cols-12 gap-x-10 gap-y-12 pt-10 md:pt-14">
+                        {/* Lead story */}
+                        <article className="lg:col-span-8">
+                            <Pop>
+                                <p className="label mb-5">Lead story</p>
+                                <h1 className="text-[44px] sm:text-7xl lg:text-[92px]">
+                                    I build AI products and the software around them.
+                                </h1>
+                                <p className="mt-6 font-heading italic text-2xl md:text-3xl leading-snug text-ink-soft max-w-3xl !font-bold">
+                                    {data.hero.name} is an {now.role.toLowerCase()} at {now.company}, with software, full-stack and data work behind every project.
+                                </p>
+                                <p className="label mt-6 pt-4 border-t border-line">
+                                    By {data.hero.name} <span className="opacity-50 mx-2">/</span> <span className="opacity-60">{now.role}, {now.company}</span>
+                                </p>
+                            </Pop>
+                            <Pop delay={120} className="mt-8">
+                                <div className="news-text cols-2 text-[19px] leading-[1.6]">
+                                    {data.about.description ? (
+                                        <>
+                                            <p className="dropcap whitespace-pre-wrap">{data.about.description}</p>
+                                            <p>{intro}</p>
+                                        </>
+                                    ) : (
+                                        <p className="dropcap">{intro}</p>
+                                    )}
+                                </div>
+                                <div className="mt-8 flex flex-wrap gap-3">
                                     <button onClick={() => handleNavClick('#projects')} className="btn">{data.hero.cta_primary}</button>
                                     <button onClick={copyEmail} className="btn-ghost">
                                         <i className={copied ? 'fa-solid fa-check' : 'fa-regular fa-copy'}></i>
                                         {copied ? 'Email copied' : 'Copy email'}
                                     </button>
                                 </div>
-                            </div>
-                        </Pop>
+                            </Pop>
+                        </article>
+
+                        {/* Side column */}
+                        <aside className="lg:col-span-4 lg:border-l lg:border-line lg:pl-10">
+                            <Pop delay={150}>
+                                <figure>
+                                    <div className="press-photo aspect-[4/5]">
+                                        <img src={data.hero.profile_pic || myPic} alt={data.hero.name} className="w-full h-full object-cover" />
+                                    </div>
+                                    <figcaption className="mt-3 text-sm italic text-ink-soft">
+                                        {data.hero.name}, {now.role.toLowerCase()} at {now.company}.
+                                    </figcaption>
+                                </figure>
+                            </Pop>
+                            <Pop delay={220} className="mt-10">
+                                <p className="label pb-2 border-b-2 border-ink">In brief</p>
+                                <dl className="text-[17px]">
+                                    <div className="py-3 border-b border-line">
+                                        <dt className="label opacity-60 mb-1">Now</dt>
+                                        <dd>{now.role}, {now.company} ({now.period})</dd>
+                                    </div>
+                                    {stack && (
+                                        <div className="py-3 border-b border-line">
+                                            <dt className="label opacity-60 mb-1">Stack</dt>
+                                            <dd>{stack}</dd>
+                                        </div>
+                                    )}
+                                </dl>
+                            </Pop>
+                            <Pop delay={280} className="mt-10">
+                                <p className="label pb-2 border-b-2 border-ink">Inside</p>
+                                <ul>
+                                    {inside.map(([n, name, id]) => (
+                                        <li key={id}>
+                                            <button
+                                                onClick={() => handleNavClick(id)}
+                                                className="group w-full flex items-baseline gap-4 py-2.5 border-b border-line text-left transition-[padding,background-color,color] duration-300 hover:bg-ink hover:text-paper hover:px-3"
+                                            >
+                                                <span className="label !text-current opacity-60 w-6">{n}</span>
+                                                <span className="font-heading font-bold text-xl">{name}</span>
+                                                <span className="ml-auto label !text-current opacity-0 group-hover:opacity-100 transition-opacity">Read</span>
+                                            </button>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </Pop>
+                        </aside>
                     </div>
                 </div>
             </section>
 
-            {/* About */}
-            <section id="about" className="wrap py-24 md:py-32">
-                <div className="grid md:grid-cols-[0.6fr_1.4fr] gap-8 md:gap-16">
-                    <Pop>
-                        <p className="eyebrow mb-4 !text-left">01 / About</p>
-                        <h2 className="text-4xl md:text-5xl font-semibold leading-tight">Hi, I am {firstName}.</h2>
-                    </Pop>
-                    <Pop delay={120} className="space-y-6 text-xl md:text-2xl text-ink-soft leading-relaxed !text-left">
-                        <p className="whitespace-pre-wrap">{data.about.description}</p>
-                        <p>
-                            I am a Software Engineering graduate from NED University of Engineering and Technology, with hands-on experience in AI/ML, LLM-based applications and backend development. I have built RAG chatbots, machine learning pipelines and API-driven systems, with a focus on practical, production-ready solutions.
-                        </p>
-                        <p>
-                            I am interested in Generative AI, intelligent automation, scalable SaaS products and solving real-world problems through data and systems design. I like clean architecture and growth-oriented teams with a strong engineering culture, and I dislike unnecessary complexity and poor code practices.
-                        </p>
-                    </Pop>
-                </div>
-                <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {/* 01 Profile */}
+            <section id="about" className="wrap py-16 md:py-24">
+                <SectionHead n="01" kicker="Profile" title={`Hi, I am ${firstName}.`} />
+                <Pop className="news-text cols-3 text-[19px] leading-[1.6]">
+                    <p className="dropcap">
+                        I am deeply interested in Generative AI, intelligent automation, scalable SaaS products, and solving real-world problems through data and systems design. I enjoy clean architecture, continuous learning, and experimenting with new AI frameworks.
+                    </p>
+                    <p>
+                        I like working in growth-oriented environments with strong engineering culture and clear impact. I dislike unnecessary complexity, poor code practices, and stagnation. I prefer building things that are efficient, meaningful, and built to last.
+                    </p>
+                </Pop>
+                <div className="ruled-cols mt-14 grid sm:grid-cols-2 lg:grid-cols-4 border-y border-ink">
                     {values.map((v, i) => (
-                        <Pop key={v.title} delay={i * 90} className="card p-7">
-                            <div className="w-11 h-11 rounded-2xl bg-cream flex items-center justify-center text-accent-deep mb-5">
-                                <i className={v.icon}></i>
-                            </div>
-                            <h3 className="font-semibold text-xl">{v.title}</h3>
-                            <p className="text-ink-soft text-sm mt-2 leading-relaxed !text-left">{v.text}</p>
+                        <Pop key={v.title} delay={i * 90} className="py-6 lg:px-6 lg:first:pl-0 lg:last:pr-0">
+                            <p className="label opacity-60 mb-3">{String(i + 1).padStart(2, '0')}</p>
+                            <h3 className="text-2xl">{v.title}</h3>
+                            <p className="text-ink-soft mt-2 leading-snug">{v.text}</p>
                         </Pop>
                     ))}
                 </div>
             </section>
 
-            {/* D. Roles */}
-            <section id="roles" className="wrap py-24 md:py-32">
-                <Pop>
-                    <p className="eyebrow mb-4 !text-left">02 / Disciplines</p>
-                    <h2 className="text-4xl md:text-6xl font-semibold leading-tight max-w-3xl mb-12">Four disciplines, one engineer.</h2>
-                </Pop>
-                <TiltBox>
-                    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                        {roles.map((r, i) => (
-                            <Pop
-                                as="button"
-                                key={r.id}
-                                delay={i * 90}
-                                onClick={() => pickRole(r.id)}
-                                className="card card-link p-7 flex flex-col text-left"
-                            >
-                                <div className="w-12 h-12 rounded-2xl bg-cream text-accent-deep flex items-center justify-center text-lg mb-6">
-                                    <i className={r.icon}></i>
-                                </div>
-                                <h3 className="text-2xl font-semibold mb-3">{r.title}</h3>
-                                <p className="text-ink-soft leading-relaxed flex-grow !text-left">{r.text}</p>
-                                <div className="mt-6 flex flex-wrap gap-2">
-                                    {r.tags.map((t) => (
-                                        <span key={t} className="px-3 py-1 rounded-full border border-line text-[11px] font-semibold text-ink-soft">{t}</span>
-                                    ))}
-                                </div>
-                                <span className="mt-6 text-sm font-semibold link-draw self-start">See {r.title.toLowerCase()} projects</span>
-                            </Pop>
-                        ))}
-                    </div>
-                </TiltBox>
-            </section>
-
-            {/* E. Work showcase: tabbed box */}
-            <WorkShowcase projects={gridProjects} role={role} onRole={setRole} />
-
-            {/* F. Experience, education and process */}
-            <section id="experience" className="bg-ink text-white py-24 md:py-32">
-                <div className="wrap">
-                    <Pop>
-                        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-primary-accent mb-4 !text-left">04 / Experience</p>
-                        <h2 className="text-4xl md:text-6xl font-semibold mb-12 !text-left">Where I have worked.</h2>
-                    </Pop>
-                    <ol className="border-t border-white/15">
-                        {[...journey].reverse().map((j) => (
-                            <Pop as="li" key={j.company} className="grid md:grid-cols-[1.2fr_1fr_0.8fr] gap-2 md:gap-8 py-6 border-b border-white/15 transition-colors hover:bg-white/[0.03]">
-                                <h3 className="text-2xl md:text-3xl font-semibold">{j.company}</h3>
-                                <p className="text-white/70 md:pt-1.5 !text-left">{j.role}</p>
-                                <p className="text-white/45 text-sm md:pt-2 md:text-right">{j.period}</p>
-                            </Pop>
-                        ))}
-                        <Pop as="li" className="grid md:grid-cols-[1.2fr_1fr_0.8fr] gap-2 md:gap-8 py-6 border-b border-white/15 transition-colors hover:bg-white/[0.03]">
-                            <h3 className="text-2xl md:text-3xl font-semibold">{education.school}</h3>
-                            <p className="text-white/70 md:pt-1.5 !text-left">{education.degree}</p>
-                            <p className="text-white/45 text-sm md:pt-2 md:text-right">Education</p>
+            {/* 02 Disciplines */}
+            <section id="roles" className="wrap py-16 md:py-24">
+                <SectionHead n="02" kicker="Disciplines" title="Four disciplines, one engineer." />
+                <div className="ruled-cols grid sm:grid-cols-2 lg:grid-cols-4">
+                    {roles.map((r, i) => (
+                        <Pop
+                            as="button"
+                            key={r.id}
+                            delay={i * 90}
+                            onClick={() => pickRole(r.id)}
+                            className="group flex flex-col text-left py-6 lg:px-6 lg:first:pl-0 lg:last:pr-0"
+                        >
+                            <span className="label opacity-60 mb-3">{String(i + 1).padStart(2, '0')}</span>
+                            <h3 className="text-3xl leading-tight mb-3">{r.title}</h3>
+                            <p className="text-ink-soft leading-snug flex-grow">{r.text}</p>
+                            <p className="mt-5 text-sm italic text-ink-soft">{r.tags.join(', ')}</p>
+                            <span className="label mt-5 link-draw self-start pb-0.5">See the work</span>
                         </Pop>
-                    </ol>
-
-                    <Pop as="h2" className="text-3xl md:text-5xl font-semibold mt-24 mb-10 !text-left">How a project runs.</Pop>
-                    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                        {process.map((st, i) => (
-                            <Pop key={st.n} delay={i * 90} className="glass-dark p-7">
-                                <p className="text-primary-accent font-heading text-3xl font-semibold mb-5 !text-left">{st.n}</p>
-                                <h3 className="text-xl font-semibold mb-2">{st.title}</h3>
-                                <p className="text-white/60 leading-relaxed !text-left">{st.text}</p>
-                            </Pop>
-                        ))}
-                    </div>
+                    ))}
                 </div>
             </section>
 
-            {/* G. Skills, grouped */}
-            <section id="skills" className="wrap py-24 md:py-32">
-                <div className="grid lg:grid-cols-[1.6fr_1fr] gap-6">
-                    <Pop className="card p-8 md:p-12">
-                        <p className="eyebrow mb-3 !text-left">05 / Skills</p>
-                        <h2 className="text-3xl md:text-5xl font-semibold mb-10">What I work with</h2>
-                        <div className="space-y-8">
-                            {skillGroupsList.map((g) => (
-                                <div key={g.label}>
-                                    <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-ink-soft mb-3 !text-left">{g.label}</p>
-                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                                        {g.skills.map((skill) => (
-                                            <div key={skill.id || skill.name} className="flex items-center gap-3 rounded-2xl border border-line px-4 py-3 transition-all duration-200 hover:-translate-y-0.5 hover:border-ink/30">
-                                                <div className="w-9 h-9 rounded-xl bg-cream flex items-center justify-center shrink-0">
-                                                    {skill.icon && (skill.icon.startsWith('http') || skill.icon.startsWith('/media/')) ? (
-                                                        <img src={skill.icon} alt="" className="w-5 h-5 object-contain" />
-                                                    ) : (
-                                                        <i className={`${skill.icon} text-sm`}></i>
-                                                    )}
-                                                </div>
-                                                <span className="text-sm font-semibold">{skill.name}</span>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
+            {/* 03 Work */}
+            <WorkShowcase projects={gridProjects} role={role} onRole={setRole} />
+
+            {/* 04 Experience */}
+            <section id="experience" className="wrap py-16 md:py-24">
+                <SectionHead n="04" kicker="Experience" title="Where I have worked." />
+                <ol className="border-t border-ink">
+                    {[...journey].reverse().map((j) => (
+                        <Pop as="li" key={j.company} className="grid md:grid-cols-[1.2fr_1fr_0.8fr] gap-1 md:gap-8 py-5 border-b border-line transition-colors duration-300 hover:bg-cream">
+                            <h3 className="text-2xl md:text-3xl">{j.company}</h3>
+                            <p className="text-ink-soft md:pt-1.5 italic">{j.role}</p>
+                            <p className="label opacity-70 md:pt-3 md:!text-right">{j.period}</p>
+                        </Pop>
+                    ))}
+                    <Pop as="li" className="grid md:grid-cols-[1.2fr_1fr_0.8fr] gap-1 md:gap-8 py-5 border-b border-ink transition-colors duration-300 hover:bg-cream">
+                        <h3 className="text-2xl md:text-3xl">{education.school}</h3>
+                        <p className="text-ink-soft md:pt-1.5 italic">{education.degree}</p>
+                        <p className="label opacity-70 md:pt-3 md:!text-right">Education</p>
                     </Pop>
-                    <Pop delay={140} className="rounded-3xl p-8 md:p-12 bg-ink text-white flex flex-col justify-between gap-10">
-                        <div>
-                            <h3 className="text-3xl md:text-4xl font-semibold leading-tight !text-left">Looking for an AI engineer?</h3>
-                            <p className="mt-4 text-white/65 !text-left">Send a message and we can scope it together.</p>
-                        </div>
-                        <div className="flex flex-col gap-3">
-                            <button onClick={() => handleNavClick('#contact-form')} className="btn-light w-full">Send a message</button>
+                </ol>
+
+                <Pop className="mt-16 md:mt-20 mb-6">
+                    <p className="label mb-3">Method</p>
+                    <h3 className="text-4xl md:text-5xl">How a project runs.</h3>
+                </Pop>
+                <div className="ruled-cols grid sm:grid-cols-2 lg:grid-cols-4 border-y border-ink">
+                    {process.map((st, i) => (
+                        <Pop key={st.n} delay={i * 90} className="py-6 lg:px-6 lg:first:pl-0 lg:last:pr-0">
+                            <p className="font-heading text-5xl font-black mb-3">{st.n}</p>
+                            <h3 className="text-2xl mb-2">{st.title}</h3>
+                            <p className="text-ink-soft leading-snug">{st.text}</p>
+                        </Pop>
+                    ))}
+                </div>
+            </section>
+
+            {/* 05 Skills */}
+            <section id="skills" className="wrap py-16 md:py-24">
+                <SectionHead n="05" kicker="Skills" title="What I work with." />
+                <div className="grid lg:grid-cols-12 gap-x-10 gap-y-12">
+                    <div className="lg:col-span-8 grid sm:grid-cols-2 gap-x-10 gap-y-8">
+                        {skillGroupsList.map((g, i) => (
+                            <Pop key={g.label} delay={(i % 2) * 90}>
+                                <p className="label pb-2 border-b-2 border-ink">{g.label}</p>
+                                <ul>
+                                    {g.skills.map((skill) => (
+                                        <li key={skill.id || skill.name} className="flex items-center gap-3 py-2.5 border-b border-line">
+                                            <span className="w-6 h-6 flex items-center justify-center shrink-0 grayscale">
+                                                {skill.icon && (skill.icon.startsWith('http') || skill.icon.startsWith('/media/')) ? (
+                                                    <img src={skill.icon} alt="" className="w-5 h-5 object-contain" />
+                                                ) : (
+                                                    <i className={`${skill.icon} text-sm`}></i>
+                                                )}
+                                            </span>
+                                            <span className="text-lg">{skill.name.charAt(0) + skill.name.slice(1).toLowerCase()}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </Pop>
+                        ))}
+                    </div>
+                    {/* Boxed notice */}
+                    <Pop delay={140} className="lg:col-span-4 self-start border-4 border-double border-ink p-7 text-center">
+                        <p className="label mb-4">Notice</p>
+                        <h3 className="text-4xl leading-tight">Looking for an AI engineer?</h3>
+                        <p className="mt-4 text-ink-soft italic !text-center">Send a message and we can scope it together.</p>
+                        <div className="mt-7 flex flex-col gap-3">
+                            <button onClick={() => handleNavClick('#contact-form')} className="btn w-full">Send a message</button>
                             {data.hero.resume_url && (
-                                <a
-                                    href={data.hero.resume_url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="inline-flex items-center justify-center gap-2 w-full px-7 py-3 rounded-full font-semibold text-[15px] text-white border border-white/30 transition-all duration-200 hover:border-white hover:-translate-y-0.5 active:scale-[0.97]"
-                                >
+                                <a href={data.hero.resume_url} target="_blank" rel="noopener noreferrer" className="btn-ghost w-full">
                                     <i className="fa-solid fa-file-pdf"></i> Download resume
                                 </a>
                             )}
@@ -348,124 +377,108 @@ const Home = ({ data }) => {
                 </div>
             </section>
 
-            {/* J. Contact */}
-            <section id="contact-form" className="bg-ink text-white py-24 md:py-32">
-                <div className="wrap grid lg:grid-cols-2 gap-14 lg:gap-20 items-start">
-                    <Pop>
-                        <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-primary-accent mb-4 !text-left">06 / Contact</p>
-                        <h2 className="text-5xl md:text-7xl font-semibold leading-[1.02] !text-left">Let's talk.</h2>
-                        <p className="mt-6 text-lg text-white/65 max-w-md leading-relaxed !text-left">
-                            New projects, collaborations, or a chat about AI and software. I reply as soon as I can.
-                        </p>
-                        <div className="mt-10 space-y-6">
-                            {contactRows.map((r) => (
-                                <div key={r.label} className="flex items-center gap-4">
-                                    <div className="w-11 h-11 rounded-full border border-white/20 flex items-center justify-center text-primary-accent shrink-0">
-                                        <i className={`${r.icon} text-sm`}></i>
+            {/* 06 Letters */}
+            <section id="contact-form" className="bg-ink text-paper py-16 md:py-24">
+                <div className="wrap">
+                    <SectionHead n="06" kicker="Letters" title="Let's talk." />
+                    <div className="grid lg:grid-cols-12 gap-x-10 gap-y-12">
+                        <Pop className="lg:col-span-5">
+                            <p className="text-xl leading-relaxed text-paper/75 max-w-md">
+                                New projects, collaborations, or a chat about AI and software. I reply as soon as I can.
+                            </p>
+                            <dl className="mt-8 border-t border-paper/30">
+                                {contactRows.map((r) => (
+                                    <div key={r.label} className="py-4 border-b border-paper/30">
+                                        <dt className="label !text-paper/55 mb-1">{r.label}</dt>
+                                        <dd className="font-heading font-bold text-2xl break-all">
+                                            {r.href ? <a href={r.href} className="link-draw">{r.value}</a> : r.value}
+                                        </dd>
+                                    </div>
+                                ))}
+                            </dl>
+                            <button onClick={copyEmail} className="label !text-paper mt-6 inline-flex items-center gap-2 link-draw pb-0.5">
+                                <i className={copied ? 'fa-solid fa-check' : 'fa-regular fa-copy'}></i>
+                                {copied ? 'Email copied' : 'Copy email address'}
+                            </button>
+                        </Pop>
+
+                        <Pop delay={140} className="lg:col-span-7">
+                            <TiltBox>
+                                <form className="space-y-6 border border-paper/40 p-6 md:p-9" onSubmit={handleSubmit}>
+                                    <p className="label !text-paper/55">Write to the editor</p>
+                                    <div className="grid md:grid-cols-2 gap-6">
+                                        <div>
+                                            <label htmlFor="email" className="label !text-paper/55">Email</label>
+                                            <input
+                                                type="email"
+                                                id="email"
+                                                value={formData.email}
+                                                onChange={handleChange}
+                                                placeholder="you@email.com"
+                                                className="w-full bg-transparent border-0 border-b border-paper/50 px-0 py-3 text-xl text-paper placeholder:text-paper/35 focus:outline-none focus:border-paper transition-colors"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label htmlFor="purpose" className="label !text-paper/55">Purpose</label>
+                                            <select
+                                                id="purpose"
+                                                value={formData.purpose}
+                                                onChange={handleChange}
+                                                className="w-full bg-transparent border-0 border-b border-paper/50 px-0 py-3 text-xl text-paper focus:outline-none focus:border-paper transition-colors appearance-none"
+                                            >
+                                                <option value="" className="bg-ink">Select a purpose</option>
+                                                <option value="project" className="bg-ink">New project</option>
+                                                <option value="collaboration" className="bg-ink">Collaboration</option>
+                                                <option value="inquiry" className="bg-ink">General inquiry</option>
+                                                <option value="other" className="bg-ink">Something else</option>
+                                            </select>
+                                        </div>
                                     </div>
                                     <div>
-                                        <p className="text-[11px] uppercase tracking-[0.2em] text-white/45 !text-left">{r.label}</p>
-                                        {r.href ? (
-                                            <a href={r.href} className="text-lg font-semibold hover:text-primary-accent transition-colors break-all">{r.value}</a>
-                                        ) : (
-                                            <p className="text-lg font-semibold !text-left">{r.value}</p>
-                                        )}
+                                        <label htmlFor="message" className="label !text-paper/55">Message</label>
+                                        <textarea
+                                            id="message"
+                                            value={formData.message}
+                                            onChange={handleChange}
+                                            placeholder="Tell me about your project"
+                                            rows="5"
+                                            className="w-full bg-transparent border-0 border-b border-paper/50 px-0 py-3 text-xl text-paper placeholder:text-paper/35 focus:outline-none focus:border-paper transition-colors"
+                                        ></textarea>
                                     </div>
-                                </div>
-                            ))}
-                        </div>
-                        <button
-                            onClick={copyEmail}
-                            className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-white/80 hover:text-white link-draw"
-                        >
-                            <i className={copied ? 'fa-solid fa-check' : 'fa-regular fa-copy'}></i>
-                            {copied ? 'Email copied' : 'Copy email address'}
-                        </button>
-                    </Pop>
 
-                    <Pop delay={140}>
-                    <TiltBox>
-                        <form className="space-y-5 glass-dark p-6 md:p-8" onSubmit={handleSubmit}>
-                            <div className="grid md:grid-cols-2 gap-5">
-                                <div className="space-y-2">
-                                    <label htmlFor="email" className="text-xs font-semibold uppercase tracking-[0.18em] text-white/55">Email</label>
-                                    <input
-                                        type="email"
-                                        id="email"
-                                        value={formData.email}
-                                        onChange={handleChange}
-                                        placeholder="you@email.com"
-                                        className="w-full bg-white/5 border border-white/15 rounded-2xl px-5 py-4 text-white placeholder:text-white/35 focus:outline-none focus:border-white/60 transition-colors"
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <label htmlFor="purpose" className="text-xs font-semibold uppercase tracking-[0.18em] text-white/55">Purpose</label>
-                                    <select
-                                        id="purpose"
-                                        value={formData.purpose}
-                                        onChange={handleChange}
-                                        className="w-full bg-white/5 border border-white/15 rounded-2xl px-5 py-4 text-white focus:outline-none focus:border-white/60 transition-colors appearance-none"
+                                    {status.message && (
+                                        <div className={`p-4 text-base border ${status.type === 'success' ? 'border-green-300/60 text-green-200' : 'border-red-300/60 text-red-200'}`}>
+                                            {status.message}
+                                        </div>
+                                    )}
+
+                                    <button
+                                        type="submit"
+                                        disabled={isSubmitting}
+                                        className={`btn-light w-full ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
                                     >
-                                        <option value="" className="bg-ink">Select a purpose</option>
-                                        <option value="project" className="bg-ink">New project</option>
-                                        <option value="collaboration" className="bg-ink">Collaboration</option>
-                                        <option value="inquiry" className="bg-ink">General inquiry</option>
-                                        <option value="other" className="bg-ink">Something else</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div className="space-y-2">
-                                <label htmlFor="message" className="text-xs font-semibold uppercase tracking-[0.18em] text-white/55">Message</label>
-                                <textarea
-                                    id="message"
-                                    value={formData.message}
-                                    onChange={handleChange}
-                                    placeholder="Tell me about your project"
-                                    rows="5"
-                                    className="w-full bg-white/5 border border-white/15 rounded-2xl px-5 py-4 text-white placeholder:text-white/35 focus:outline-none focus:border-white/60 transition-colors"
-                                ></textarea>
-                            </div>
-
-                            {status.message && (
-                                <div className={`p-4 rounded-2xl text-sm font-semibold ${status.type === 'success' ? 'bg-green-500/15 text-green-300' : 'bg-red-500/15 text-red-300'}`}>
-                                    {status.message}
-                                </div>
-                            )}
-
-                            <button
-                                type="submit"
-                                disabled={isSubmitting}
-                                className={`btn-light w-full ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
-                            >
-                                {isSubmitting ? 'Sending...' : 'Send message'}
-                            </button>
-                        </form>
-                    </TiltBox>
-                    </Pop>
+                                        {isSubmitting ? 'Sending...' : 'Send message'}
+                                    </button>
+                                </form>
+                            </TiltBox>
+                        </Pop>
+                    </div>
                 </div>
             </section>
 
-            {/* Social */}
+            {/* Elsewhere */}
             {data.social_links && data.social_links.length > 0 && (
-                <Pop as="section" className="wrap py-20 md:py-24">
-                    <p className="eyebrow mb-6 !text-left">Find me online</p>
-                    <div className="flex flex-wrap gap-3">
+                <Pop as="section" className="wrap py-12 md:py-16">
+                    <div className="flex flex-wrap items-center gap-x-8 gap-y-4 border-y border-ink py-5">
+                        <p className="label">Elsewhere</p>
                         {data.social_links.map((link, index) => (
-                            <a
-                                key={index}
-                                href={link.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="card card-link inline-flex items-center gap-3 !rounded-full pl-3 pr-6 py-2.5"
-                            >
-                                <span className="w-9 h-9 rounded-full bg-cream flex items-center justify-center overflow-hidden">
-                                    {link.icon_image ? (
-                                        <img src={link.icon_image} alt="" className="w-5 h-5 object-contain" />
-                                    ) : (
-                                        <i className={`${link.icon_class || 'fa-solid fa-link'} text-sm`}></i>
-                                    )}
-                                </span>
-                                <span className="text-sm font-semibold">{link.name}</span>
+                            <a key={index} href={link.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 font-heading font-bold text-xl link-draw">
+                                {link.icon_image ? (
+                                    <img src={link.icon_image} alt="" className="w-4 h-4 object-contain grayscale" />
+                                ) : (
+                                    <i className={`${link.icon_class || 'fa-solid fa-link'} text-sm`}></i>
+                                )}
+                                {link.name}
                             </a>
                         ))}
                     </div>
