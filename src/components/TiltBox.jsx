@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 // A box that arrives tilted back and slightly small, then lies flat as it scrolls into view.
 // Progress is read from the box's own position, so it also runs in reverse when scrolling up.

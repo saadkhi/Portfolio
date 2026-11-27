@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ConnectionBackground from '../components/ConnectionBackground';
 
@@ -166,7 +166,7 @@ const Resume = () => {
                         </h2>
                         {summary ? (
                             <p className="text-lg text-white/80 leading-relaxed font-light italic">
-                                "{summary}"
+                                &ldquo;{summary}&rdquo;
                             </p>
                         ) : (
                             <p className="text-sm text-white/30 italic">No summary added yet. Update your profile in the admin panel.</p>

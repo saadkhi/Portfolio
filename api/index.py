@@ -1,6 +1,9 @@
 import os
+import hmac
 import logging
+import secrets
 import sys
+from urllib.parse import urlparse
 from flask import Flask, jsonify, request, send_from_directory, render_template_string, redirect, url_for, send_file
 from flask_sqlalchemy import SQLAlchemy
 from flask_admin import Admin, AdminIndexView, expose
@@ -34,15 +37,44 @@ app = Flask(__name__)
 
 CORS(app)
 
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'a-very-secret-key-12345')
+# Secrets come only from the environment (Vercel settings, or api/.env locally).
+# Without SECRET_KEY a random key is used, so admin sessions last only as long as the process.
+SECRET_KEY = os.environ.get('SECRET_KEY', '').strip()
+if not SECRET_KEY:
+    logger.warning("SECRET_KEY is not set; using a temporary random key.")
+    SECRET_KEY = secrets.token_hex(32)
+app.config['SECRET_KEY'] = SECRET_KEY
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+if os.environ.get('VERCEL'):
+    app.config['SESSION_COOKIE_SECURE'] = True
+    app.config['REMEMBER_COOKIE_SECURE'] = True
 
-# Admin Credentials
-# Fallbacks included for ease of use during initial setup
-ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME", "saadkhi_uit").strip()
-ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "03353948753_gs150se").strip()
+# Admin credentials. If either is missing, admin login is turned off.
+ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME", "").strip()
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "").strip()
+ADMIN_ENABLED = bool(ADMIN_USERNAME and ADMIN_PASSWORD)
+if not ADMIN_ENABLED:
+    logger.warning("ADMIN_USERNAME or ADMIN_PASSWORD is not set; admin login is disabled.")
 
-logger.info(f"DEBUG: ADMIN_USERNAME is {'SET (length: ' + str(len(ADMIN_USERNAME)) + ')' if ADMIN_USERNAME else 'NOT SET'}")
-logger.info(f"DEBUG: ADMIN_PASSWORD is {'SET (length: ' + str(len(ADMIN_PASSWORD)) + ')' if ADMIN_PASSWORD else 'NOT SET'}")
+
+def credentials_match(username, password):
+    if not ADMIN_ENABLED:
+        return False
+    user_ok = hmac.compare_digest((username or '').encode(), ADMIN_USERNAME.encode())
+    pass_ok = hmac.compare_digest((password or '').encode(), ADMIN_PASSWORD.encode())
+    return user_ok and pass_ok
+
+
+def safe_next(target):
+    # Only follow redirects back into this site, never to another host.
+    if not target:
+        return None
+    target = target.replace('\\', '/')
+    parts = urlparse(target)
+    if parts.scheme or parts.netloc or not target.startswith('/') or target.startswith('//'):
+        return None
+    return target
 
 # Handle Database Persistence
 DATABASE_URL = os.environ.get('DATABASE_URL')
@@ -53,12 +85,12 @@ if DATABASE_URL:
         DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql+psycopg2://", 1)
     elif DATABASE_URL.startswith("postgresql://"):
         DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+psycopg2://", 1)
-    
+
     # Ensure SSL for Neon/Postgres if not specified
     if "sslmode=" not in DATABASE_URL:
         separator = "&" if "?" in DATABASE_URL else "?"
         DATABASE_URL += f"{separator}sslmode=require"
-        
+
     app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
     logger.info("Using external persistent database (PostgreSQL/Neon)")
     UPLOAD_BASE_DIR = '/tmp/media' if os.environ.get('VERCEL') else os.path.join(BASE_DIR, 'media')
@@ -102,7 +134,7 @@ login_manager.login_view = 'login'
 
 @login_manager.user_loader
 def load_user(user_id):
-    if user_id == ADMIN_USERNAME:
+    if ADMIN_ENABLED and user_id == ADMIN_USERNAME:
         return User(user_id)
     return None
 
@@ -133,10 +165,10 @@ class SecureAdminIndexView(AdminIndexView):
         educations = Education.query.all()
         certifications = Certification.query.all()
         is_ephemeral = os.environ.get('VERCEL') is not None and os.environ.get('DATABASE_URL') is None
-        return self.render('admin/index.html', 
-                           profiles=profiles, 
-                           projects=projects, 
-                           skills=skills, 
+        return self.render('admin/index.html',
+                           profiles=profiles,
+                           projects=projects,
+                           skills=skills,
                            social_links=social_links,
                            experiences=experiences,
                            educations=educations,
@@ -152,7 +184,7 @@ def run_migrations():
         from sqlalchemy import inspect, text
         # Always run create_all to catch new tables
         db.create_all()
-        
+
         inspector = inspect(db.engine)
         if 'profile' in inspector.get_table_names():
             columns = [c['name'] for c in inspector.get_columns('profile')]
@@ -174,11 +206,11 @@ def run_migrations():
 def seed_database():
     import json
     from models import Profile, Project, Skill, SocialLink
-    
+
     # Only seed if Profile is empty
     if Profile.query.first():
         return
-        
+
     data_file = os.path.join(BASE_DIR, 'data.json')
     if not os.path.exists(data_file):
         logger.warning(f"Seed data file {data_file} not found.")
@@ -187,9 +219,9 @@ def seed_database():
     try:
         with open(data_file, 'r') as f:
             data = json.load(f)
-            
+
         logger.info("Seeding database from data.json...")
-        
+
         # Profile
         p_data = data.get('profile', {})
         if p_data:
@@ -203,7 +235,7 @@ def seed_database():
                 phone_number=p_data.get('phone_number')
             )
             db.session.add(profile)
-            
+
         # Projects
         for proj in data.get('projects', []):
             p = Project(
@@ -217,7 +249,7 @@ def seed_database():
                 is_featured=bool(proj.get('is_featured'))
             )
             db.session.add(p)
-            
+
         # Skills
         for skill in data.get('skills', []):
             s = Skill(
@@ -226,7 +258,7 @@ def seed_database():
                 order=skill.get('order', 0)
             )
             db.session.add(s)
-            
+
         # Social Links
         for link in data.get('social_links', []):
             sl = SocialLink(
@@ -237,7 +269,7 @@ def seed_database():
                 order=link.get('order', 0)
             )
             db.session.add(sl)
-            
+
         db.session.commit()
         logger.info("Database seeding completed.")
     except Exception as e:
@@ -275,7 +307,7 @@ from markupsafe import Markup
 def thumbnail_formatter(view, context, model, name):
     if not getattr(model, name):
         return ""
-    
+
     # Standardize the path for display
     base_name = os.path.basename(getattr(model, name))
     # Determine subfolder based on model type
@@ -284,7 +316,7 @@ def thumbnail_formatter(view, context, model, name):
     elif isinstance(model, Project): subfolder = "projects"
     elif isinstance(model, Skill): subfolder = "skills"
     elif isinstance(model, SocialLink): subfolder = "social_icons"
-    
+
     url = f"/media/{subfolder}/{base_name}"
     return Markup(f'<img src="{url}" height="40" style="border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">')
 
@@ -297,7 +329,7 @@ class ProfileModelView(SecureModelView):
     column_formatters = {
         'profile_pic_thumb': lambda v, c, m, p: thumbnail_formatter(v, c, m, 'profile_pic')
     }
-    
+
     form_overrides = {
         'resume_file': FileUploadField,
         'profile_pic': ImageUploadField
@@ -321,7 +353,7 @@ class ProjectModelView(SecureModelView):
     column_formatters = {
         'image_thumb': lambda v, c, m, p: thumbnail_formatter(v, c, m, 'image')
     }
-    
+
     form_overrides = {
         'image': ImageUploadField,
         'video': FileUploadField
@@ -345,7 +377,7 @@ class SkillModelView(SecureModelView):
     column_formatters = {
         'icon_thumb': lambda v, c, m, p: thumbnail_formatter(v, c, m, 'icon')
     }
-    
+
     form_overrides = {
         'icon': ImageUploadField
     }
@@ -363,7 +395,7 @@ class SocialLinkModelView(SecureModelView):
     column_formatters = {
         'icon_thumb': lambda v, c, m, p: thumbnail_formatter(v, c, m, 'icon_image')
     }
-    
+
     form_overrides = {
         'icon_image': ImageUploadField
     }
@@ -395,15 +427,15 @@ def login():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
-        if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
-            user = User(username)
+        if credentials_match(username, password):
+            user = User(ADMIN_USERNAME)
             login_user(user)
-            return redirect(request.args.get('next') or url_for('admin.index'))
-        
-        logger.warning(f"Login failed for user '{username}'.")
+            return redirect(safe_next(request.args.get('next')) or url_for('admin.index'))
+
+        logger.warning("Admin login failed.")
         error_msg = "Invalid credentials"
-        if not ADMIN_USERNAME or not ADMIN_PASSWORD:
-            error_msg = "Server Error: Admin credentials not configured"
+        if not ADMIN_ENABLED:
+            error_msg = "Admin login is not configured on this server"
 
     return render_template_string('''
         <!DOCTYPE html>
@@ -526,13 +558,13 @@ def login():
                     <h1>Admin Access</h1>
                     <p>Portfolio Dashboard Login</p>
                 </div>
-                
+
                 {% if error %}
                 <div class="error">
                     {{ error }}
                 </div>
                 {% endif %}
-                
+
                 <form method="post">
                     <div class="form-group">
                         <label>Username</label>
@@ -562,14 +594,14 @@ def serve_media(filename):
         os.path.join(BASE_DIR, 'media'),
         '/tmp/media'
     ]
-    
+
     # Files might be nested in subfolders like 'skills/icons/' due to legacy data
     # We strip any path parts and search for the basename in our standard subfolders
     base_name = os.path.basename(filename)
-    
+
     # Standard subfolders to check
     subfolders = ['', 'resumes', 'projects', 'skills', 'social_icons', 'profile', 'projects/images', 'skills/icons']
-    
+
     for d in search_dirs:
         if not os.path.exists(d):
             continue
@@ -581,7 +613,7 @@ def serve_media(filename):
                 # Cache media files for 1 day
                 response.headers["Cache-Control"] = "public, max-age=86400"
                 return response
-        
+
         # 2. Recursive search for robustness
         import glob
         matches = glob.glob(os.path.join(d, '**', base_name), recursive=True)
@@ -601,7 +633,7 @@ def get_portfolio():
     except Exception as e:
         logger.error(f"Error fetching profile: {e}")
         profile = None
-    
+
     # Use database values or defaults for profile info
     name = profile.name if profile else "Saad Ali"
     title = profile.title if profile else "AI & Software Engineer"
@@ -609,11 +641,11 @@ def get_portfolio():
     email = profile.email if profile else "saadalioffic@gmail.com"
     phone = profile.phone_number if profile else ""
     location = profile.location if profile else "Karachi, Pakistan"
-    
+
     resume_url = ""
     if profile and profile.resume_file:
         resume_url = f"/media/resumes/{os.path.basename(profile.resume_file)}" if not str(profile.resume_file).startswith('/') else profile.resume_file
-        
+
     profile_pic = ""
     if profile and profile.profile_pic:
         profile_pic = f"/media/profile/{os.path.basename(profile.profile_pic)}" if not str(profile.profile_pic).startswith('/') else profile.profile_pic
@@ -624,7 +656,7 @@ def get_portfolio():
 
     featured_projects = []
     latest_projects = []
-    
+
     for p in projects:
         p_dict = {
             "id": p.id,
@@ -679,10 +711,10 @@ def get_portfolio():
             "github": "https://github.com/saadkhi"
         }
     })
-    
+
     # Enable edge caching for fast loading in production (1 hour max-age, 1 day stale-while-revalidate)
     response.headers["Cache-Control"] = "public, s-maxage=3600, stale-while-revalidate=86400"
-    
+
     return response
 
 @app.route('/api/projects/', methods=['GET'])
@@ -700,10 +732,10 @@ def get_projects():
         "category": p.category,
         "is_featured": p.is_featured
     } for p in projects])
-    
+
     # Enable edge caching
     response.headers["Cache-Control"] = "public, s-maxage=3600, stale-while-revalidate=86400"
-    
+
     return response
 
 @app.route('/api/resume/', methods=['GET'])
@@ -797,11 +829,11 @@ def get_resume():
             "url": sl.url
         } for sl in social_links]
     }
-    
+
     response = jsonify(resume_data)
     # Enable edge caching for resume data (1 hour max-age, 1 day stale-while-revalidate)
     response.headers["Cache-Control"] = "public, s-maxage=3600, stale-while-revalidate=86400"
-    
+
     return response
 
 @app.route('/api/resume/download', methods=['GET'])
@@ -814,7 +846,7 @@ def download_resume():
     projects = Project.query.order_by(Project.created_at.desc()).all()
 
     doc = Document()
-    
+
     # 1-inch margins
     sections = doc.sections
     for section in sections:
@@ -842,10 +874,10 @@ def download_resume():
     if profile.location: contact_info.append(profile.location)
     if profile.phone_number: contact_info.append(profile.phone_number)
     if profile.email: contact_info.append(profile.email)
-    
+
     p = doc.add_paragraph(' | '.join(contact_info))
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    
+
     p = doc.add_paragraph()
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p.add_run(f"GitHub: {profile.name.lower().replace(' ', '')} | LinkedIn: {profile.name.lower().replace(' ', '')}")
@@ -875,10 +907,10 @@ def download_resume():
             run = p.add_run(f"{exp.title} - {exp.company}")
             run.bold = True
             p.add_run(f"\t{exp.period}").italic = True
-            
+
             p = doc.add_paragraph(exp.location)
             p.style.font.size = Pt(9)
-            
+
             # Bullets
             for bullet in exp.description.split('\n'):
                 if bullet.strip():
@@ -905,16 +937,16 @@ def download_resume():
             p = doc.add_paragraph()
             run = p.add_run(proj.title)
             run.bold = True
-            
+
             if proj.category:
                 p.add_run(f" ({proj.category})").italic = True
-                
+
             doc.add_paragraph(proj.description)
-            
+
             p_details = []
             if proj.tech_stack: p_details.append(f"Tech: {proj.tech_stack}")
             if proj.live_link and proj.live_link != "#": p_details.append(f"Link: {proj.live_link}")
-            
+
             if p_details:
                 doc.add_paragraph(' | '.join(p_details)).italic = True
 
@@ -928,7 +960,7 @@ def download_resume():
     target = BytesIO()
     doc.save(target)
     target.seek(0)
-    
+
     filename = f"{name.replace(' ', '_')}_Resume.docx"
     return send_file(target, as_attachment=True, download_name=filename, mimetype='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
 
@@ -936,15 +968,32 @@ def download_resume():
 @app.route('/api/contact/', methods=['POST'])
 @app.route('/api/contact', methods=['POST'])
 def contact_form_submission():
-    data = request.json
+    data = request.get_json(silent=True) or {}
+    email = str(data.get('email') or '').strip()
+    purpose = str(data.get('purpose') or '').strip()
+    message = str(data.get('message') or '').strip()
+
+    if not email or not purpose or not message:
+        return jsonify({'error': True, 'message': 'Please fill all the fields'}), 400
+    if '@' not in email or len(email) > 254 or len(purpose) > 100 or len(message) > 5000:
+        return jsonify({'error': True, 'message': 'Please check your email and message.'}), 400
+
     google_script_url = os.environ.get('GOOGLE_SHEETS_SCRIPT_URL')
-    
     if not google_script_url:
         logger.error("GOOGLE_SHEETS_SCRIPT_URL not configured.")
         return jsonify({'error': True, 'message': 'Service temporarily unavailable.'}), 500
-    
+
+    payload = {
+        'date': str(data.get('date') or '')[:64],
+        'email': email,
+        'purpose': purpose,
+        'message': message,
+    }
     try:
-        response = requests.post(google_script_url, json=data, timeout=10)
+        response = requests.post(google_script_url, json=payload, timeout=10)
+        if not response.ok:
+            logger.error(f"Google Sheets script returned {response.status_code}")
+            return jsonify({'error': True, 'message': 'Failed to forward message.'}), 502
         return jsonify({
             'error': False,
             'message': 'Message sent successfully!'
@@ -961,4 +1010,4 @@ def health_check():
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 8000))
-    app.run(host='0.0.0.0', port=port, debug=True)
+    app.run(host='127.0.0.1', port=port, debug=os.environ.get('FLASK_DEBUG', '1') == '1')

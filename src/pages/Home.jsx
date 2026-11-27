@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import myPic from '../assets/my_pic.png';
 import { scrollToSection } from '../utils/scrollTo';
@@ -7,7 +7,7 @@ import WorkShowcase from '../components/WorkShowcase';
 import TiltBox from '../components/TiltBox';
 import Pop from '../components/Pop';
 import SectionHead from '../components/SectionHead';
-import { journey, roles, process, education, groupSkills, matchesRole } from '../data/profile';
+import { journey, roles, process, education, groupSkills, matchesRole, skillLabel, roleInSentence } from '../data/profile';
 
 const values = [
     { icon: 'fa-solid fa-bolt', title: 'Efficiency', text: 'Optimizing every line of code for maximum performance.' },
@@ -137,7 +137,7 @@ const Home = ({ data }) => {
     ].filter((r) => r.value);
 
     const today = new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-    const stack = data.skills.slice(0, 6).map((sk) => sk.name.charAt(0) + sk.name.slice(1).toLowerCase()).join(', ');
+    const stack = data.skills.slice(0, 6).map((sk) => skillLabel(sk.name)).join(', ');
     const intro = 'I am a Software Engineering graduate from NED University of Engineering and Technology, with hands-on experience in AI/ML, LLM-based applications and backend development. I have built RAG chatbots, machine learning pipelines and API-driven systems, with a focus on practical, production-ready solutions.';
     const inside = [
         ['01', 'Profile', '#about'],
@@ -179,7 +179,7 @@ const Home = ({ data }) => {
                                     I build AI products and the software around them.
                                 </h1>
                                 <p className="mt-6 font-heading italic text-2xl md:text-3xl leading-snug text-ink-soft max-w-3xl !font-bold">
-                                    {data.hero.name} is an {now.role.toLowerCase()} at {now.company}, with software, full-stack and data work behind every project.
+                                    {data.hero.name} is an {roleInSentence(now.role)} at {now.company}, with software, full-stack and data work behind every project.
                                 </p>
                                 <p className="label mt-6 pt-4 border-t border-line">
                                     By {data.hero.name} <span className="opacity-50 mx-2">/</span> <span className="opacity-60">{now.role}, {now.company}</span>
@@ -214,7 +214,7 @@ const Home = ({ data }) => {
                                         <img src={data.hero.profile_pic || myPic} alt={data.hero.name} className="w-full h-full object-cover" />
                                     </div>
                                     <figcaption className="mt-3 text-sm italic text-ink-soft">
-                                        {data.hero.name}, {now.role.toLowerCase()} at {now.company}.
+                                        {data.hero.name}, {roleInSentence(now.role)} at {now.company}.
                                     </figcaption>
                                 </figure>
                             </Pop>
@@ -353,7 +353,7 @@ const Home = ({ data }) => {
                                                     <i className={`${skill.icon} text-sm`}></i>
                                                 )}
                                             </span>
-                                            <span className="text-lg">{skill.name.charAt(0) + skill.name.slice(1).toLowerCase()}</span>
+                                            <span className="text-lg">{skillLabel(skill.name)}</span>
                                         </li>
                                     ))}
                                 </ul>

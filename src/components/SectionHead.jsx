@@ -1,4 +1,3 @@
-import React from 'react';
 import Pop from './Pop';
 
 // Opens a section like a newspaper section front: a double rule that draws across,

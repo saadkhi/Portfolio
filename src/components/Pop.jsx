@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 // Pops up as it scrolls into view from below, and pops back down when you scroll up past it.
 // Once it has gone off the top it stays shown, so only the upward scroll reverses it.

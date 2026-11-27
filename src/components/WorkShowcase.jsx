@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { roleFilters } from '../data/profile';
 import TiltBox from './TiltBox';
 import Pop from './Pop';

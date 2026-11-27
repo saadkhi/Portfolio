@@ -94,3 +94,26 @@ export const groupSkills = (skills) => {
     const order = [...skillGroups.map(([l]) => l), 'Other'];
     return order.filter((l) => out.has(l)).map((l) => ({ label: l, skills: out.get(l) }));
 };
+
+// Display helpers. Skills are stored in capitals in the admin panel (e.g. "MYSQL"),
+// and job titles start with a capital; these keep acronyms and brand names right.
+const skillNames = {
+    python: 'Python', mysql: 'MySQL', fastapi: 'FastAPI', django: 'Django', flask: 'Flask',
+    javascript: 'JavaScript', typescript: 'TypeScript', react: 'React', 'react.js': 'React',
+    node: 'Node.js', nodejs: 'Node.js', 'node.js': 'Node.js', sql: 'SQL', postgresql: 'PostgreSQL',
+    postgres: 'PostgreSQL', mongodb: 'MongoDB', html: 'HTML', css: 'CSS', aws: 'AWS', api: 'API',
+    rest: 'REST', 'rest api': 'REST API', restapi: 'REST API', llm: 'LLM', llms: 'LLMs', rag: 'RAG',
+    ai: 'AI', ml: 'ML', nlp: 'NLP', opencv: 'OpenCV', tensorflow: 'TensorFlow', pytorch: 'PyTorch',
+    langchain: 'LangChain', openai: 'OpenAI', 'power bi': 'Power BI', github: 'GitHub', git: 'Git',
+    docker: 'Docker', tailwind: 'Tailwind', 'scikit-learn': 'scikit-learn', numpy: 'NumPy', pandas: 'pandas',
+};
+
+export const skillLabel = (name = '') => {
+    const key = name.trim().toLowerCase();
+    if (skillNames[key]) return skillNames[key];
+    return key.replace(/\b\w/g, (c) => c.toUpperCase());
+};
+
+// "AI Engineer" -> "AI engineer": lower-case the words, keep acronyms.
+export const roleInSentence = (role = '') =>
+    role.split(' ').map((w) => (w.length > 1 && w === w.toUpperCase() ? w : w.toLowerCase())).join(' ');
