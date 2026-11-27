@@ -1,0 +1,320 @@
+<title>Portfolio Design Layout</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;600;700&family=Inter:wght@400;500;600&display=swap">
+<style>
+/* Layout concept: a review document. Research findings first, then one annotated wireframe of the proposed Home page, then a page map and open decisions. */
+:root {
+  --bg: #f4f4f5;
+  --panel: #ffffff;
+  --fg: #18181b;
+  --soft: #5f5f67;
+  --line: #e1e1e4;
+  --accent: #3f3f46;
+  --wire: #ececee;
+  --wire-line: #c4c4ca;
+  --dark: #18181b;
+  --dark-fg: #f4f4f5;
+  --have: #2f7d4f;
+  --new: #18181b;
+  --need: #8a6a00;
+  --display: "Bricolage Grotesque", "Inter", system-ui, sans-serif;
+  --text: "Inter", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111113; --panel: #1b1b1e; --fg: #f4f4f5; --soft: #a8a8b0; --line: #303034;
+    --accent: #c4c4cc; --wire: #232326; --wire-line: #46464c; --dark: #09090a; --dark-fg: #f4f4f5;
+    --have: #6fcf97; --new: #f4f4f5; --need: #e0b84a; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111113; --panel: #1b1b1e; --fg: #f4f4f5; --soft: #a8a8b0; --line: #303034;
+  --accent: #c4c4cc; --wire: #232326; --wire-line: #46464c; --dark: #09090a; --dark-fg: #f4f4f5;
+  --have: #6fcf97; --new: #f4f4f5; --need: #e0b84a; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--text); font-size: 15px; line-height: 1.55; margin: 0;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 40px 80px; }
+main { max-width: 1080px; margin: 0 auto; display: flex; flex-direction: column; gap: 64px; }
+h1, h2, h3 { font-family: var(--display); letter-spacing: -0.03em; margin: 0; text-wrap: balance; }
+h1 { font-size: clamp(34px, 6vw, 56px); line-height: 1.02; font-weight: 600; }
+h2 { font-size: clamp(26px, 4vw, 36px); line-height: 1.1; font-weight: 600; }
+h3 { font-size: 18px; font-weight: 600; letter-spacing: -0.02em; }
+p { margin: 0; }
+.eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.2em; color: var(--accent); margin-bottom: 10px; }
+.lede { color: var(--soft); font-size: 17px; max-width: 62ch; margin-top: 14px; }
+section { display: flex; flex-direction: column; gap: 22px; }
+a { color: var(--accent); }
+
+/* Research cards */
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 20px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.card .what { color: var(--soft); font-size: 14px; }
+.card .take { font-size: 14px; border-top: 1px solid var(--line); padding-top: 10px; margin-top: auto; }
+.card .take b { color: var(--accent); font-weight: 600; }
+
+/* Component table */
+.tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); }
+table { border-collapse: collapse; width: 100%; min-width: 640px; font-size: 14px; }
+th, td { text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--soft); font-weight: 600; }
+tr:last-child td { border-bottom: 0; }
+.tag { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 9px; border-radius: 99px; border: 1px solid currentColor; white-space: nowrap; }
+.tag.have { color: var(--have); } .tag.new { color: var(--new); } .tag.need { color: var(--need); }
+
+/* Wireframe */
+.stage { display: grid; grid-template-columns: minmax(0, 1fr); gap: 26px; }
+.frame { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 18px; display: flex; flex-direction: column; gap: 12px; }
+.block { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 240px); gap: 18px; align-items: start; }
+.wire { background: var(--wire); border: 1.5px dashed var(--wire-line); border-radius: 10px; padding: 16px; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+.wire.dark { background: var(--dark); border-color: var(--dark); color: var(--dark-fg); }
+.wire.sun { background: linear-gradient(180deg, #0e0e10 0%, #3a3a40 55%, #7b7b84 100%); border-color: transparent; color: #fff; }
+.wire .t { font-family: var(--display); font-weight: 600; font-size: 20px; letter-spacing: -0.02em; }
+.wire .big { font-family: var(--display); font-weight: 600; font-size: clamp(22px, 3.4vw, 32px); line-height: 1.05; letter-spacing: -0.03em; }
+.wire .s { font-size: 12.5px; opacity: 0.8; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; }
+.pill { font-size: 11px; font-weight: 600; padding: 4px 11px; border-radius: 99px; border: 1.5px solid currentColor; }
+.pill.fill { background: #fff; color: #17110c; border-color: #fff; }
+.grid4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; }
+.grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; }
+.cell { border: 1.5px dashed var(--wire-line); border-radius: 8px; padding: 10px; font-size: 12px; background: var(--panel); min-width: 0; }
+.wire.dark .cell, .wire.sun .cell { background: transparent; border-color: rgba(255,255,255,0.35); }
+.img { border: 1.5px dashed var(--wire-line); border-radius: 8px; min-height: 90px; display: grid; place-items: center; font-size: 11px; color: var(--soft); background: repeating-linear-gradient(135deg, transparent 0 8px, rgba(127,127,127,0.08) 8px 16px); }
+.wire.sun .img { color: #fff; border-color: rgba(255,255,255,0.4); }
+.split { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.7fr); gap: 12px; }
+.note { font-size: 13px; color: var(--soft); display: flex; flex-direction: column; gap: 8px; }
+.note b { color: var(--fg); font-family: var(--display); font-size: 15px; letter-spacing: -0.02em; }
+.num { font-family: var(--display); font-weight: 600; color: var(--accent); font-size: 13px; }
+
+/* Page map */
+.map { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+.map .card { gap: 6px; }
+
+/* Decisions */
+ol.decide { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; counter-reset: d; }
+ol.decide li { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px 16px 52px; position: relative; counter-increment: d; }
+ol.decide li::before { content: counter(d); position: absolute; left: 16px; top: 15px; width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: var(--bg); font-weight: 600; font-size: 13px; display: grid; place-items: center; }
+ol.decide b { display: block; font-family: var(--display); font-size: 16px; letter-spacing: -0.02em; }
+ol.decide span { color: var(--soft); font-size: 14px; }
+.sources { font-size: 13px; color: var(--soft); }
+.sources a { margin-right: 4px; }
+
+@media (max-width: 720px) {
+  .block { grid-template-columns: minmax(0, 1fr); }
+  .split { grid-template-columns: minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+
+<main>
+  <header>
+    <p class="eyebrow">Design review</p>
+    <h1>Portfolio plan and layout</h1>
+    <p class="lede">What top software engineer portfolios contain, what yours is missing, and a proposed layout for the new Home page. Nothing is built yet. Review this, tell me what to change, and then we start.</p>
+  </header>
+
+  <section>
+    <div>
+      <p class="eyebrow">1. Research</p>
+      <h2>What the top portfolios do</h2>
+      <p class="lede">I opened four well-known developer sites in a browser and read the 2026 hiring guides. The four sites are very different, which is useful: they show the range of what works.</p>
+    </div>
+    <div class="cards">
+      <div class="card">
+        <h3>Brittany Chiang</h3>
+        <p class="what">Two columns. A fixed left column holds the name, role, one-line pitch, section links and social icons. The right column scrolls through About, Experience, Projects and a link to the full résumé. Each job lists dates, a short description and its tech as tags.</p>
+        <p class="take"><b>Take:</b> a clear pitch that stays on screen, dated experience with tech tags.</p>
+      </div>
+      <div class="card">
+        <h3>Lee Robinson</h3>
+        <p class="what">Almost all text. A short bio with his current and previous employers, then a dated list of essays and notes. No project grid at all; the writing is the proof.</p>
+        <p class="take"><b>Take:</b> a short bio that names employers, and a dated writing list.</p>
+      </div>
+      <div class="card">
+        <h3>Josh Comeau</h3>
+        <p class="what">Leads with a featured article and a read-more link. The site is organised around teaching content rather than a list of jobs.</p>
+        <p class="take"><b>Take:</b> a featured piece on the landing page.</p>
+      </div>
+      <div class="card">
+        <h3>Rauno Freiberg</h3>
+        <p class="what">Extremely minimal: name, one line on who he is, links to Projects, Craft and Field Notes, socials, and a copy-email button. Ends on a short set of principles.</p>
+        <p class="take"><b>Take:</b> one-line identity, copy-email button, short principles.</p>
+      </div>
+    </div>
+    <p class="sources">Hiring guides read: <a href="https://careerfoundry.com/en/blog/web-development/software-engineer-portfolio/">CareerFoundry</a>, <a href="https://proxify.io/knowledge-base/job-descriptions/what-makes-a-developer-portfolio-stand-out-to-recruiters">Proxify</a>, <a href="https://mavenanalytics.io/free-resources/how-to-build-a-strong-data-analyst-project-portfolio">Maven Analytics</a>, <a href="https://www.dataexpert.io/blog/ultimate-guide-ai-engineering-portfolios">DataExpert</a>. These are vendor and course blogs, so I used only the points that several of them agree on.</p>
+  </section>
+
+  <section>
+    <div>
+      <p class="eyebrow">2. Components</p>
+      <h2>What top portfolios have, and where you stand</h2>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Component</th><th>Why it is there</th><th>Your site</th></tr></thead>
+        <tbody>
+          <tr><td><b>One-line pitch above the fold</b></td><td>Visitors decide in seconds what you do and for whom.</td><td><span class="tag have">Have</span> needs a sharper line</td></tr>
+          <tr><td><b>Projects, 3 to 6</b></td><td>The main proof. Each one a case study: problem, approach, result, stack.</td><td><span class="tag new">Thin</span> 2 projects, no case studies</td></tr>
+          <tr><td><b>Live demo and repo links</b></td><td>Lets a recruiter check the work in one click.</td><td><span class="tag have">Have</span> repo links only</td></tr>
+          <tr><td><b>Experience timeline</b></td><td>Dated roles with the tech used.</td><td><span class="tag have">Have</span> no tech tags yet</td></tr>
+          <tr><td><b>Skills, grouped</b></td><td>Scannable by recruiters and keyword filters.</td><td><span class="tag have">Have</span> one flat list</td></tr>
+          <tr><td><b>About with a human line</b></td><td>Personality and what you want next.</td><td><span class="tag have">Have</span></td></tr>
+          <tr><td><b>Résumé link</b></td><td>The portfolio supports the résumé, it does not replace it.</td><td><span class="tag have">Have</span></td></tr>
+          <tr><td><b>Contact, plus a copy-email button</b></td><td>The one action you want.</td><td><span class="tag have">Have</span> form works</td></tr>
+          <tr><td><b>GitHub and LinkedIn</b></td><td>Recruiters check GitHub early.</td><td><span class="tag have">Have</span> no activity shown</td></tr>
+          <tr><td><b>Results with numbers</b></td><td>Business impact is the strongest signal for AI and data roles.</td><td><span class="tag need">Needs your data</span></td></tr>
+          <tr><td><b>Testimonials</b></td><td>Third-party proof. Fiverr and Upwork reviews work.</td><td><span class="tag need">Needs your data</span></td></tr>
+          <tr><td><b>Writing or notes</b></td><td>Shows how you think. Even 2 or 3 posts help.</td><td><span class="tag new">Missing</span></td></tr>
+          <tr><td><b>Role filter on projects</b></td><td>You are four roles; each visitor wants their own.</td><td><span class="tag new">Missing</span></td></tr>
+          <tr><td><b>AI extras: evaluation, demo video</b></td><td>Shows you handle the hard 90%: data cleaning, guardrails, deployment.</td><td><span class="tag need">Needs your data</span></td></tr>
+          <tr><td><b>Data extras: dashboard screenshots</b></td><td>Power BI, Tableau or a notebook, with the question and the decision.</td><td><span class="tag need">Needs your data</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div>
+      <p class="eyebrow">3. Proposed layout</p>
+      <h2>New Home page, top to bottom</h2>
+      <p class="lede">The colour is now grey and white: a white and light-grey page, a charcoal-to-grey hero, dark grey contact and experience sections, and no orange. The change is also the order and what each section proves. Dashed boxes are placeholders. Notes on the right say what each section is for.</p>
+    </div>
+
+    <div class="stage">
+      <div class="frame">
+
+        <div class="block">
+          <div class="wire dark">
+            <div class="row" style="justify-content:space-between"><span class="t" style="font-size:15px">Saad Ali</span><span class="s">Home · Projects · About · Resume</span><span class="pill" style="background:#fff;border-color:#fff;color:#18181b">Contact</span></div>
+          </div>
+          <div class="note"><b>Floating nav</b>Kept. Dark pill, always visible.</div>
+        </div>
+
+        <div class="block">
+          <div class="wire sun">
+            <div class="split">
+              <div style="display:flex;flex-direction:column;gap:10px">
+                <span class="s">Open to work · Karachi, Pakistan</span>
+                <span class="big">I build AI products and the software around them.</span>
+                <span class="s">AI engineer at Convex Consulting. Software, full-stack and data work behind every project.</span>
+                <div class="row"><span class="pill">AI Engineer</span><span class="pill">Full-Stack</span><span class="pill">Software</span><span class="pill">Data Analyst</span></div>
+                <div class="row"><span class="pill fill">See my work</span><span class="pill">Copy email</span></div>
+              </div>
+              <div class="img">Photo</div>
+            </div>
+          </div>
+          <div class="note"><b><span class="num">A</span> Hero</b>One sentence on what you do, four role chips that link to filtered projects, and a copy-email button. A real current role replaces the generic line. The hero becomes a charcoal-to-grey gradient with the photo.</div>
+        </div>
+
+        <div class="block">
+          <div class="wire">
+            <div class="row"><span class="s"><b>Now:</b> building [your current project]</span><span class="s">· Stack: Python, Django, FastAPI, React, SQL</span></div>
+          </div>
+          <div class="note"><b><span class="num">B</span> Fact strip</b>One line: what you are working on this month. Proof you are active. New.</div>
+        </div>
+
+        <div class="block">
+          <div class="wire">
+            <span class="t">Selected work</span>
+            <div class="split">
+              <div style="display:flex;flex-direction:column;gap:6px"><span class="t" style="opacity:.25;font-size:16px">Project 1</span><span class="t" style="color:var(--accent)">Talk2DB</span><span class="t" style="opacity:.25;font-size:16px">Project 3</span></div>
+              <div class="cell"><div class="img" style="min-height:60px">Screenshot</div><span>Role tag · one-line result · Live · Repo</span></div>
+            </div>
+          </div>
+          <div class="note"><b><span class="num">C</span> Pinned project wheel</b>Your scroll transition stays. Needs at least 4 to 6 projects to feel full. Each shows a role tag and one result.</div>
+        </div>
+
+        <div class="block">
+          <div class="wire">
+            <span class="t">Four disciplines</span>
+            <div class="grid4"><div class="cell">Software<br>→ projects</div><div class="cell">Full-Stack<br>→ projects</div><div class="cell">Data Analyst<br>→ projects</div><div class="cell">AI Engineer<br>→ projects</div></div>
+          </div>
+          <div class="note"><b><span class="num">D</span> Role cards</b>Already built. Each card now links to Projects filtered by that role.</div>
+        </div>
+
+        <div class="block">
+          <div class="wire">
+            <span class="t">Case study: Talk2DB</span>
+            <div class="grid4"><div class="cell"><b>Problem</b><br>…</div><div class="cell"><b>Approach</b><br>…</div><div class="cell"><b>Result</b><br>…</div><div class="cell"><b>Stack</b><br>…</div></div>
+            <div class="img" style="min-height:70px">Architecture diagram or demo video</div>
+          </div>
+          <div class="note"><b><span class="num">E</span> Featured case study</b>One project told in full on Home, using Problem, Approach, Result, Stack. Hiring guides name this the strongest single section. New.</div>
+        </div>
+
+        <div class="block">
+          <div class="wire dark">
+            <span class="t">Experience and education</span>
+            <div class="grid3"><div class="cell">2025 – now<br><b>Convex Consulting</b><br>AI Engineer · tech tags</div><div class="cell">2024 – 2025<br><b>360 Xpert</b><br>AI Intern · tech tags</div><div class="cell">NED University<br>Software Engineering<br>Certifications</div></div>
+          </div>
+          <div class="note"><b><span class="num">F</span> Experience</b>Dark section kept. Adds tech tags per job, one line of impact each, and education and certifications beside it.</div>
+        </div>
+
+        <div class="block">
+          <div class="wire">
+            <span class="t">Skills</span>
+            <div class="grid4"><div class="cell"><b>Languages</b></div><div class="cell"><b>Backend</b></div><div class="cell"><b>Data</b></div><div class="cell"><b>AI / ML</b></div></div>
+          </div>
+          <div class="note"><b><span class="num">G</span> Grouped skills</b>Replaces the single flat list. Matches the keywords recruiters search for.</div>
+        </div>
+
+        <div class="block">
+          <div class="wire">
+            <span class="t">Client feedback</span>
+            <div class="grid3"><div class="cell">“Short quote”<br>Name · Fiverr</div><div class="cell">“Short quote”<br>Name · Upwork</div><div class="cell">GitHub activity<br>pinned repos</div></div>
+          </div>
+          <div class="note"><b><span class="num">H</span> Proof</b>Only real quotes with permission. If you have none yet, this section stays hidden until you do.</div>
+        </div>
+
+        <div class="block">
+          <div class="wire">
+            <span class="t">Writing</span>
+            <div class="row"><span class="cell" style="flex:1">Post title · date</span><span class="cell" style="flex:1">Post title · date</span><span class="cell" style="flex:1">Post title · date</span></div>
+          </div>
+          <div class="note"><b><span class="num">I</span> Writing (later)</b>Optional, phase two. Left out of the first build unless you want it.</div>
+        </div>
+
+        <div class="block">
+          <div class="wire dark">
+            <div class="split"><div><span class="big">Let's talk.</span><div class="s" style="margin-top:8px">Email · Phone · Location · Socials</div></div><div class="cell">Email · Purpose · Message · Send</div></div>
+          </div>
+          <div class="note"><b><span class="num">J</span> Contact</b>Kept. The calendar is gone. Adds a copy-email button next to the form.</div>
+        </div>
+
+        <div class="block">
+          <div class="wire dark"><div class="row" style="justify-content:space-between"><span class="t" style="font-size:15px">Footer</span><span class="s">Pages · GitHub · LinkedIn · © Saad Ali</span></div></div>
+          <div class="note"><b>Footer</b>Kept.</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div>
+      <p class="eyebrow">4. Pages</p>
+      <h2>Site map</h2>
+    </div>
+    <div class="map">
+      <div class="card"><h3>Home</h3><p class="what">Sections A to J above.</p><span class="tag have" style="align-self:flex-start">Rework</span></div>
+      <div class="card"><h3>Projects</h3><p class="what">Grid with role filter: All, Software, Full-Stack, Data, AI.</p><span class="tag new" style="align-self:flex-start">Add filter</span></div>
+      <div class="card"><h3>Case study</h3><p class="what">One page per project: Problem, Approach, Result, Stack, demo.</p><span class="tag new" style="align-self:flex-start">New page</span></div>
+      <div class="card"><h3>About</h3><p class="what">Story, values, journey, toolkit.</p><span class="tag have" style="align-self:flex-start">Keep</span></div>
+      <div class="card"><h3>Resume</h3><p class="what">On-screen résumé with print and Word download.</p><span class="tag have" style="align-self:flex-start">Keep, restyle later</span></div>
+      <div class="card"><h3>Writing</h3><p class="what">List of notes with dates.</p><span class="tag need" style="align-self:flex-start">Phase two</span></div>
+    </div>
+  </section>
+
+  <section>
+    <div>
+      <p class="eyebrow">5. Your call</p>
+      <h2>Decisions before I build</h2>
+    </div>
+    <ol class="decide">
+      <li><b>Grey and white palette</b><span>Applied as you asked: white and light-grey pages, charcoal and grey for the hero and dark sections, floating nav kept. Tell me if you want the greys warmer, cooler or darker.</span></li>
+      <li><b>Which section order?</b><span>I proposed A to J. Tell me what to move, drop or add.</span></li>
+      <li><b>Which project is the featured case study?</b><span>Talk2DB is my suggestion. I need its real problem, approach and result from you.</span></li>
+      <li><b>Include Writing in the first build?</b><span>Skipping it means a faster first release. It can come in phase two.</span></li>
+      <li><b>Your real content</b><span>I will not invent results, quotes or numbers. Send what you have, and anything missing stays hidden instead of showing a placeholder.</span></li>
+    </ol>
+  </section>
+</main>
